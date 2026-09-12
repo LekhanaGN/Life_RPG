@@ -13,6 +13,10 @@
   --bg-other: #030104;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: #030104;
   color: #f1f5f9;

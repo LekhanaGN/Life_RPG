@@ -572,6 +572,42 @@
       "timezone": "UTC",
       "createdAt": "2026-09-12T19:50:46.081Z",
       "updatedAt": "2026-09-12T19:50:46.081Z"
+    },
+    {
+      "id": "usr_mtytmmop_twxx8s3",
+      "email": "survivor_p6_1789243908323@theotherside.world",
+      "passwordHash": "mock_hash_p6",
+      "username": "Lyra",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T20:11:52.537Z",
+      "updatedAt": "2026-09-12T20:11:52.537Z"
+    },
+    {
+      "id": "usr_mtytmn0p_ovaecxt",
+      "email": "intruder_p6_1789243912958@badactor.net",
+      "passwordHash": "hash_malory",
+      "username": "Malory",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T20:11:52.969Z",
+      "updatedAt": "2026-09-12T20:11:52.969Z"
+    },
+    {
+      "id": "usr_mtytmzp4_wg3h7nn",
+      "email": "survivor_p5_1789243925220@theotherside.world",
+      "passwordHash": "mock_hash_p5",
+      "username": "Kaelen",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T20:12:09.400Z",
+      "updatedAt": "2026-09-12T20:12:09.400Z"
+    },
+    {
+      "id": "usr_mtytn0xz_d44dqeh",
+      "email": "intruder_1789243931006@badactor.net",
+      "passwordHash": "intruder_hash",
+      "username": "Malory",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T20:12:11.015Z",
+      "updatedAt": "2026-09-12T20:12:11.015Z"
     }
   ],
   "characters": [
@@ -1628,6 +1664,71 @@
       "connection": 6,
       "createdAt": "2026-09-12T19:50:46.104Z",
       "updatedAt": "2026-09-12T19:50:46.104Z"
+    },
+    {
+      "id": "chr_mtytmmpw_bjljtov",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "name": "Lyra",
+      "archetype": "STRATEGIST",
+      "level": 1,
+      "xp": 0,
+      "credits": 250,
+      "mind": 12,
+      "body": 8,
+      "focus": 16,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T20:11:52.580Z",
+      "updatedAt": "2026-09-12T20:11:53.385Z"
+    },
+    {
+      "id": "chr_mtytmn1g_5omskte",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T20:11:52.996Z",
+      "updatedAt": "2026-09-12T20:11:52.996Z"
+    },
+    {
+      "id": "chr_mtytmzq0_xvdu7p8",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "name": "Kaelen",
+      "archetype": "SCHOLAR",
+      "level": 3,
+      "xp": 980,
+      "credits": 400,
+      "mind": 22,
+      "body": 33,
+      "focus": 14,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T20:12:09.432Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z",
+      "currentXp": 780
+    },
+    {
+      "id": "chr_mtytn0yq_xzrwj7v",
+      "userId": "usr_mtytn0xz_d44dqeh",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T20:12:11.042Z",
+      "updatedAt": "2026-09-12T20:12:11.042Z"
     }
   ],
   "missions": [
@@ -4340,6 +4441,150 @@
       "updatedAt": "2026-09-12T19:50:46.002Z",
       "lastCompletedAt": "2026-09-12T19:50:45.962Z",
       "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytmzrj_mo5i855",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Read 10 pages of OS architecture",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EASY",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:09.487Z",
+      "updatedAt": "2026-09-12T20:12:09.699Z",
+      "lastCompletedAt": "2026-09-12T20:12:09.589Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytmzz9_bw2u9zs",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "30-minute deep focus sprint",
+      "description": null,
+      "category": "FOCUS",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:09.765Z",
+      "updatedAt": "2026-09-12T20:12:09.895Z",
+      "lastCompletedAt": "2026-09-12T20:12:09.845Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytn04a_bcd2nve",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Ship production microservice",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:09.946Z",
+      "updatedAt": "2026-09-12T20:12:10.075Z",
+      "lastCompletedAt": "2026-09-12T20:12:10.026Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytn09g_wh11ths",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Final Strike Phase 1",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:10.133Z",
+      "updatedAt": "2026-09-12T20:12:10.268Z",
+      "lastCompletedAt": "2026-09-12T20:12:10.203Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytn0ea_vhnkos5",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Final Strike Phase 2",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:10.306Z",
+      "updatedAt": "2026-09-12T20:12:10.414Z",
+      "lastCompletedAt": "2026-09-12T20:12:10.368Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytn0hz_hw1vvxk",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Final Strike Phase 3",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:10.439Z",
+      "updatedAt": "2026-09-12T20:12:10.590Z",
+      "lastCompletedAt": "2026-09-12T20:12:10.521Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytn0mz_nhta109",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Final Strike Phase 4",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:10.619Z",
+      "updatedAt": "2026-09-12T20:12:10.747Z",
+      "lastCompletedAt": "2026-09-12T20:12:10.697Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtytn0r9_yh07fkp",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "title": "Final Strike Phase 5",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T20:12:10.773Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z",
+      "lastCompletedAt": "2026-09-12T20:12:10.855Z",
+      "isCompletedToday": true
     }
   ],
   "missionCompletions": [
@@ -5478,6 +5723,70 @@
       "xpEarned": 120,
       "creditsEarned": 60,
       "completedAt": "2026-09-12T19:50:45.962Z"
+    },
+    {
+      "id": "cmp_mtytmzxf_zh31mg9",
+      "missionId": "msn_mtytmzrj_mo5i855",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T20:12:09.589Z"
+    },
+    {
+      "id": "cmp_mtytn02v_u8aei5d",
+      "missionId": "msn_mtytmzz9_bw2u9zs",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T20:12:09.845Z"
+    },
+    {
+      "id": "cmp_mtytn07v_2zin9f3",
+      "missionId": "msn_mtytn04a_bcd2nve",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T20:12:10.026Z"
+    },
+    {
+      "id": "cmp_mtytn0d8_4743wr7",
+      "missionId": "msn_mtytn09g_wh11ths",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T20:12:10.203Z"
+    },
+    {
+      "id": "cmp_mtytn0ha_gsllhdz",
+      "missionId": "msn_mtytn0ea_vhnkos5",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T20:12:10.368Z"
+    },
+    {
+      "id": "cmp_mtytn0m6_lfrng17",
+      "missionId": "msn_mtytn0hz_hw1vvxk",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T20:12:10.521Z"
+    },
+    {
+      "id": "cmp_mtytn0qj_8t7jfbz",
+      "missionId": "msn_mtytn0mz_nhta109",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T20:12:10.697Z"
+    },
+    {
+      "id": "cmp_mtytn0uq_dpw7snt",
+      "missionId": "msn_mtytn0r9_yh07fkp",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T20:12:10.855Z"
     }
   ],
   "worldProgress": [
@@ -5732,6 +6041,27 @@
       "corruption": 24,
       "createdAt": "2026-09-12T19:50:44.357Z",
       "updatedAt": "2026-09-12T19:50:46.002Z"
+    },
+    {
+      "id": "wp_mtytmmto_r9zyvdr",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "corruption": 60,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:53.142Z"
+    },
+    {
+      "id": "wp_mtytmn2c_bie6hlb",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "corruption": 100,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wp_mtytmzqp_rfupqml",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "corruption": 24,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
     }
   ],
   "worldAreaProgress": [
@@ -7678,6 +8008,168 @@
       "restorationPercent": 0,
       "createdAt": "2026-09-12T19:50:44.357Z",
       "updatedAt": "2026-09-12T19:50:46.002Z"
+    },
+    {
+      "id": "wap_mtytmmto_z1k8jlx",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:52.716Z"
+    },
+    {
+      "id": "wap_mtytmmto_zuwk3tz",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:52.716Z"
+    },
+    {
+      "id": "wap_mtytmmto_vb8ja8h",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:52.716Z"
+    },
+    {
+      "id": "wap_mtytmmto_6syzhtg",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:52.716Z"
+    },
+    {
+      "id": "wap_mtytmmto_4ty9tw9",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:52.716Z"
+    },
+    {
+      "id": "wap_mtytmmto_1k52hd0",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:52.716Z",
+      "updatedAt": "2026-09-12T20:11:52.716Z"
+    },
+    {
+      "id": "wap_mtytmn2c_oykg7w9",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wap_mtytmn2c_oghkht6",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wap_mtytmn2c_8aj174g",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wap_mtytmn2c_z1vkeo1",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wap_mtytmn2c_un1b5rl",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wap_mtytmn2c_19tp7sa",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:11:53.028Z",
+      "updatedAt": "2026-09-12T20:11:53.028Z"
+    },
+    {
+      "id": "wap_mtytmzqp_6cylaw9",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wap_mtytmzqp_2pqcut2",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": true,
+      "restorationPercent": 12,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wap_mtytmzqp_d72s40t",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": true,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wap_mtytmzqp_kgkcu0a",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": true,
+      "restorationPercent": 50,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wap_mtytmzqp_oq2v4rg",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "areaKey": "STILLWATER",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wap_mtytmzqp_v3sasu2",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:12:09.457Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
     }
   ],
   "bossProgress": [
@@ -9264,6 +9756,138 @@
       "defeatedAt": null,
       "createdAt": "2026-09-12T19:50:44.357Z",
       "updatedAt": "2026-09-12T19:50:44.357Z"
+    },
+    {
+      "id": "bp_mtytmmtp_1xim1kt",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:52.717Z",
+      "updatedAt": "2026-09-12T20:11:52.717Z"
+    },
+    {
+      "id": "bp_mtytmmtp_z4wsr7s",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:52.717Z",
+      "updatedAt": "2026-09-12T20:11:52.717Z"
+    },
+    {
+      "id": "bp_mtytmmtp_madkxux",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:52.717Z",
+      "updatedAt": "2026-09-12T20:11:52.717Z"
+    },
+    {
+      "id": "bp_mtytmmtp_nm66gxh",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:52.717Z",
+      "updatedAt": "2026-09-12T20:11:52.717Z"
+    },
+    {
+      "id": "bp_mtytmn2d_7j3l94e",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:53.029Z",
+      "updatedAt": "2026-09-12T20:11:53.029Z"
+    },
+    {
+      "id": "bp_mtytmn2d_swif4td",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:53.029Z",
+      "updatedAt": "2026-09-12T20:11:53.029Z"
+    },
+    {
+      "id": "bp_mtytmn2d_w4ezsel",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:53.029Z",
+      "updatedAt": "2026-09-12T20:11:53.029Z"
+    },
+    {
+      "id": "bp_mtytmn2d_f8ip1gt",
+      "userId": "usr_mtytmn0p_ovaecxt",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:11:53.029Z",
+      "updatedAt": "2026-09-12T20:11:53.029Z"
+    },
+    {
+      "id": "bp_mtytmzqp_8k0w3y4",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 0,
+      "maxHp": 500,
+      "isDefeated": true,
+      "defeatedAt": "2026-09-12T20:12:10.855Z",
+      "createdAt": "2026-09-12T20:12:09.458Z",
+      "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "bp_mtytmzqq_1vjrq1n",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:12:09.458Z",
+      "updatedAt": "2026-09-12T20:12:09.458Z"
+    },
+    {
+      "id": "bp_mtytmzqq_j62atx5",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:12:09.458Z",
+      "updatedAt": "2026-09-12T20:12:09.458Z"
+    },
+    {
+      "id": "bp_mtytmzqq_00ymicv",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:12:09.458Z",
+      "updatedAt": "2026-09-12T20:12:09.458Z"
     }
   ],
   "items": [
@@ -9682,6 +10306,84 @@
       "isEquipped": false,
       "acquiredAt": "2026-09-12T18:30:31.435Z",
       "updatedAt": "2026-09-12T18:30:31.435Z",
+      "item": {
+        "id": "itm_focus_tonic",
+        "key": "FOCUS_TONIC",
+        "name": "FOCUS TONIC",
+        "description": "A temporary energetic charge for intense focus sessions.",
+        "category": "CONSUMABLE",
+        "rarity": "COMMON",
+        "price": 50,
+        "icon": "Zap",
+        "effectType": "FOCUS_BOOST",
+        "effectValue": 2,
+        "slot": null,
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtytmmus_38xkk5p",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "itemId": "itm_stable_circuit",
+      "quantity": 1,
+      "isEquipped": true,
+      "acquiredAt": "2026-09-12T20:11:52.747Z",
+      "updatedAt": "2026-09-12T20:11:53.075Z",
+      "item": {
+        "id": "itm_stable_circuit",
+        "key": "STABLE_CIRCUIT",
+        "name": "STABLE CIRCUIT",
+        "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+        "category": "EQUIPMENT",
+        "rarity": "COMMON",
+        "price": 75,
+        "icon": "Cpu",
+        "effectType": "STABILITY_BOOST",
+        "effectValue": 3,
+        "slot": "FOCUS",
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtytmn7q_uhly2j9",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "itemId": "itm_memory_shard",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T20:11:53.214Z",
+      "updatedAt": "2026-09-12T20:11:53.300Z",
+      "item": {
+        "id": "itm_memory_shard",
+        "key": "MEMORY_SHARD",
+        "name": "MEMORY SHARD",
+        "description": "A crystallized data fragment recovered from the restored Knowledge Forest.",
+        "category": "EQUIPMENT",
+        "rarity": "RARE",
+        "price": 200,
+        "icon": "Brain",
+        "effectType": "MIND_BOOST",
+        "effectValue": 5,
+        "slot": "MIND",
+        "requiredCorruption": 70,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtytmncg_egewbl9",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "itemId": "itm_focus_tonic",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T20:11:53.385Z",
+      "updatedAt": "2026-09-12T20:11:53.385Z",
       "item": {
         "id": "itm_focus_tonic",
         "key": "FOCUS_TONIC",
@@ -11267,6 +11969,114 @@
       "itemId": null,
       "description": "Reward for clearing mission: Final Strike Phase 5",
       "createdAt": "2026-09-12T19:50:45.962Z"
+    },
+    {
+      "id": "etx_mtytmmus_tuspc98",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "type": "PURCHASE",
+      "amount": -75,
+      "itemId": "itm_stable_circuit",
+      "description": "Acquired STABLE CIRCUIT from The Arcade",
+      "createdAt": "2026-09-12T20:11:52.747Z"
+    },
+    {
+      "id": "etx_mtytmn7r_ntr6mmf",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "type": "PURCHASE",
+      "amount": -200,
+      "itemId": "itm_memory_shard",
+      "description": "Acquired MEMORY SHARD from The Arcade",
+      "createdAt": "2026-09-12T20:11:53.214Z"
+    },
+    {
+      "id": "etx_mtytmnch_afc2qqn",
+      "userId": "usr_mtytmmop_twxx8s3",
+      "type": "PURCHASE",
+      "amount": -50,
+      "itemId": "itm_focus_tonic",
+      "description": "Acquired FOCUS TONIC from The Arcade",
+      "createdAt": "2026-09-12T20:11:53.385Z"
+    },
+    {
+      "id": "etx_mtytmzxf_3k4r7y7",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MILESTONE_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Milestone Unlocked: FIRST SIGNAL",
+      "createdAt": "2026-09-12T20:12:09.589Z"
+    },
+    {
+      "id": "etx_mtytmzxf_np8yerj",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Read 10 pages of OS architecture",
+      "createdAt": "2026-09-12T20:12:09.589Z"
+    },
+    {
+      "id": "etx_mtytn02v_861qrgt",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 20,
+      "itemId": null,
+      "description": "Reward for clearing mission: 30-minute deep focus sprint",
+      "createdAt": "2026-09-12T20:12:09.845Z"
+    },
+    {
+      "id": "etx_mtytn07v_wjowtm8",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Ship production microservice",
+      "createdAt": "2026-09-12T20:12:10.026Z"
+    },
+    {
+      "id": "etx_mtytn0d8_7fo3f79",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 1",
+      "createdAt": "2026-09-12T20:12:10.203Z"
+    },
+    {
+      "id": "etx_mtytn0ha_969a4oa",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 2",
+      "createdAt": "2026-09-12T20:12:10.368Z"
+    },
+    {
+      "id": "etx_mtytn0m6_cwvd29c",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 3",
+      "createdAt": "2026-09-12T20:12:10.521Z"
+    },
+    {
+      "id": "etx_mtytn0qj_tp5p2s1",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 4",
+      "createdAt": "2026-09-12T20:12:10.697Z"
+    },
+    {
+      "id": "etx_mtytn0uq_5c9ozf9",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 5",
+      "createdAt": "2026-09-12T20:12:10.855Z"
     }
   ],
   "milestones": [
@@ -11612,6 +12422,16 @@
       "lastActiveDate": "2026-09-12T19:50:45.962Z",
       "createdAt": "2026-09-12T19:50:44.672Z",
       "updatedAt": "2026-09-12T19:50:45.962Z"
+    },
+    {
+      "id": "str_mtytmzxf_p37ntya",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "currentStreak": 1,
+      "longestStreak": 1,
+      "totalActiveDays": 1,
+      "lastActiveDate": "2026-09-12T20:12:10.855Z",
+      "createdAt": "2026-09-12T20:12:09.589Z",
+      "updatedAt": "2026-09-12T20:12:10.855Z"
     }
   ],
   "dailyActivities": [
@@ -11839,6 +12659,15 @@
       "xpEarned": 780,
       "creditsEarned": 390,
       "createdAt": "2026-09-12T19:50:44.672Z"
+    },
+    {
+      "id": "act_mtytmzxf_9fgcuz0",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "date": "2026-09-12",
+      "missionsCompleted": 8,
+      "xpEarned": 780,
+      "creditsEarned": 390,
+      "createdAt": "2026-09-12T20:12:09.589Z"
     }
   ],
   "userMilestones": [
@@ -11991,6 +12820,12 @@
       "userId": "usr_mtysvg2u_gpkpsd3",
       "milestoneId": "mls_first_signal",
       "unlockedAt": "2026-09-12T19:50:44.672Z"
+    },
+    {
+      "id": "uml_mtytmzxf_ze0go3a",
+      "userId": "usr_mtytmzp4_wg3h7nn",
+      "milestoneId": "mls_first_signal",
+      "unlockedAt": "2026-09-12T20:12:09.589Z"
     }
   ],
   "comebackChallenges": [
@@ -13011,6 +13846,39 @@
         "bossDamageBonus": 0,
         "rarity": "COMMON",
         "loreId": null,
+        "createdAt": "2026-09-12T18:21:51.276Z",
+        "updatedAt": "2026-09-12T18:21:51.276Z"
+      }
+    },
+    {
+      "id": "uwe_mtyugzq4_4pqcdsv",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "worldEventId": "we_iron_wake",
+      "status": "ACTIVE",
+      "progress": 0,
+      "requiredProgress": 3,
+      "completed": false,
+      "rewardClaimed": false,
+      "startsAt": "2026-09-12T20:35:29.097Z",
+      "expiresAt": "2026-09-13T10:35:29.097Z",
+      "completedAt": null,
+      "createdAt": "2026-09-12T20:35:29.097Z",
+      "updatedAt": "2026-09-12T20:35:29.097Z",
+      "worldEvent": {
+        "id": "we_iron_wake",
+        "key": "IRON_WAKE",
+        "title": "IRON WAKE",
+        "description": "Sub-surface seismic tremors indicate entity mobilization beneath the boundary. Somatic rigor channels defensive kinetic energy.",
+        "loreSnippet": "Something beneath the boundary has started moving.",
+        "targetAttribute": "BODY",
+        "targetArea": "WATCHTOWER",
+        "requiredCompletions": 3,
+        "rewardCredits": 70,
+        "rewardXp": 45,
+        "corruptionChange": -2,
+        "bossDamageBonus": 40,
+        "rarity": "COMMON",
+        "loreId": "LOG_19",
         "createdAt": "2026-09-12T18:21:51.276Z",
         "updatedAt": "2026-09-12T18:21:51.276Z"
       }
