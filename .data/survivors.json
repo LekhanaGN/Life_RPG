@@ -135,6 +135,38 @@
       "username": "Malory",
       "createdAt": "2026-09-12T16:40:01.946Z",
       "updatedAt": "2026-09-12T16:40:01.946Z"
+    },
+    {
+      "id": "usr_mtynudvy_bbnb8wl",
+      "email": "survivor_p6_1789234196679@theotherside.world",
+      "passwordHash": "mock_hash_p6",
+      "username": "Lyra",
+      "createdAt": "2026-09-12T17:29:56.686Z",
+      "updatedAt": "2026-09-12T17:29:56.686Z"
+    },
+    {
+      "id": "usr_mtynue3l_w97kawc",
+      "email": "intruder_p6_1789234196953@badactor.net",
+      "passwordHash": "hash_malory",
+      "username": "Malory",
+      "createdAt": "2026-09-12T17:29:56.961Z",
+      "updatedAt": "2026-09-12T17:29:56.961Z"
+    },
+    {
+      "id": "usr_mtyogxzy_15o2ayu",
+      "email": "survivor_p7_1789235249158@theotherside.world",
+      "passwordHash": "mock_hash_p7",
+      "username": "Kaelen",
+      "createdAt": "2026-09-12T17:47:29.182Z",
+      "updatedAt": "2026-09-12T17:47:29.182Z"
+    },
+    {
+      "id": "usr_mtyojduy_ojjy8z8",
+      "email": "survivor_p7_1789235363037@theotherside.world",
+      "passwordHash": "mock_hash_p7",
+      "username": "Kaelen",
+      "createdAt": "2026-09-12T17:49:23.050Z",
+      "updatedAt": "2026-09-12T17:49:23.050Z"
     }
   ],
   "characters": [
@@ -159,16 +191,16 @@
       "userId": "usr_mtyg5kvb_pata3wy",
       "name": "lekana",
       "archetype": "EXPLORER",
-      "level": 1,
-      "xp": 0,
-      "credits": 0,
-      "mind": 10,
-      "body": 10,
+      "level": 2,
+      "xp": 255,
+      "credits": 80,
+      "mind": 15,
+      "body": 15,
       "focus": 10,
-      "spirit": 10,
+      "spirit": 11,
       "connection": 10,
       "createdAt": "2026-09-12T13:55:19.479Z",
-      "updatedAt": "2026-09-12T13:55:19.479Z"
+      "updatedAt": "2026-09-12T17:59:02.200Z"
     },
     {
       "id": "chr_mtyivu1q_bor0836",
@@ -409,6 +441,70 @@
       "connection": 6,
       "createdAt": "2026-09-12T16:40:01.948Z",
       "updatedAt": "2026-09-12T16:40:01.948Z"
+    },
+    {
+      "id": "chr_mtynudwc_x9u3qqy",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "name": "Lyra",
+      "archetype": "STRATEGIST",
+      "level": 1,
+      "xp": 0,
+      "credits": 250,
+      "mind": 12,
+      "body": 8,
+      "focus": 16,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T17:29:56.700Z",
+      "updatedAt": "2026-09-12T17:29:57.239Z"
+    },
+    {
+      "id": "chr_mtynue3y_zxhl3d8",
+      "userId": "usr_mtynue3l_w97kawc",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T17:29:56.974Z",
+      "updatedAt": "2026-09-12T17:29:56.974Z"
+    },
+    {
+      "id": "chr_mtyogy0l_qcb7374",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "name": "Kaelen",
+      "archetype": "SENTINEL",
+      "level": 1,
+      "xp": 35,
+      "credits": 20,
+      "mind": 8,
+      "body": 15,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 8,
+      "createdAt": "2026-09-12T17:47:29.205Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "chr_mtyojdvf_b2ctxl4",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "name": "Kaelen",
+      "archetype": "SENTINEL",
+      "level": 2,
+      "xp": 155,
+      "credits": 130,
+      "mind": 10,
+      "body": 16,
+      "focus": 11,
+      "spirit": 12,
+      "connection": 8,
+      "createdAt": "2026-09-12T17:49:23.067Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
     }
   ],
   "missions": [
@@ -438,7 +534,9 @@
       "isActive": true,
       "status": "ACTIVE",
       "createdAt": "2026-09-12T14:13:45.517Z",
-      "updatedAt": "2026-09-12T14:13:45.517Z"
+      "updatedAt": "2026-09-12T17:18:45.540Z",
+      "lastCompletedAt": "2026-09-12T17:18:45.522Z",
+      "isCompletedToday": true
     },
     {
       "id": "msn_mtyhtkll_txgzvvr",
@@ -452,7 +550,9 @@
       "isActive": true,
       "status": "ACTIVE",
       "createdAt": "2026-09-12T14:41:21.033Z",
-      "updatedAt": "2026-09-12T14:41:21.033Z"
+      "updatedAt": "2026-09-12T17:18:37.576Z",
+      "lastCompletedAt": "2026-09-12T17:18:37.561Z",
+      "isCompletedToday": true
     },
     {
       "id": "msn_mtyj6m6m_aoladco",
@@ -853,6 +953,208 @@
       "updatedAt": "2026-09-12T16:40:01.939Z",
       "lastCompletedAt": "2026-09-12T16:40:01.939Z",
       "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtynkx35_vo41t8l",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "title": "solve leetcode",
+      "description": "finish 4 sums",
+      "category": "MIND",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:22:35.010Z",
+      "updatedAt": "2026-09-12T17:22:45.799Z",
+      "lastCompletedAt": "2026-09-12T17:22:45.771Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtynlqwi_9zdq768",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "title": "strengthtraining",
+      "description": "workout for 2hrs",
+      "category": "BODY",
+      "difficulty": "HARD",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:23:13.650Z",
+      "updatedAt": "2026-09-12T17:23:19.796Z",
+      "lastCompletedAt": "2026-09-12T17:23:19.737Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyogy11_7wxjsv5",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "title": "Morning Physical Drill",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:47:29.221Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z",
+      "lastCompletedAt": "2026-09-12T17:47:29.538Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyogy1i_r06liqa",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "title": "Review Sensor Telemetry",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:47:29.238Z",
+      "updatedAt": "2026-09-12T17:47:29.238Z"
+    },
+    {
+      "id": "msn_mtyogy1w_v79h4v5",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "title": "Calibrate Radio Antenna",
+      "description": null,
+      "category": "FOCUS",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:47:29.252Z",
+      "updatedAt": "2026-09-12T17:47:29.252Z"
+    },
+    {
+      "id": "msn_mtyojdvt_u8il5p8",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Morning Physical Drill",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:49:23.081Z",
+      "updatedAt": "2026-09-12T17:49:23.650Z",
+      "lastCompletedAt": "2026-09-12T17:49:23.636Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyojdw7_ny45mai",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Review Sensor Telemetry",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:49:23.095Z",
+      "updatedAt": "2026-09-12T17:49:23.679Z",
+      "lastCompletedAt": "2026-09-12T17:49:23.668Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyojdww_uvggku8",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Calibrate Radio Antenna",
+      "description": null,
+      "category": "FOCUS",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:49:23.120Z",
+      "updatedAt": "2026-09-12T17:49:23.120Z"
+    },
+    {
+      "id": "msn_mtyojecu_jgcuzrs",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Day 2 Patrol",
+      "description": null,
+      "category": "SPIRIT",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:49:23.694Z",
+      "updatedAt": "2026-09-12T17:49:23.728Z",
+      "lastCompletedAt": "2026-09-12T17:49:23.712Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyojeet_dy8a24d",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Comeback Task 1",
+      "description": null,
+      "category": "FOCUS",
+      "difficulty": "EASY",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T17:49:23.765Z",
+      "updatedAt": "2026-09-12T17:49:23.795Z",
+      "lastCompletedAt": "2026-09-12T17:49:23.783Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyojefu_im9h5jx",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Comeback Task 2",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EASY",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T17:49:23.802Z",
+      "updatedAt": "2026-09-12T17:49:23.838Z",
+      "lastCompletedAt": "2026-09-12T17:49:23.823Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyojeh2_99hpi9e",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "title": "Comeback Task 3",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EASY",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T17:49:23.846Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z",
+      "lastCompletedAt": "2026-09-12T17:49:23.870Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyotntp_4v55ppx",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "title": "meditation",
+      "description": "meditate 10 mins everyday",
+      "category": "SPIRIT",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T17:57:22.525Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z",
+      "lastCompletedAt": "2026-09-12T17:59:02.111Z",
+      "isCompletedToday": true
     }
   ],
   "missionCompletions": [
@@ -1055,6 +1357,102 @@
       "xpEarned": 120,
       "creditsEarned": 60,
       "completedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "cmp_mtynftvs_ksnlsrb",
+      "missionId": "msn_mtyhtkll_txgzvvr",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T17:18:37.561Z"
+    },
+    {
+      "id": "cmp_mtyng010_3f1ofxu",
+      "missionId": "msn_mtygu371_vr7gqih",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "xpEarned": 70,
+      "creditsEarned": 35,
+      "completedAt": "2026-09-12T17:18:45.522Z"
+    },
+    {
+      "id": "cmp_mtynl5ev_rdq5327",
+      "missionId": "msn_mtynkx35_vo41t8l",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T17:22:45.771Z"
+    },
+    {
+      "id": "cmp_mtynlvn8_c2uomvr",
+      "missionId": "msn_mtynlqwi_9zdq768",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "xpEarned": 70,
+      "creditsEarned": 35,
+      "completedAt": "2026-09-12T17:23:19.737Z"
+    },
+    {
+      "id": "cmp_mtyogya6_788a6gf",
+      "missionId": "msn_mtyogy11_7wxjsv5",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:47:29.538Z"
+    },
+    {
+      "id": "cmp_mtyojebm_ff1ucr4",
+      "missionId": "msn_mtyojdvt_u8il5p8",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:49:23.636Z"
+    },
+    {
+      "id": "cmp_mtyojecf_dv385pv",
+      "missionId": "msn_mtyojdw7_ny45mai",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:49:23.668Z"
+    },
+    {
+      "id": "cmp_mtyojeds_6j24sln",
+      "missionId": "msn_mtyojecu_jgcuzrs",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T17:49:23.712Z"
+    },
+    {
+      "id": "cmp_mtyojefn_ewxjz76",
+      "missionId": "msn_mtyojeet_dy8a24d",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:49:23.783Z"
+    },
+    {
+      "id": "cmp_mtyojegu_xa5b2lu",
+      "missionId": "msn_mtyojefu_im9h5jx",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:49:23.823Z"
+    },
+    {
+      "id": "cmp_mtyojei5_mw5dd2t",
+      "missionId": "msn_mtyojeh2_99hpi9e",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:49:23.870Z"
+    },
+    {
+      "id": "cmp_mtyovsqg_cindxq3",
+      "missionId": "msn_mtyotntp_4v55ppx",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T17:59:02.111Z"
     }
   ],
   "worldProgress": [
@@ -1106,6 +1504,41 @@
       "corruption": 24,
       "createdAt": "2026-09-12T16:40:01.875Z",
       "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wp_mtynets7_5m4yaj4",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "corruption": 78,
+      "createdAt": "2026-09-12T17:17:50.791Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wp_mtynudxm_tmjuw89",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "corruption": 60,
+      "createdAt": "2026-09-12T17:29:56.746Z",
+      "updatedAt": "2026-09-12T17:29:57.044Z"
+    },
+    {
+      "id": "wp_mtynue4c_lhuk9b4",
+      "userId": "usr_mtynue3l_w97kawc",
+      "corruption": 100,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wp_mtyogy9o_mjabffr",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "corruption": 98,
+      "createdAt": "2026-09-12T17:47:29.532Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wp_mtyojeb3_6uc8qeh",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "corruption": 81,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
     }
   ],
   "worldAreaProgress": [
@@ -1486,6 +1919,276 @@
       "restorationPercent": 0,
       "createdAt": "2026-09-12T16:40:01.875Z",
       "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wap_mtynetsh_0mfr770",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:17:50.801Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wap_mtynetsh_cr1xwna",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": true,
+      "restorationPercent": 10,
+      "createdAt": "2026-09-12T17:17:50.801Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wap_mtynetsh_91k8i9e",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:17:50.801Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wap_mtynetsh_n3sr0gd",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 10,
+      "createdAt": "2026-09-12T17:17:50.801Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wap_mtynetsh_7nsm3nm",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 2,
+      "createdAt": "2026-09-12T17:17:50.801Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wap_mtynetsh_e17q9xd",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:17:50.801Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "wap_mtynudxn_2zqdicq",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "wap_mtynudxn_b4tvm0c",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "wap_mtynudxn_ju1kb0d",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "wap_mtynudxn_vw2yt69",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "wap_mtynudxn_d74gxwd",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "wap_mtynudxn_d4utrin",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "wap_mtynue4c_xr5xrc2",
+      "userId": "usr_mtynue3l_w97kawc",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wap_mtynue4c_l8tmyoy",
+      "userId": "usr_mtynue3l_w97kawc",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wap_mtynue4c_53khdp8",
+      "userId": "usr_mtynue3l_w97kawc",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wap_mtynue4c_uot3etr",
+      "userId": "usr_mtynue3l_w97kawc",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wap_mtynue4c_5xepb74",
+      "userId": "usr_mtynue3l_w97kawc",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wap_mtynue4c_7duq5qd",
+      "userId": "usr_mtynue3l_w97kawc",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "wap_mtyogy9p_77c5cbn",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wap_mtyogy9p_4s9rcoh",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wap_mtyogy9p_mch71g3",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wap_mtyogy9p_deeqq9h",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 2,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wap_mtyogy9p_6zds1gw",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wap_mtyogy9p_60t0rjg",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "wap_mtyojeb3_u4v9txg",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
+    },
+    {
+      "id": "wap_mtyojeb3_ld5yssf",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
+    },
+    {
+      "id": "wap_mtyojeb3_oj9porm",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 2,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
+    },
+    {
+      "id": "wap_mtyojeb3_lx9ntmh",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
+    },
+    {
+      "id": "wap_mtyojeb3_klcodx5",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
+    },
+    {
+      "id": "wap_mtyojeb3_uq6eany",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
     }
   ],
   "bossProgress": [
@@ -1796,6 +2499,226 @@
       "defeatedAt": null,
       "createdAt": "2026-09-12T16:40:01.876Z",
       "updatedAt": "2026-09-12T16:40:01.876Z"
+    },
+    {
+      "id": "bp_mtynetsh_uorjkty",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 350,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:17:50.802Z",
+      "updatedAt": "2026-09-12T17:59:02.200Z"
+    },
+    {
+      "id": "bp_mtynetsi_dv5q7fk",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:17:50.802Z",
+      "updatedAt": "2026-09-12T17:17:50.802Z"
+    },
+    {
+      "id": "bp_mtynetsi_7zxhdiz",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:17:50.802Z",
+      "updatedAt": "2026-09-12T17:17:50.802Z"
+    },
+    {
+      "id": "bp_mtynetsi_e0ydr2y",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:17:50.802Z",
+      "updatedAt": "2026-09-12T17:17:50.802Z"
+    },
+    {
+      "id": "bp_mtynudxn_cx5jllv",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "bp_mtynudxn_p8fb7od",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "bp_mtynudxn_kkwv3xp",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "bp_mtynudxn_tg7d4a0",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.747Z",
+      "updatedAt": "2026-09-12T17:29:56.747Z"
+    },
+    {
+      "id": "bp_mtynue4c_23inlle",
+      "userId": "usr_mtynue3l_w97kawc",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "bp_mtynue4c_ptoyvbv",
+      "userId": "usr_mtynue3l_w97kawc",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "bp_mtynue4c_9fneveb",
+      "userId": "usr_mtynue3l_w97kawc",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "bp_mtynue4c_zul3w7n",
+      "userId": "usr_mtynue3l_w97kawc",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:29:56.988Z",
+      "updatedAt": "2026-09-12T17:29:56.988Z"
+    },
+    {
+      "id": "bp_mtyogy9p_lp8lgjw",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 490,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.550Z"
+    },
+    {
+      "id": "bp_mtyogy9p_b5sfph1",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.533Z"
+    },
+    {
+      "id": "bp_mtyogy9p_qd61pmu",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.533Z"
+    },
+    {
+      "id": "bp_mtyogy9p_hyua7r8",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:47:29.533Z",
+      "updatedAt": "2026-09-12T17:47:29.533Z"
+    },
+    {
+      "id": "bp_mtyojeb3_jzpdkgp",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 425,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:49:23.631Z",
+      "updatedAt": "2026-09-12T17:49:23.885Z"
+    },
+    {
+      "id": "bp_mtyojeb4_pvt38gs",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:49:23.632Z",
+      "updatedAt": "2026-09-12T17:49:23.632Z"
+    },
+    {
+      "id": "bp_mtyojeb4_tc3nihu",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:49:23.632Z",
+      "updatedAt": "2026-09-12T17:49:23.632Z"
+    },
+    {
+      "id": "bp_mtyojeb4_n6z5o2p",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T17:49:23.632Z",
+      "updatedAt": "2026-09-12T17:49:23.632Z"
     }
   ],
   "items": [
@@ -2049,6 +2972,110 @@
         "createdAt": "2026-09-12T16:29:59.039Z",
         "updatedAt": "2026-09-12T16:29:59.039Z"
       }
+    },
+    {
+      "id": "inv_mtynhwu1_a19jjuy",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "itemId": "itm_focus_tonic",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T17:20:14.497Z",
+      "updatedAt": "2026-09-12T17:20:14.497Z",
+      "item": {
+        "id": "itm_focus_tonic",
+        "key": "FOCUS_TONIC",
+        "name": "FOCUS TONIC",
+        "description": "A temporary energetic charge for intense focus sessions.",
+        "category": "CONSUMABLE",
+        "rarity": "COMMON",
+        "price": 50,
+        "icon": "Zap",
+        "effectType": "FOCUS_BOOST",
+        "effectValue": 2,
+        "slot": null,
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtynudzh_j5sc1g8",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "itemId": "itm_stable_circuit",
+      "quantity": 1,
+      "isEquipped": true,
+      "acquiredAt": "2026-09-12T17:29:56.810Z",
+      "updatedAt": "2026-09-12T17:29:57.005Z",
+      "item": {
+        "id": "itm_stable_circuit",
+        "key": "STABLE_CIRCUIT",
+        "name": "STABLE CIRCUIT",
+        "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+        "category": "EQUIPMENT",
+        "rarity": "COMMON",
+        "price": 75,
+        "icon": "Cpu",
+        "effectType": "STABILITY_BOOST",
+        "effectValue": 3,
+        "slot": "FOCUS",
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtynue71_tdylc4b",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "itemId": "itm_memory_shard",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T17:29:57.082Z",
+      "updatedAt": "2026-09-12T17:29:57.135Z",
+      "item": {
+        "id": "itm_memory_shard",
+        "key": "MEMORY_SHARD",
+        "name": "MEMORY SHARD",
+        "description": "A crystallized data fragment recovered from the restored Knowledge Forest.",
+        "category": "EQUIPMENT",
+        "rarity": "RARE",
+        "price": 200,
+        "icon": "Brain",
+        "effectType": "MIND_BOOST",
+        "effectValue": 5,
+        "slot": "MIND",
+        "requiredCorruption": 70,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtynuebl_16shn71",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "itemId": "itm_focus_tonic",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T17:29:57.239Z",
+      "updatedAt": "2026-09-12T17:29:57.239Z",
+      "item": {
+        "id": "itm_focus_tonic",
+        "key": "FOCUS_TONIC",
+        "name": "FOCUS TONIC",
+        "description": "A temporary energetic charge for intense focus sessions.",
+        "category": "CONSUMABLE",
+        "rarity": "COMMON",
+        "price": 50,
+        "icon": "Zap",
+        "effectType": "FOCUS_BOOST",
+        "effectValue": 2,
+        "slot": null,
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
     }
   ],
   "economyTransactions": [
@@ -2168,6 +3195,374 @@
       "itemId": "itm_stable_circuit",
       "description": "Acquired STABLE CIRCUIT from The Arcade",
       "createdAt": "2026-09-12T16:42:12.342Z"
+    },
+    {
+      "id": "etx_mtynftvs_dyw69f2",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MISSION_REWARD",
+      "amount": 20,
+      "itemId": null,
+      "description": "Reward for clearing mission: strengthtraining",
+      "createdAt": "2026-09-12T17:18:37.561Z"
+    },
+    {
+      "id": "etx_mtyng010_1uvgn6h",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MISSION_REWARD",
+      "amount": 35,
+      "itemId": null,
+      "description": "Reward for clearing mission: Cognitive Fortification (Read 20 Pages)",
+      "createdAt": "2026-09-12T17:18:45.522Z"
+    },
+    {
+      "id": "etx_mtynhwu1_madkqin",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "PURCHASE",
+      "amount": -50,
+      "itemId": "itm_focus_tonic",
+      "description": "Acquired FOCUS TONIC from The Arcade",
+      "createdAt": "2026-09-12T17:20:14.497Z"
+    },
+    {
+      "id": "etx_mtynl5ev_x8pn8b6",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MISSION_REWARD",
+      "amount": 20,
+      "itemId": null,
+      "description": "Reward for clearing mission: solve leetcode",
+      "createdAt": "2026-09-12T17:22:45.771Z"
+    },
+    {
+      "id": "etx_mtynlvn8_9kqjs3k",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MISSION_REWARD",
+      "amount": 35,
+      "itemId": null,
+      "description": "Reward for clearing mission: strengthtraining",
+      "createdAt": "2026-09-12T17:23:19.737Z"
+    },
+    {
+      "id": "etx_mtynudzh_s4v58wf",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "type": "PURCHASE",
+      "amount": -75,
+      "itemId": "itm_stable_circuit",
+      "description": "Acquired STABLE CIRCUIT from The Arcade",
+      "createdAt": "2026-09-12T17:29:56.810Z"
+    },
+    {
+      "id": "etx_mtynue71_mn8c5q1",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "type": "PURCHASE",
+      "amount": -200,
+      "itemId": "itm_memory_shard",
+      "description": "Acquired MEMORY SHARD from The Arcade",
+      "createdAt": "2026-09-12T17:29:57.082Z"
+    },
+    {
+      "id": "etx_mtynuebl_8yte6re",
+      "userId": "usr_mtynudvy_bbnb8wl",
+      "type": "PURCHASE",
+      "amount": -50,
+      "itemId": "itm_focus_tonic",
+      "description": "Acquired FOCUS TONIC from The Arcade",
+      "createdAt": "2026-09-12T17:29:57.239Z"
+    },
+    {
+      "id": "etx_mtyogya6_jcnea3n",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "type": "MILESTONE_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Milestone Unlocked: FIRST SIGNAL",
+      "createdAt": "2026-09-12T17:47:29.538Z"
+    },
+    {
+      "id": "etx_mtyogya6_0fuk88q",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Morning Physical Drill",
+      "createdAt": "2026-09-12T17:47:29.538Z"
+    },
+    {
+      "id": "etx_mtyojebm_odimuq9",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MILESTONE_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Milestone Unlocked: FIRST SIGNAL",
+      "createdAt": "2026-09-12T17:49:23.636Z"
+    },
+    {
+      "id": "etx_mtyojebm_6jfw4rs",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Morning Physical Drill",
+      "createdAt": "2026-09-12T17:49:23.636Z"
+    },
+    {
+      "id": "etx_mtyojecf_ncplknu",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Review Sensor Telemetry",
+      "createdAt": "2026-09-12T17:49:23.668Z"
+    },
+    {
+      "id": "etx_mtyojeds_dsr9h8v",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MISSION_REWARD",
+      "amount": 20,
+      "itemId": null,
+      "description": "Reward for clearing mission: Day 2 Patrol",
+      "createdAt": "2026-09-12T17:49:23.712Z"
+    },
+    {
+      "id": "etx_mtyojefn_vlwc2wv",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Comeback Task 1",
+      "createdAt": "2026-09-12T17:49:23.783Z"
+    },
+    {
+      "id": "etx_mtyojegu_iny8leq",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Comeback Task 2",
+      "createdAt": "2026-09-12T17:49:23.823Z"
+    },
+    {
+      "id": "etx_mtyojei5_kifj55b",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "COMEBACK_REWARD",
+      "amount": 50,
+      "itemId": null,
+      "description": "Comeback Protocol Completed: Signal Restored",
+      "createdAt": "2026-09-12T17:49:23.870Z"
+    },
+    {
+      "id": "etx_mtyojei5_zdy0dp3",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Comeback Task 3",
+      "createdAt": "2026-09-12T17:49:23.870Z"
+    },
+    {
+      "id": "etx_mtyovsqi_dklnfel",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MILESTONE_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Milestone Unlocked: FIRST SIGNAL",
+      "createdAt": "2026-09-12T17:59:02.111Z"
+    },
+    {
+      "id": "etx_mtyovsqg_ivjluaj",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: meditation",
+      "createdAt": "2026-09-12T17:59:02.111Z"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "mls_first_signal",
+      "key": "FIRST_SIGNAL",
+      "name": "FIRST SIGNAL",
+      "description": "Survived your first day on the Right Side.",
+      "loreQuote": "A faint heartbeat cuts through the dimensional noise.",
+      "requirementType": "ACTIVE_DAYS",
+      "requirementValue": 1,
+      "rewardCredits": 10,
+      "rewardXP": 15,
+      "icon": "Radio",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    },
+    {
+      "id": "mls_the_signal_returns",
+      "key": "THE_SIGNAL_RETURNS",
+      "name": "THE SIGNAL RETURNS",
+      "description": "Maintained a 3-day survival streak.",
+      "loreQuote": "The frequencies stabilize. The Other Side takes notice.",
+      "requirementType": "STREAK",
+      "requirementValue": 3,
+      "rewardCredits": 25,
+      "rewardXP": 25,
+      "icon": "Sparkles",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    },
+    {
+      "id": "mls_hold_the_line",
+      "key": "HOLD_THE_LINE",
+      "name": "HOLD THE LINE",
+      "description": "Maintained a 7-day survival streak.",
+      "loreQuote": "One full cycle held against the decay. Resonance shields active.",
+      "requirementType": "STREAK",
+      "requirementValue": 7,
+      "rewardCredits": 75,
+      "rewardXP": 50,
+      "icon": "ShieldAlert",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    },
+    {
+      "id": "mls_no_turning_back",
+      "key": "NO_TURNING_BACK",
+      "name": "NO TURNING BACK",
+      "description": "Maintained a 14-day survival streak.",
+      "loreQuote": "Two unbroken weeks. The Other Side is losing ground.",
+      "requirementType": "STREAK",
+      "requirementValue": 14,
+      "rewardCredits": 150,
+      "rewardXP": 100,
+      "icon": "Flame",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    },
+    {
+      "id": "mls_fortified",
+      "key": "FORTIFIED",
+      "name": "FORTIFIED",
+      "description": "Maintained a 30-day survival streak.",
+      "loreQuote": "A month in the dark, and you shine brighter than the void.",
+      "requirementType": "STREAK",
+      "requirementValue": 30,
+      "rewardCredits": 300,
+      "rewardXP": 200,
+      "icon": "Zap",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    },
+    {
+      "id": "mls_unbreakable",
+      "key": "UNBREAKABLE",
+      "name": "UNBREAKABLE",
+      "description": "Maintained a 60-day survival streak.",
+      "loreQuote": "Sixty rotations. Even the dark void recognizes your existence.",
+      "requirementType": "STREAK",
+      "requirementValue": 60,
+      "rewardCredits": 500,
+      "rewardXP": 300,
+      "icon": "Activity",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    },
+    {
+      "id": "mls_beyond_the_gate",
+      "key": "BEYOND_THE_GATE",
+      "name": "BEYOND THE GATE",
+      "description": "Maintained a 100-day survival streak.",
+      "loreQuote": "The Other Side remembers you. You are no longer surviving; you are reclaiming.",
+      "requirementType": "STREAK",
+      "requirementValue": 100,
+      "rewardCredits": 1000,
+      "rewardXP": 500,
+      "icon": "Compass",
+      "createdAt": "2026-09-12T17:47:29.181Z"
+    }
+  ],
+  "userStreaks": [
+    {
+      "id": "str_mtyogya6_y58xs1r",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "currentStreak": 1,
+      "longestStreak": 1,
+      "totalActiveDays": 1,
+      "lastActiveDate": "2026-09-12T17:47:29.538Z",
+      "createdAt": "2026-09-12T17:47:29.538Z",
+      "updatedAt": "2026-09-12T17:47:29.538Z"
+    },
+    {
+      "id": "str_mtyojebm_jg25gd5",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "currentStreak": 1,
+      "longestStreak": 1,
+      "totalActiveDays": 1,
+      "lastActiveDate": "2026-09-12T17:49:23.870Z",
+      "createdAt": "2026-09-12T17:49:23.636Z",
+      "updatedAt": "2026-09-12T17:49:23.870Z"
+    },
+    {
+      "id": "str_mtyovsqh_tspymxl",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "currentStreak": 1,
+      "longestStreak": 1,
+      "totalActiveDays": 1,
+      "lastActiveDate": "2026-09-12T17:59:02.111Z",
+      "createdAt": "2026-09-12T17:59:02.111Z",
+      "updatedAt": "2026-09-12T17:59:02.111Z"
+    }
+  ],
+  "dailyActivities": [
+    {
+      "id": "act_mtyogya6_qe6q68d",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "date": "2026-09-12",
+      "missionsCompleted": 1,
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "createdAt": "2026-09-12T17:47:29.538Z"
+    },
+    {
+      "id": "act_mtyojebm_js3i4h8",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "date": "2026-09-12",
+      "missionsCompleted": 6,
+      "xpEarned": 140,
+      "creditsEarned": 70,
+      "createdAt": "2026-09-12T17:49:23.636Z"
+    },
+    {
+      "id": "act_mtyovsqh_tp7p7em",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "date": "2026-09-12",
+      "missionsCompleted": 1,
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "createdAt": "2026-09-12T17:59:02.111Z"
+    }
+  ],
+  "userMilestones": [
+    {
+      "id": "uml_mtyogya6_w61gvkj",
+      "userId": "usr_mtyogxzy_15o2ayu",
+      "milestoneId": "mls_first_signal",
+      "unlockedAt": "2026-09-12T17:47:29.538Z"
+    },
+    {
+      "id": "uml_mtyojebm_xpl94dv",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "milestoneId": "mls_first_signal",
+      "unlockedAt": "2026-09-12T17:49:23.636Z"
+    },
+    {
+      "id": "uml_mtyovsqi_ks73dj1",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "milestoneId": "mls_first_signal",
+      "unlockedAt": "2026-09-12T17:59:02.111Z"
+    }
+  ],
+  "comebackChallenges": [
+    {
+      "id": "cmc_mtyojee9_ofr3c30",
+      "userId": "usr_mtyojduy_ojjy8z8",
+      "startedAt": "2026-09-12T17:49:23.740Z",
+      "expiresAt": "2026-09-13T17:49:23.740Z",
+      "missionsRequired": 3,
+      "missionsCompleted": 3,
+      "completed": true,
+      "rewardClaimed": true,
+      "createdAt": "2026-09-12T17:49:23.740Z",
+      "updatedAt": "2026-09-12T17:49:23.870Z"
     }
   ]
 }

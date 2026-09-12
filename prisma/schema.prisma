@@ -14,6 +14,7 @@ model User {
   email           String               @unique
   passwordHash    String
   username        String
+  timezone        String               @default("UTC")
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
   character       Character?
@@ -24,6 +25,10 @@ model User {
   bossProgresses  BossProgress[]
   inventory       InventoryItem[]
   transactions    EconomyTransaction[]
+  streak          UserStreak?
+  dailyActivities DailyActivity[]
+  milestones      UserMilestone[]
+  comebackChallenges ComebackChallenge[]
 
   @@map("users")
 }
@@ -177,3 +182,80 @@ model EconomyTransaction {
   @@index([userId])
   @@map("economy_transactions")
 }
+
+model UserStreak {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStreak   Int       @default(0)
+  longestStreak   Int       @default(0)
+  lastActiveDate  DateTime?
+  totalActiveDays Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("user_streaks")
+}
+
+model DailyActivity {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date              String   // Logical calendar day YYYY-MM-DD
+  missionsCompleted Int      @default(1)
+  xpEarned          Int      @default(0)
+  creditsEarned     Int      @default(0)
+  createdAt         DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@map("daily_activities")
+}
+
+model Milestone {
+  id               String          @id @default(cuid())
+  key              String          @unique
+  name             String
+  description      String
+  loreQuote        String?
+  requirementType  String          // STREAK, ACTIVE_DAYS
+  requirementValue Int
+  rewardCredits    Int             @default(0)
+  rewardXP         Int             @default(0)
+  icon             String          @default("Flame")
+  createdAt        DateTime        @default(now())
+  userMilestones   UserMilestone[]
+
+  @@map("milestones")
+}
+
+model UserMilestone {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestoneId String
+  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  unlockedAt  DateTime  @default(now())
+
+  @@unique([userId, milestoneId])
+  @@index([userId])
+  @@map("user_milestones")
+}
+
+model ComebackChallenge {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startedAt         DateTime  @default(now())
+  expiresAt         DateTime
+  missionsRequired  Int       @default(3)
+  missionsCompleted Int       @default(0)
+  completed         Boolean   @default(false)
+  rewardClaimed     Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("comeback_challenges")
+}
+

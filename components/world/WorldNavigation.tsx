@@ -37,13 +37,9 @@ export function WorldNavigation({
 }: WorldNavigationProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(() => soundscape.getMuted());
   const [crtEnabled, setCrtEnabled] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
-
-  useEffect(() => {
-    setIsMuted(soundscape.getMuted());
-  }, []);
 
   const handleToggleAudio = () => {
     const nextMuted = soundscape.toggleMute();

@@ -75,6 +75,18 @@ export interface ProgressionPayload {
     isUnlocked: boolean;
     newlyUnlockedAreas: string[];
   };
+  streak?: {
+    currentStreak: number;
+    longestStreak: number;
+    totalActiveDays: number;
+    streakAdvanced: boolean;
+    streakBroken: boolean;
+    isFirstDay: boolean;
+    todayActive: boolean;
+  };
+  milestonesUnlocked?: any[];
+  comeback?: any;
+  survivalSecuredToday?: boolean;
 }
 
 export interface MissionDeckProps {
@@ -88,6 +100,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("ALL");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ACTIVE");
   const [activeSection, setActiveSection] = useState<"ACTIVE" | "COMPLETED">("ACTIVE");
+  const [survivalSecuredToday, setSurvivalSecuredToday] = useState<boolean>(false);
 
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -125,7 +138,12 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
       }
 
       const data = await res.json();
-      setMissions(data.missions || []);
+      const loaded = data.missions || [];
+      setMissions(loaded);
+      const isSecured = loaded.some((m: DbMission) => m.isCompletedToday);
+      if (isSecured) {
+        setSurvivalSecuredToday(true);
+      }
     } catch (err) {
       console.error("[MissionDeck Fetch Error]:", err);
       setIsError(true);
@@ -153,7 +171,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
     addToast("success", "MISSION UPDATED");
   };
 
-  // Handle complete mission with multi-stage Phase 5 feedback
+  // Handle complete mission with multi-stage Phase 5 & 7 feedback
   const handleCompleteMission = async (targetMission: DbMission) => {
     soundscape.playHover();
     try {
@@ -191,10 +209,16 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
       if (a?.restorationGained) {
         feedbackMsg += ` | ${a.name} +${a.restorationGained}%`;
       }
+      if (data.streak?.streakAdvanced) {
+        feedbackMsg += ` | SURVIVAL DAY ${data.streak.currentStreak} SECURED`;
+      }
 
       addToast("success", feedbackMsg);
 
-      // 2. Update local mission status
+      // 2. Mark survival secured today immediately
+      setSurvivalSecuredToday(true);
+
+      // 3. Update local mission status
       setMissions((prev) =>
         prev.map((m) =>
           m.id === targetMission.id
@@ -208,7 +232,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
         )
       );
 
-      // 3. Notify parent with complete progression telemetry
+      // 4. Notify parent with complete progression telemetry
       if (onProgressionUpdate && data.character) {
         onProgressionUpdate({
           character: data.character,
@@ -217,6 +241,10 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
           world: data.world,
           boss: data.boss,
           area: data.area,
+          streak: data.streak,
+          milestonesUnlocked: data.milestonesUnlocked,
+          comeback: data.comeback,
+          survivalSecuredToday: true,
         });
       }
     } catch (err) {
@@ -321,13 +349,24 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
             <Compass className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-white text-lg font-cinzel font-bold tracking-widest uppercase">
                 MISSION DECK
               </h3>
               <span className="px-2 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-500/50 text-[10px] font-mono text-cyan-300 font-bold">
                 {activeMissions.length} ACTIVE
               </span>
+              {survivalSecuredToday ? (
+                <span className="px-2.5 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-400/80 text-[10px] font-mono text-cyan-200 font-bold shadow-[0_0_10px_rgba(6,182,212,0.4)] flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-cyan-300" />
+                  TODAY&apos;S SURVIVAL: SECURED ✓
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-xs bg-amber-950/60 border border-amber-500/60 text-[10px] font-mono text-amber-300 font-bold flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3 text-amber-400 animate-pulse" />
+                  TODAY&apos;S SURVIVAL: NOT SECURED
+                </span>
+              )}
             </div>
             <p className="text-xs font-mono text-slate-400">
               Execute daily objectives to train attributes and gain XP.

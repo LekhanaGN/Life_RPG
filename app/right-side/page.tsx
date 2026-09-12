@@ -19,14 +19,20 @@ export default async function RightSidePage() {
     redirect("/onboarding");
   }
 
-  // Fetch initial world & boss telemetry directly for zero-latency hydration
-  const initialWorldState = await db.findWorldStateByUserId(authData.user.id);
+  // Fetch initial world, boss, streak & comeback telemetry for zero-latency hydration
+  const [initialWorldState, initialStreakSummary, initialComeback] = await Promise.all([
+    db.findWorldStateByUserId(authData.user.id),
+    db.findStreakSummary(authData.user.id, authData.user.timezone),
+    db.findActiveComebackChallenge(authData.user.id),
+  ]);
 
   return (
     <RightSideClient
       user={authData.user}
       character={authData.character}
       initialWorldState={initialWorldState}
+      initialStreakSummary={initialStreakSummary}
+      initialComeback={initialComeback}
     />
   );
 }

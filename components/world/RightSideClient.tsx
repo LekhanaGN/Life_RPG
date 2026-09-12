@@ -16,22 +16,47 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { DbCharacter, DbUser, WorldStateSummary } from "@/lib/db/client";
 import { motion } from "framer-motion";
-import { Skull, AlertTriangle, Activity, Map, Sparkles } from "lucide-react";
+import { Skull, AlertTriangle, Activity } from "lucide-react";
+import { SurvivalDashboard } from "@/components/survival/SurvivalDashboard";
+import { MilestoneUnlockOverlay } from "@/components/survival/MilestoneUnlockOverlay";
+import { MilestoneDefinition, getNextMilestone } from "@/lib/game/streakRewards";
+import { SignalStatus, getSignalStrength } from "@/lib/game/streaks";
 
 export interface RightSideClientProps {
   user: DbUser;
   character: DbCharacter;
   initialWorldState?: WorldStateSummary;
+  initialStreakSummary?: {
+    currentStreak: number;
+    longestStreak: number;
+    totalActiveDays: number;
+    lastActiveDate: Date | null;
+    todayActive: boolean;
+    nextMilestone: {
+      name: string;
+      days: number;
+      remaining: number;
+    } | null;
+    signal: SignalStatus;
+    streakBroken: boolean;
+    previousStreak: number;
+  };
+  initialComeback?: any;
 }
 
 export function RightSideClient({
   user,
   character: initialCharacter,
   initialWorldState,
+  initialStreakSummary,
+  initialComeback,
 }: RightSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
   const [character, setCharacter] = useState<DbCharacter>(initialCharacter);
   const [worldState, setWorldState] = useState<WorldStateSummary | undefined>(initialWorldState);
+  const [streakSummary, setStreakSummary] = useState(initialStreakSummary);
+  const [activeComeback, setActiveComeback] = useState(initialComeback);
+  const [unlockedMilestone, setUnlockedMilestone] = useState<MilestoneDefinition | null>(null);
 
   // Modals and Highlight states
   const [levelUpData, setLevelUpData] = useState<LevelUpData | null>(null);
@@ -163,6 +188,57 @@ export function RightSideClient({
       });
       setAnnouncement((prev) => `${prev} LEVEL UP! Advanced to Level ${data.levelUp?.newLevel}!`);
     }
+
+    // 8. Survival Protocol Telemetry Update
+    if (data.streak) {
+      const currentStreak = data.streak.currentStreak;
+      const longestStreak = data.streak.longestStreak;
+      const totalActiveDays = data.streak.totalActiveDays;
+      const todayActive = data.streak.todayActive;
+      const streakBroken = data.streak.streakBroken;
+
+      const nextMilestoneDef = getNextMilestone(currentStreak);
+      const signal = getSignalStrength(currentStreak, todayActive);
+
+      setStreakSummary((prev) => ({
+        currentStreak,
+        longestStreak,
+        totalActiveDays,
+        lastActiveDate: new Date(),
+        todayActive,
+        streakBroken,
+        previousStreak: prev?.previousStreak || 0,
+        nextMilestone: nextMilestoneDef
+          ? {
+              name: nextMilestoneDef.milestone.name,
+              days: nextMilestoneDef.milestone.requirementValue,
+              remaining: nextMilestoneDef.remainingDays,
+            }
+          : null,
+        signal,
+      }));
+
+      if (data.streak.streakAdvanced) {
+        setAnnouncement(
+          (prev) => `${prev} SURVIVAL DAY ${data.streak!.currentStreak} SECURED! THE SIGNAL STRENGTHENS.`
+        );
+      }
+    }
+
+    // 9. Milestone Discovery Overlay
+    if (data.milestonesUnlocked && data.milestonesUnlocked.length > 0) {
+      const firstNew = data.milestonesUnlocked[0];
+      setUnlockedMilestone(firstNew);
+      setAnnouncement((prev) => `${prev} NEW DISCOVERY UNLOCKED: ${firstNew.name}!`);
+    }
+
+    // 10. Comeback Challenge Status
+    if (data.comeback) {
+      setActiveComeback(data.comeback);
+      if (data.comeback.completed) {
+        setAnnouncement((prev) => `${prev} COMEBACK PROTOCOL COMPLETED! Signal Restored!`);
+      }
+    }
   };
 
   const currentCorruption = worldState?.corruption ?? 100;
@@ -185,6 +261,12 @@ export function RightSideClient({
 
       {/* Boss Defeat Cinematic Banishment Modal */}
       <BossDefeatOverlay data={bossDefeatData} onDismiss={() => setBossDefeatData(null)} />
+
+      {/* Phase 7 Milestone Discovery Modal */}
+      <MilestoneUnlockOverlay
+        milestone={unlockedMilestone}
+        onDismiss={() => setUnlockedMilestone(null)}
+      />
 
       {/* Main Content Area */}
       <main className="relative z-20 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8 space-y-8">
@@ -242,6 +324,26 @@ export function RightSideClient({
         >
           <WorldIntegrityMeter corruption={currentCorruption} />
         </motion.div>
+
+        {/* Phase 7 Survival Protocol HUD */}
+        {streakSummary && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            <SurvivalDashboard
+              currentStreak={streakSummary.currentStreak}
+              longestStreak={streakSummary.longestStreak}
+              totalActiveDays={streakSummary.totalActiveDays}
+              todayActive={streakSummary.todayActive}
+              signal={streakSummary.signal}
+              nextMilestone={streakSummary.nextMilestone}
+              comebackChallenge={activeComeback}
+              streakBroken={streakSummary.streakBroken}
+            />
+          </motion.div>
+        )}
 
         {/* Primary Game Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

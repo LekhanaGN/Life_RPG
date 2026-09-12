@@ -6,13 +6,12 @@ import { db } from "@/lib/db/client";
  * POST /api/missions/[id]/complete
  * Complete a mission and trigger authoritative server-side character progression.
  *
- * The client only sends the mission ID.
- * The server computes:
- * - XP rewards
- * - Credit rewards
- * - Attribute training gains
- * - Level advancement & level-up triggers
- * - Atomic persistence of MissionCompletion + Character stats
+ * @boundary between #client and #server (#api-boundary) -- "Mission complete endpoint"
+ * @handles pii on App.API.MissionComplete -- "Processes authenticated survivor session token"
+ * @mitigates App.API.MissionComplete against #unauthorized-access using #session-auth -- "Enforces JWT session check"
+ * @mitigates App.API.MissionComplete against #idor using #user-scoping -- "Scoping queries strictly to session.userId"
+ * @mitigates App.API.MissionComplete against #streak-tampering using #server-authoritative-time -- "Authoritative streak math"
+ * @mitigates App.API.MissionComplete against #duplicate-reward-exploit using #atomic-streak-transaction -- "Synchronous atomic mutation"
  */
 export async function POST(
   request: NextRequest,
@@ -31,7 +30,7 @@ export async function POST(
       );
     }
 
-    // 2. Resolve parameters
+    // 2. Resolve parameters & optional timezone header
     const { id: missionId } = await params;
     if (!missionId) {
       return NextResponse.json(
@@ -43,8 +42,14 @@ export async function POST(
       );
     }
 
-    // 3. Execute atomic progression transaction
-    const result = await db.completeMissionTransaction(session.userId, missionId);
+    const timezone = request.headers.get("x-timezone") || undefined;
+
+    // 3. Execute atomic progression, streak, and milestone transaction
+    const result = await db.completeMissionTransaction(
+      session.userId,
+      missionId,
+      timezone
+    );
 
     if (!result.success) {
       return NextResponse.json(

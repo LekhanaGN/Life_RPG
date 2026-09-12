@@ -21,21 +21,32 @@ import {
   Zap,
   Lock,
   CheckCircle2,
+  Radio,
 } from "lucide-react";
 
 export interface OtherSideClientProps {
   user: DbUser;
   character: DbCharacter;
   initialWorldState?: WorldStateSummary;
+  initialStreakSummary?: {
+    currentStreak: number;
+    longestStreak: number;
+    totalActiveDays: number;
+    todayActive: boolean;
+    streakBroken: boolean;
+    previousStreak: number;
+  };
 }
 
 export function OtherSideClient({
   user,
   character,
   initialWorldState,
+  initialStreakSummary,
 }: OtherSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
   const [worldState] = useState<WorldStateSummary | undefined>(initialWorldState);
+  const [streak] = useState(initialStreakSummary);
 
   const handleReturnToRightSide = () => {
     triggerTransition("/right-side", "other-to-right");
@@ -146,6 +157,58 @@ export function OtherSideClient({
                   The Other Side feeds on postponed decisions, broken promises, and unspent creative energy.
                   Completing real-life missions reduces corruption by 2% to 10% per victory.
                 </div>
+
+                {/* Survival Signal & Other Side Reaction Intercept */}
+                {streak && (
+                  <div className="p-3.5 rounded-xs bg-red-950/60 border border-red-800/80 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-red-400 font-bold uppercase flex items-center gap-1.5">
+                        <Radio className="w-3.5 h-3.5 text-red-400 animate-pulse" />
+                        SURVIVAL SIGNAL INTERCEPT
+                      </span>
+                      <span className="font-orbitron font-extrabold text-red-200">
+                        {streak.currentStreak > 0
+                          ? `${streak.currentStreak.toString().padStart(2, "0")} DAYS`
+                          : "LOST"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs font-mono pt-1.5 border-t border-red-900/50">
+                      <span className="text-slate-400">OTHER SIDE STATUS:</span>
+                      <span
+                        className={`font-bold uppercase ${
+                          streak.streakBroken
+                            ? "text-red-400 animate-pulse"
+                            : streak.currentStreak >= 14
+                            ? "text-cyan-400"
+                            : streak.currentStreak >= 7
+                            ? "text-amber-300"
+                            : "text-red-300"
+                        }`}
+                      >
+                        {streak.streakBroken
+                          ? "SIGNAL RESTORED TO THEM"
+                          : streak.currentStreak >= 30
+                          ? "BOSS MATRIX FAILING"
+                          : streak.currentStreak >= 14
+                          ? "CORRUPTION RECEDING"
+                          : streak.currentStreak >= 7
+                          ? "CRACKS EXPANDING"
+                          : streak.currentStreak >= 3
+                          ? "SUBTLE INSTABILITY"
+                          : "SIGNAL DORMANT"}
+                      </span>
+                    </div>
+
+                    <p className="text-[10px] font-mono text-red-300/70 italic pt-0.5">
+                      {streak.streakBroken
+                        ? "The sanctuary beacon failed. Shadow entities are advancing into your breach."
+                        : streak.currentStreak >= 7
+                        ? "Your sustained presence burns through the void matrix like white phosphorus."
+                        : "Daily action in the Right Side stabilizes your anchor against the void."}
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -197,7 +260,7 @@ export function OtherSideClient({
                           </Badge>
                         </div>
                         <CardDescription className="text-red-400/70">
-                          {activeBoss.title} // TIER 0{activeBoss.order}
+                          {activeBoss.title} {"//"} TIER 0{activeBoss.order}
                         </CardDescription>
                       </div>
                     </div>

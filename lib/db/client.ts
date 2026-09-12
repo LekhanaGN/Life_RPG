@@ -31,6 +31,26 @@ import {
   RARITY_CONFIG,
 } from "@/lib/game/items";
 import { validatePurchaseEligibility } from "@/lib/game/shop";
+import {
+  getLogicalDate,
+  calculateStreakUpdate,
+  isSameDay,
+  isYesterday,
+  getSignalStrength,
+  StreakCalculationResult,
+  SignalStatus,
+} from "@/lib/game/streaks";
+import {
+  SURVIVAL_MILESTONES,
+  checkMilestones,
+  getNextMilestone,
+  MilestoneDefinition,
+} from "@/lib/game/streakRewards";
+import {
+  COMEBACK_CONFIG,
+  isComebackExpired,
+  getComebackTimeRemainingMs,
+} from "@/lib/game/comeback";
 
 // Global Prisma instance to avoid multiple connections in Next.js hot reload
 const globalForPrisma = globalThis as unknown as {
@@ -65,6 +85,7 @@ export interface DbUser {
   email: string;
   passwordHash: string;
   username: string;
+  timezone?: string;
   createdAt: Date;
   updatedAt: Date;
   character?: DbCharacter | null;
@@ -180,11 +201,67 @@ export interface DbInventoryItem {
 export interface DbEconomyTransaction {
   id: string;
   userId: string;
-  type: "MISSION_REWARD" | "PURCHASE" | "REFUND";
+  type: "MISSION_REWARD" | "PURCHASE" | "REFUND" | "MILESTONE_REWARD" | "COMEBACK_REWARD";
   amount: number;
   itemId: string | null;
   description: string | null;
   createdAt: Date;
+}
+
+export interface DbUserStreak {
+  id: string;
+  userId: string;
+  currentStreak: number;
+  longestStreak: number;
+  lastActiveDate: Date | null;
+  totalActiveDays: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DbDailyActivity {
+  id: string;
+  userId: string;
+  date: string; // YYYY-MM-DD
+  missionsCompleted: number;
+  xpEarned: number;
+  creditsEarned: number;
+  createdAt: Date;
+}
+
+export interface DbMilestone {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  loreQuote: string | null;
+  requirementType: string;
+  requirementValue: number;
+  rewardCredits: number;
+  rewardXP: number;
+  icon: string;
+  createdAt: Date;
+}
+
+export interface DbUserMilestone {
+  id: string;
+  userId: string;
+  milestoneId: string;
+  unlockedAt: Date;
+  milestone?: DbMilestone;
+}
+
+export interface DbComebackChallenge {
+  id: string;
+  userId: string;
+  startedAt: Date;
+  expiresAt: Date;
+  missionsRequired: number;
+  missionsCompleted: number;
+  completed: boolean;
+  rewardClaimed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface WorldStateSummary {
@@ -236,6 +313,11 @@ interface LocalDataStore {
   items: DbItem[];
   inventoryItems: DbInventoryItem[];
   economyTransactions: DbEconomyTransaction[];
+  userStreaks: DbUserStreak[];
+  dailyActivities: DbDailyActivity[];
+  milestones: DbMilestone[];
+  userMilestones: DbUserMilestone[];
+  comebackChallenges: DbComebackChallenge[];
 }
 
 function generateId(prefix = "c"): string {
@@ -266,6 +348,20 @@ function getLocalStore(): LocalDataStore {
         updatedAt: new Date(),
       }));
 
+      const seededMilestones: DbMilestone[] = SURVIVAL_MILESTONES.map((m) => ({
+        id: `mls_${m.key.toLowerCase()}`,
+        key: m.key,
+        name: m.name,
+        description: m.description,
+        loreQuote: m.loreQuote,
+        requirementType: m.requirementType,
+        requirementValue: m.requirementValue,
+        rewardCredits: m.rewardCredits,
+        rewardXP: m.rewardXP,
+        icon: m.icon,
+        createdAt: new Date(),
+      }));
+
       const initial: LocalDataStore = {
         users: [],
         characters: [],
@@ -277,6 +373,11 @@ function getLocalStore(): LocalDataStore {
         items: seededItems,
         inventoryItems: [],
         economyTransactions: [],
+        userStreaks: [],
+        dailyActivities: [],
+        milestones: seededMilestones,
+        userMilestones: [],
+        comebackChallenges: [],
       };
       fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(initial, null, 2), "utf-8");
       return initial;
@@ -323,7 +424,7 @@ function getLocalStore(): LocalDataStore {
     }));
 
     // Ensure catalog items exist
-    let items = (parsed.items || []).map((i: any) => ({
+    const items = (parsed.items || []).map((i: any) => ({
       ...i,
       createdAt: new Date(i.createdAt),
       updatedAt: new Date(i.updatedAt),
@@ -365,6 +466,58 @@ function getLocalStore(): LocalDataStore {
       createdAt: new Date(tx.createdAt),
     }));
 
+    // Ensure milestones exist
+    const milestones = (parsed.milestones || []).map((m: any) => ({
+      ...m,
+      createdAt: new Date(m.createdAt),
+    }));
+
+    if (milestones.length < SURVIVAL_MILESTONES.length) {
+      for (const mDef of SURVIVAL_MILESTONES) {
+        if (!milestones.some((m: any) => m.key === mDef.key)) {
+          milestones.push({
+            id: `mls_${mDef.key.toLowerCase()}`,
+            key: mDef.key,
+            name: mDef.name,
+            description: mDef.description,
+            loreQuote: mDef.loreQuote,
+            requirementType: mDef.requirementType,
+            requirementValue: mDef.requirementValue,
+            rewardCredits: mDef.rewardCredits,
+            rewardXP: mDef.rewardXP,
+            icon: mDef.icon,
+            createdAt: new Date(),
+          });
+        }
+      }
+    }
+    parsed.milestones = milestones;
+
+    parsed.userStreaks = (parsed.userStreaks || []).map((s: any) => ({
+      ...s,
+      lastActiveDate: s.lastActiveDate ? new Date(s.lastActiveDate) : null,
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt),
+    }));
+
+    parsed.dailyActivities = (parsed.dailyActivities || []).map((da: any) => ({
+      ...da,
+      createdAt: new Date(da.createdAt),
+    }));
+
+    parsed.userMilestones = (parsed.userMilestones || []).map((um: any) => ({
+      ...um,
+      unlockedAt: new Date(um.unlockedAt),
+    }));
+
+    parsed.comebackChallenges = (parsed.comebackChallenges || []).map((cc: any) => ({
+      ...cc,
+      startedAt: new Date(cc.startedAt),
+      expiresAt: new Date(cc.expiresAt),
+      createdAt: new Date(cc.createdAt),
+      updatedAt: new Date(cc.updatedAt),
+    }));
+
     return parsed;
   } catch (err) {
     console.error("[DB Fallback Store Error]:", err);
@@ -379,6 +532,11 @@ function getLocalStore(): LocalDataStore {
       items: [],
       inventoryItems: [],
       economyTransactions: [],
+      userStreaks: [],
+      dailyActivities: [],
+      milestones: [],
+      userMilestones: [],
+      comebackChallenges: [],
     };
   }
 }
@@ -442,9 +600,11 @@ export const db = {
     email: string;
     passwordHash: string;
     username: string;
+    timezone?: string;
   }): Promise<DbUser> {
     const normalizedEmail = data.email.trim().toLowerCase();
     const cleanUsername = data.username.trim();
+    const userTimezone = data.timezone || "UTC";
 
     const pgUser = await executePrisma(() =>
       prisma.user.create({
@@ -452,6 +612,7 @@ export const db = {
           email: normalizedEmail,
           passwordHash: data.passwordHash,
           username: cleanUsername,
+          timezone: userTimezone,
         },
       })
     );
@@ -463,6 +624,7 @@ export const db = {
       email: normalizedEmail,
       passwordHash: data.passwordHash,
       username: cleanUsername,
+      timezone: userTimezone,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -883,7 +1045,7 @@ export const db = {
       }
 
       // Ensure all 6 areas exist
-      let userAreas = await prisma.worldAreaProgress.findMany({
+      const userAreas = await prisma.worldAreaProgress.findMany({
         where: { userId },
       });
 
@@ -906,7 +1068,7 @@ export const db = {
       }
 
       // Ensure all bosses exist
-      let userBosses = await prisma.bossProgress.findMany({
+      const userBosses = await prisma.bossProgress.findMany({
         where: { userId },
         orderBy: { createdAt: "asc" },
       });
@@ -963,7 +1125,7 @@ export const db = {
       store.worldProgress.push(wp);
     }
 
-    let userAreas = store.worldAreaProgress.filter((a) => a.userId === userId);
+    const userAreas = store.worldAreaProgress.filter((a) => a.userId === userId);
     for (const areaDef of WORLD_AREAS) {
       let area = userAreas.find((a) => a.areaKey === areaDef.key);
       if (!area) {
@@ -982,7 +1144,7 @@ export const db = {
       }
     }
 
-    let userBosses = store.bossProgress.filter((b) => b.userId === userId);
+    const userBosses = store.bossProgress.filter((b) => b.userId === userId);
     for (const bossDef of BOSS_DEFINITIONS) {
       let boss = userBosses.find((b) => b.bossKey === bossDef.key);
       if (!boss) {
@@ -1147,7 +1309,7 @@ export const db = {
    */
   async findOrCreateItems(): Promise<DbItem[]> {
     const pgItems = await executePrisma(async () => {
-      let items = await prisma.item.findMany();
+      const items = await prisma.item.findMany();
       if (items.length < STARTER_CATALOG.length) {
         for (const cat of STARTER_CATALOG) {
           const exists = items.some((i) => i.key === cat.key);
@@ -1364,7 +1526,7 @@ export const db = {
     store.characters[charIdx].updatedAt = now;
 
     // Upsert inventory item
-    let invIdx = store.inventoryItems.findIndex(
+    const invIdx = store.inventoryItems.findIndex(
       (inv) => inv.userId === userId && (inv.itemId === item.id || inv.itemId === item.key)
     );
 
@@ -1628,20 +1790,260 @@ export const db = {
     };
   },
 
+  // ==========================================
+  // PHASE 7: SURVIVAL PROTOCOL & STREAKS
+  // ==========================================
+
   /**
-   * ATOMIC TRANSACTION: Complete Mission & Award Full Phase 5 & 6 Progression
+   * Find current user streak record
+   */
+  async findUserStreak(userId: string): Promise<DbUserStreak | null> {
+    const pgStreak = await executePrisma(() =>
+      prisma.userStreak.findUnique({
+        where: { userId },
+      })
+    );
+    if (pgStreak) return pgStreak as unknown as DbUserStreak;
+
+    const store = getLocalStore();
+    const streak = store.userStreaks.find((s) => s.userId === userId);
+    return streak || null;
+  },
+
+  /**
+   * Find daily activity record for a specific calendar date (YYYY-MM-DD)
+   */
+  async findDailyActivity(userId: string, date: string): Promise<DbDailyActivity | null> {
+    const pgAct = await executePrisma(() =>
+      prisma.dailyActivity.findUnique({
+        where: { userId_date: { userId, date } },
+      })
+    );
+    if (pgAct) return pgAct as unknown as DbDailyActivity;
+
+    const store = getLocalStore();
+    const act = store.dailyActivities.find((da) => da.userId === userId && da.date === date);
+    return act || null;
+  },
+
+  /**
+   * Find all milestones and user unlocked milestones
+   */
+  async findUserMilestones(userId: string): Promise<{
+    all: DbMilestone[];
+    unlocked: DbUserMilestone[];
+    unlockedKeys: Set<string>;
+  }> {
+    const pgResult = await executePrisma(async () => {
+      const allMilestones = await prisma.milestone.findMany({
+        orderBy: { requirementValue: "asc" },
+      });
+
+      if (allMilestones.length < SURVIVAL_MILESTONES.length) {
+        for (const mDef of SURVIVAL_MILESTONES) {
+          const exists = allMilestones.some((m) => m.key === mDef.key);
+          if (!exists) {
+            const created = await prisma.milestone.create({
+              data: {
+                key: mDef.key,
+                name: mDef.name,
+                description: mDef.description,
+                loreQuote: mDef.loreQuote,
+                requirementType: mDef.requirementType,
+                requirementValue: mDef.requirementValue,
+                rewardCredits: mDef.rewardCredits,
+                rewardXP: mDef.rewardXP,
+                icon: mDef.icon,
+              },
+            });
+            allMilestones.push(created);
+          }
+        }
+      }
+
+      const unlocked = await prisma.userMilestone.findMany({
+        where: { userId },
+        include: { milestone: true },
+        orderBy: { unlockedAt: "desc" },
+      });
+
+      const unlockedKeys = new Set(unlocked.map((um) => um.milestone.key));
+
+      return {
+        all: allMilestones as unknown as DbMilestone[],
+        unlocked: unlocked as unknown as DbUserMilestone[],
+        unlockedKeys,
+      };
+    });
+
+    if (pgResult) return pgResult;
+
+    const store = getLocalStore();
+    const unlocked = store.userMilestones
+      .filter((um) => um.userId === userId)
+      .map((um) => {
+        const milestone = store.milestones.find((m) => m.id === um.milestoneId);
+        return { ...um, milestone };
+      });
+
+    const unlockedKeys = new Set(
+      unlocked.map((um) => um.milestone?.key).filter(Boolean) as string[]
+    );
+
+    return {
+      all: store.milestones,
+      unlocked,
+      unlockedKeys,
+    };
+  },
+
+  /**
+   * Find active unexpired Comeback Challenge for user
+   */
+  async findActiveComebackChallenge(userId: string): Promise<DbComebackChallenge | null> {
+    const now = new Date();
+    const pgChallenge = await executePrisma(() =>
+      prisma.comebackChallenge.findFirst({
+        where: {
+          userId,
+          completed: false,
+          expiresAt: { gt: now },
+        },
+        orderBy: { createdAt: "desc" },
+      })
+    );
+    if (pgChallenge) return pgChallenge as unknown as DbComebackChallenge;
+
+    const store = getLocalStore();
+    const active = store.comebackChallenges.find(
+      (cc) => cc.userId === userId && !cc.completed && !isComebackExpired(cc.expiresAt, now)
+    );
+    return active || null;
+  },
+
+  /**
+   * Start or restart a Comeback Challenge for user
+   */
+  async startComebackChallenge(userId: string): Promise<DbComebackChallenge> {
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + COMEBACK_CONFIG.durationMs);
+
+    const pgChallenge = await executePrisma(() =>
+      prisma.comebackChallenge.create({
+        data: {
+          userId,
+          startedAt: now,
+          expiresAt,
+          missionsRequired: COMEBACK_CONFIG.missionsRequired,
+          missionsCompleted: 0,
+          completed: false,
+          rewardClaimed: false,
+        },
+      })
+    );
+    if (pgChallenge) return pgChallenge as unknown as DbComebackChallenge;
+
+    const store = getLocalStore();
+    const newChallenge: DbComebackChallenge = {
+      id: generateId("cmc"),
+      userId,
+      startedAt: now,
+      expiresAt,
+      missionsRequired: COMEBACK_CONFIG.missionsRequired,
+      missionsCompleted: 0,
+      completed: false,
+      rewardClaimed: false,
+      createdAt: now,
+      updatedAt: now,
+    };
+    store.comebackChallenges.push(newChallenge);
+    saveLocalStore(store);
+    return newChallenge;
+  },
+
+  /**
+   * Comprehensive Streak & Signal Telemetry Summary for UI HUD
+   */
+  async findStreakSummary(userId: string, userTimezone?: string): Promise<{
+    currentStreak: number;
+    longestStreak: number;
+    totalActiveDays: number;
+    lastActiveDate: Date | null;
+    todayActive: boolean;
+    nextMilestone: {
+      name: string;
+      days: number;
+      remaining: number;
+    } | null;
+    signal: SignalStatus;
+    streakBroken: boolean;
+    previousStreak: number;
+  }> {
+    const user = await this.findUserById(userId);
+    const resolvedTimezone = userTimezone || user?.timezone || "UTC";
+    const now = new Date();
+    const todayStr = getLogicalDate(now, resolvedTimezone);
+
+    const streakRecord = await this.findUserStreak(userId);
+    const todayActivity = await this.findDailyActivity(userId, todayStr);
+    const todayActive = !!todayActivity && todayActivity.missionsCompleted > 0;
+
+    let currentStreak = streakRecord?.currentStreak ?? 0;
+    const longestStreak = streakRecord?.longestStreak ?? 0;
+    const totalActiveDays = streakRecord?.totalActiveDays ?? 0;
+    const lastActiveDate = streakRecord?.lastActiveDate ?? null;
+
+    let streakBroken = false;
+    const previousStreak = currentStreak;
+
+    if (lastActiveDate) {
+      const lastActiveStr = getLogicalDate(lastActiveDate, resolvedTimezone);
+      if (!isSameDay(lastActiveStr, todayStr) && !isYesterday(lastActiveStr, todayStr)) {
+        streakBroken = true;
+        // The streak has lapsed since last activity
+        currentStreak = 0;
+      }
+    }
+
+    const nextMilestoneDef = getNextMilestone(currentStreak);
+    const nextMilestone = nextMilestoneDef
+      ? {
+          name: nextMilestoneDef.milestone.name,
+          days: nextMilestoneDef.milestone.requirementValue,
+          remaining: nextMilestoneDef.remainingDays,
+        }
+      : null;
+
+    const signal = getSignalStrength(currentStreak, todayActive);
+
+    return {
+      currentStreak,
+      longestStreak,
+      totalActiveDays,
+      lastActiveDate,
+      todayActive,
+      nextMilestone,
+      signal,
+      streakBroken,
+      previousStreak,
+    };
+  },
+
+  /**
+   * ATOMIC TRANSACTION: Complete Mission & Award Full Phase 5, 6 & 7 Progression
    * 1. Validates ownership & existence
    * 2. Checks duplicate completion rules
    * 3. Calculates authoritative character XP, credits, attribute boost, and level advancement
    * 4. Calculates authoritative World Corruption reduction & Area Restoration
    * 5. Calculates authoritative Boss damage, defeat states, and next boss transitions
-   * 6. Creates historical MissionCompletion record
-   * 7. Creates EconomyTransaction record for earned credits
-   * 8. Atomically updates Character, WorldProgress, WorldAreaProgress, BossProgress, and Mission
+   * 6. Calculates authoritative DailyActivity, Streaks, Milestones & Comeback progress
+   * 7. Creates historical MissionCompletion and EconomyTransaction records
+   * 8. Atomically updates Character, WorldProgress, BossProgress, UserStreak, DailyActivity, Milestones
    */
   async completeMissionTransaction(
     userId: string,
-    missionId: string
+    missionId: string,
+    userTimezone?: string
   ): Promise<{
     success: boolean;
     error?: string;
@@ -1683,8 +2085,28 @@ export const db = {
       isUnlocked: boolean;
       newlyUnlockedAreas: string[];
     };
+    streak?: {
+      currentStreak: number;
+      longestStreak: number;
+      totalActiveDays: number;
+      streakAdvanced: boolean;
+      streakBroken: boolean;
+      isFirstDay: boolean;
+      todayActive: boolean;
+    };
+    milestonesUnlocked?: MilestoneDefinition[];
+    comeback?: {
+      active: boolean;
+      completed: boolean;
+      rewardClaimed: boolean;
+      missionsCompleted: number;
+      missionsRequired: number;
+      corruptionReduced?: number;
+      bonusCredits?: number;
+    } | null;
+    survivalSecuredToday?: boolean;
   }> {
-    // 1. Fetch Mission & Character
+    // 1. Fetch Mission, Character & User
     const mission = await this.findMissionById(missionId, userId);
     if (!mission) {
       return {
@@ -1702,6 +2124,9 @@ export const db = {
         statusCode: 404,
       };
     }
+
+    const user = await this.findUserById(userId);
+    const resolvedTimezone = userTimezone || user?.timezone || "UTC";
 
     // 2. Validate Duplicate Completion
     const eligibility = validateMissionCompletionEligibility(
@@ -1773,7 +2198,6 @@ export const db = {
     let nextBossName: string | null = null;
 
     if (isBossDefeatedNow) {
-      // Award boss banishment bonus XP & corruption drop
       updatedStats.xp += bossDef.banishBonusXp;
       corruptionAfter = clampCorruption(corruptionAfter - bossDef.banishCorruptionDrop);
 
@@ -1785,6 +2209,116 @@ export const db = {
     }
 
     const completedAt = new Date();
+    const todayStr = getLogicalDate(completedAt, resolvedTimezone);
+
+    // E) Survival Protocol: Streaks, Milestones & Comeback Math
+    const existingStreak = await this.findUserStreak(userId);
+    const streakCalc = calculateStreakUpdate({
+      lastActiveDateStr: existingStreak?.lastActiveDate
+        ? getLogicalDate(existingStreak.lastActiveDate, resolvedTimezone)
+        : null,
+      currentStreak: existingStreak?.currentStreak ?? 0,
+      longestStreak: existingStreak?.longestStreak ?? 0,
+      totalActiveDays: existingStreak?.totalActiveDays ?? 0,
+      todayStr,
+    });
+
+    // Milestone checks
+    const { unlockedKeys } = await this.findUserMilestones(userId);
+    const newlyUnlockedMilestones = checkMilestones(
+      streakCalc.currentStreak,
+      streakCalc.totalActiveDays,
+      unlockedKeys
+    );
+
+    let totalMilestoneCredits = 0;
+    let totalMilestoneXP = 0;
+    for (const m of newlyUnlockedMilestones) {
+      totalMilestoneCredits += m.rewardCredits;
+      totalMilestoneXP += m.rewardXP;
+    }
+    updatedStats.credits += totalMilestoneCredits;
+    updatedStats.xp += totalMilestoneXP;
+
+    // Comeback challenge tracking
+    const existingComeback = await this.findActiveComebackChallenge(userId);
+    let comebackStatus: {
+      active: boolean;
+      completed: boolean;
+      rewardClaimed: boolean;
+      missionsCompleted: number;
+      missionsRequired: number;
+      corruptionReduced?: number;
+      bonusCredits?: number;
+    } | null = null;
+
+    let comebackChallengeToUpsert: DbComebackChallenge | null = null;
+    let comebackRewardClaimedNow = false;
+
+    if (
+      existingComeback &&
+      !existingComeback.completed &&
+      !isComebackExpired(existingComeback.expiresAt, completedAt)
+    ) {
+      const newMissionsCompleted = existingComeback.missionsCompleted + 1;
+      const isCompletedNow = newMissionsCompleted >= existingComeback.missionsRequired;
+
+      comebackChallengeToUpsert = {
+        ...existingComeback,
+        missionsCompleted: newMissionsCompleted,
+        completed: isCompletedNow,
+        rewardClaimed: isCompletedNow,
+        updatedAt: completedAt,
+      };
+
+      if (isCompletedNow) {
+        comebackRewardClaimedNow = true;
+        updatedStats.credits += COMEBACK_CONFIG.rewardCredits;
+        corruptionAfter = clampCorruption(corruptionAfter - COMEBACK_CONFIG.corruptionReduction);
+        comebackStatus = {
+          active: false,
+          completed: true,
+          rewardClaimed: true,
+          missionsCompleted: newMissionsCompleted,
+          missionsRequired: existingComeback.missionsRequired,
+          corruptionReduced: COMEBACK_CONFIG.corruptionReduction,
+          bonusCredits: COMEBACK_CONFIG.rewardCredits,
+        };
+      } else {
+        comebackStatus = {
+          active: true,
+          completed: false,
+          rewardClaimed: false,
+          missionsCompleted: newMissionsCompleted,
+          missionsRequired: existingComeback.missionsRequired,
+        };
+      }
+    } else if (
+      streakCalc.streakBroken &&
+      (!existingComeback || isComebackExpired(existingComeback.expiresAt, completedAt))
+    ) {
+      // Auto-start comeback challenge when streak is broken
+      const expiresAt = new Date(completedAt.getTime() + COMEBACK_CONFIG.durationMs);
+      comebackChallengeToUpsert = {
+        id: generateId("cmc"),
+        userId,
+        startedAt: completedAt,
+        expiresAt,
+        missionsRequired: COMEBACK_CONFIG.missionsRequired,
+        missionsCompleted: 1, // Current completed mission counts toward comeback!
+        completed: false,
+        rewardClaimed: false,
+        createdAt: completedAt,
+        updatedAt: completedAt,
+      };
+      comebackStatus = {
+        active: true,
+        completed: false,
+        rewardClaimed: false,
+        missionsCompleted: 1,
+        missionsRequired: COMEBACK_CONFIG.missionsRequired,
+      };
+    }
 
     // 5. Execute Atomic Persistence
     const pgResult = await executePrisma(async () => {
@@ -1800,7 +2334,7 @@ export const db = {
           },
         });
 
-        // Log Economy Transaction
+        // Log Mission Reward Economy Transaction
         await tx.economyTransaction.create({
           data: {
             userId,
@@ -1863,6 +2397,119 @@ export const db = {
           },
         });
 
+        // Upsert UserStreak
+        await tx.userStreak.upsert({
+          where: { userId },
+          update: {
+            currentStreak: streakCalc.currentStreak,
+            longestStreak: streakCalc.longestStreak,
+            totalActiveDays: streakCalc.totalActiveDays,
+            lastActiveDate: completedAt,
+          },
+          create: {
+            userId,
+            currentStreak: streakCalc.currentStreak,
+            longestStreak: streakCalc.longestStreak,
+            totalActiveDays: streakCalc.totalActiveDays,
+            lastActiveDate: completedAt,
+          },
+        });
+
+        // Upsert DailyActivity
+        const existingActivity = await tx.dailyActivity.findUnique({
+          where: { userId_date: { userId, date: todayStr } },
+        });
+        if (existingActivity) {
+          await tx.dailyActivity.update({
+            where: { id: existingActivity.id },
+            data: {
+              missionsCompleted: existingActivity.missionsCompleted + 1,
+              xpEarned: existingActivity.xpEarned + rewards.xp,
+              creditsEarned: existingActivity.creditsEarned + rewards.credits,
+            },
+          });
+        } else {
+          await tx.dailyActivity.create({
+            data: {
+              userId,
+              date: todayStr,
+              missionsCompleted: 1,
+              xpEarned: rewards.xp,
+              creditsEarned: rewards.credits,
+            },
+          });
+        }
+
+        // Newly unlocked milestones
+        for (const m of newlyUnlockedMilestones) {
+          let dbMilestone = await tx.milestone.findUnique({ where: { key: m.key } });
+          if (!dbMilestone) {
+            dbMilestone = await tx.milestone.create({
+              data: {
+                key: m.key,
+                name: m.name,
+                description: m.description,
+                loreQuote: m.loreQuote,
+                requirementType: m.requirementType,
+                requirementValue: m.requirementValue,
+                rewardCredits: m.rewardCredits,
+                rewardXP: m.rewardXP,
+                icon: m.icon,
+              },
+            });
+          }
+          await tx.userMilestone.create({
+            data: {
+              userId,
+              milestoneId: dbMilestone.id,
+              unlockedAt: completedAt,
+            },
+          });
+          if (m.rewardCredits > 0) {
+            await tx.economyTransaction.create({
+              data: {
+                userId,
+                type: "MILESTONE_REWARD",
+                amount: m.rewardCredits,
+                description: `Milestone Unlocked: ${m.name}`,
+              },
+            });
+          }
+        }
+
+        // Comeback challenge persistence
+        if (comebackChallengeToUpsert) {
+          await tx.comebackChallenge.upsert({
+            where: { id: comebackChallengeToUpsert.id },
+            update: {
+              missionsCompleted: comebackChallengeToUpsert.missionsCompleted,
+              completed: comebackChallengeToUpsert.completed,
+              rewardClaimed: comebackChallengeToUpsert.rewardClaimed,
+              updatedAt: completedAt,
+            },
+            create: {
+              id: comebackChallengeToUpsert.id,
+              userId,
+              startedAt: comebackChallengeToUpsert.startedAt,
+              expiresAt: comebackChallengeToUpsert.expiresAt,
+              missionsRequired: comebackChallengeToUpsert.missionsRequired,
+              missionsCompleted: comebackChallengeToUpsert.missionsCompleted,
+              completed: comebackChallengeToUpsert.completed,
+              rewardClaimed: comebackChallengeToUpsert.rewardClaimed,
+            },
+          });
+          if (comebackRewardClaimedNow) {
+            await tx.economyTransaction.create({
+              data: {
+                userId,
+                type: "COMEBACK_REWARD",
+                amount: COMEBACK_CONFIG.rewardCredits,
+                description: "Comeback Protocol Completed: Signal Restored",
+              },
+            });
+          }
+        }
+
         return {
           updatedChar: updatedChar as unknown as DbCharacter,
           updatedMsn,
@@ -1917,6 +2564,18 @@ export const db = {
           isUnlocked: true,
           newlyUnlockedAreas,
         },
+        streak: {
+          currentStreak: streakCalc.currentStreak,
+          longestStreak: streakCalc.longestStreak,
+          totalActiveDays: streakCalc.totalActiveDays,
+          streakAdvanced: streakCalc.streakAdvanced,
+          streakBroken: streakCalc.streakBroken,
+          isFirstDay: streakCalc.isFirstDay,
+          todayActive: true,
+        },
+        milestonesUnlocked: newlyUnlockedMilestones,
+        comeback: comebackStatus,
+        survivalSecuredToday: true,
       };
     }
 
@@ -1964,7 +2623,7 @@ export const db = {
       updatedAt: new Date(),
     };
 
-    let updatedMission: DbMission = {
+    const updatedMission: DbMission = {
       ...store.missions[localMsnIdx],
       lastCompletedAt: completedAt,
       isCompletedToday: true,
@@ -1997,6 +2656,93 @@ export const db = {
         store.worldAreaProgress[idx].isUnlocked = ua.isUnlocked;
         store.worldAreaProgress[idx].restorationPercent = ua.restorationPercent;
         store.worldAreaProgress[idx].updatedAt = new Date();
+      }
+    }
+
+    // Local Streak update
+    const streakIdx = store.userStreaks.findIndex((s) => s.userId === userId);
+    const updatedStreakRecord: DbUserStreak = {
+      id: streakIdx >= 0 ? store.userStreaks[streakIdx].id : generateId("str"),
+      userId,
+      currentStreak: streakCalc.currentStreak,
+      longestStreak: streakCalc.longestStreak,
+      totalActiveDays: streakCalc.totalActiveDays,
+      lastActiveDate: completedAt,
+      createdAt: streakIdx >= 0 ? store.userStreaks[streakIdx].createdAt : completedAt,
+      updatedAt: completedAt,
+    };
+    if (streakIdx >= 0) {
+      store.userStreaks[streakIdx] = updatedStreakRecord;
+    } else {
+      store.userStreaks.push(updatedStreakRecord);
+    }
+
+    // Local DailyActivity update
+    const activityIdx = store.dailyActivities.findIndex(
+      (da) => da.userId === userId && da.date === todayStr
+    );
+    if (activityIdx >= 0) {
+      store.dailyActivities[activityIdx].missionsCompleted += 1;
+      store.dailyActivities[activityIdx].xpEarned += rewards.xp;
+      store.dailyActivities[activityIdx].creditsEarned += rewards.credits;
+    } else {
+      store.dailyActivities.push({
+        id: generateId("act"),
+        userId,
+        date: todayStr,
+        missionsCompleted: 1,
+        xpEarned: rewards.xp,
+        creditsEarned: rewards.credits,
+        createdAt: completedAt,
+      });
+    }
+
+    // Local Milestones unlocking & transactions
+    for (const m of newlyUnlockedMilestones) {
+      const milestoneDef = store.milestones.find((ml) => ml.key === m.key);
+      const milestoneId = milestoneDef ? milestoneDef.id : `mls_${m.key.toLowerCase()}`;
+
+      store.userMilestones.push({
+        id: generateId("uml"),
+        userId,
+        milestoneId,
+        unlockedAt: completedAt,
+      });
+
+      if (m.rewardCredits > 0) {
+        store.economyTransactions.push({
+          id: generateId("etx"),
+          userId,
+          type: "MILESTONE_REWARD",
+          amount: m.rewardCredits,
+          itemId: null,
+          description: `Milestone Unlocked: ${m.name}`,
+          createdAt: completedAt,
+        });
+      }
+    }
+
+    // Local Comeback Challenge update & transactions
+    if (comebackChallengeToUpsert) {
+      const cIdx = store.comebackChallenges.findIndex(
+        (c) => c.id === comebackChallengeToUpsert!.id
+      );
+      if (cIdx >= 0) {
+        store.comebackChallenges[cIdx] = comebackChallengeToUpsert;
+      } else {
+        store.comebackChallenges.push(comebackChallengeToUpsert);
+      }
+
+      if (comebackRewardClaimedNow) {
+        store.economyTransactions.push({
+          id: generateId("etx"),
+          userId,
+          type: "COMEBACK_REWARD",
+          amount: COMEBACK_CONFIG.rewardCredits,
+          itemId: null,
+          description: "Comeback Protocol Completed: Signal Restored",
+          createdAt: completedAt,
+        });
       }
     }
 
@@ -2045,6 +2791,19 @@ export const db = {
         isUnlocked: true,
         newlyUnlockedAreas,
       },
+      streak: {
+        currentStreak: streakCalc.currentStreak,
+        longestStreak: streakCalc.longestStreak,
+        totalActiveDays: streakCalc.totalActiveDays,
+        streakAdvanced: streakCalc.streakAdvanced,
+        streakBroken: streakCalc.streakBroken,
+        isFirstDay: streakCalc.isFirstDay,
+        todayActive: true,
+      },
+      milestonesUnlocked: newlyUnlockedMilestones,
+      comeback: comebackStatus,
+      survivalSecuredToday: true,
     };
   },
 };
+

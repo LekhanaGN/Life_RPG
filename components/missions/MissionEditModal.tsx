@@ -51,6 +51,8 @@ export function MissionEditModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
 
+  // Synchronize form values when mission prop changes
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (mission && isOpen) {
       setTitle(mission.title);

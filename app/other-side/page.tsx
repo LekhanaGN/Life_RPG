@@ -19,14 +19,18 @@ export default async function OtherSidePage() {
     redirect("/onboarding");
   }
 
-  // Fetch live world & boss telemetry directly for zero-latency hydration
-  const initialWorldState = await db.findWorldStateByUserId(authData.user.id);
+  // Fetch live world, boss & streak telemetry directly for zero-latency hydration
+  const [initialWorldState, initialStreakSummary] = await Promise.all([
+    db.findWorldStateByUserId(authData.user.id),
+    db.findStreakSummary(authData.user.id, authData.user.timezone),
+  ]);
 
   return (
     <OtherSideClient
       user={authData.user}
       character={authData.character}
       initialWorldState={initialWorldState}
+      initialStreakSummary={initialStreakSummary}
     />
   );
 }
