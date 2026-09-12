@@ -10513,9 +10513,9 @@
       "userId": "usr_mtyedpi6_2w9jn70",
       "itemId": "itm_stable_circuit",
       "quantity": 1,
-      "isEquipped": false,
+      "isEquipped": true,
       "acquiredAt": "2026-09-12T16:42:12.342Z",
-      "updatedAt": "2026-09-12T21:09:40.264Z",
+      "updatedAt": "2026-09-12T21:45:00.940Z",
       "item": {
         "id": "itm_stable_circuit",
         "key": "STABLE_CIRCUIT",

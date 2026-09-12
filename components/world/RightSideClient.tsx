@@ -16,7 +16,8 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { DbCharacter, DbUser, WorldStateSummary } from "@/lib/db/client";
 import { motion } from "framer-motion";
-import { Skull, AlertTriangle, Activity } from "lucide-react";
+import Link from "next/link";
+import { Skull, AlertTriangle, Activity, Trophy, ArrowRight } from "lucide-react";
 import { SurvivalDashboard } from "@/components/survival/SurvivalDashboard";
 import { MilestoneUnlockOverlay } from "@/components/survival/MilestoneUnlockOverlay";
 import { MilestoneDefinition, getNextMilestone } from "@/lib/game/streakRewards";
@@ -429,6 +430,35 @@ export function RightSideClient({
                   character={character}
                   highlightedAttribute={highlightedAttribute}
                 />
+              </CardContent>
+            </Card>
+
+            {/* Hall of Survivors / Leaderboard Quick Access Card */}
+            <Card variant="default" className="border-amber-500/30 bg-black/60 hover:border-amber-400/60 transition-colors">
+              <CardContent className="p-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xs border border-amber-500/50 bg-amber-950/40 flex items-center justify-center text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+                    <Trophy className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-cinzel text-sm font-bold text-slate-100 flex items-center gap-2">
+                      LEADERBOARD
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-xs bg-amber-950 text-amber-300 border border-amber-700/50">
+                        {character.xp.toLocaleString()} XP
+                      </span>
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-400">
+                      Compare your standing against all active survivors
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  href="/leaderboard"
+                  className="px-3 py-1.5 rounded-xs bg-amber-950/60 border border-amber-500/50 hover:border-amber-400 text-amber-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-[0_0_8px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] whitespace-nowrap"
+                >
+                  <span>VIEW RANKS</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </CardContent>
             </Card>
           </motion.div>

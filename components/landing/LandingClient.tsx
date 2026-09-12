@@ -1211,6 +1211,12 @@ export function LandingClient({
             >
               {isAuthenticated ? "REWARD SHOP" : "SIGN UP"}
             </Link>
+            <Link
+              href="/leaderboard"
+              className="hover:text-amber-300 transition-colors"
+            >
+              LEADERBOARD
+            </Link>
             <button
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: "smooth" });

@@ -399,6 +399,32 @@ export interface ShopItemView extends DbItem {
   ownedQuantity: number;
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  userId: string;
+  name: string;
+  username: string;
+  archetype: string;
+  level: number;
+  xp: number;
+  credits: number;
+  streak: number;
+  stats: {
+    mind: number;
+    body: number;
+    focus: number;
+    spirit: number;
+    connection: number;
+  };
+  isCurrentUser: boolean;
+}
+
+export interface LeaderboardData {
+  entries: LeaderboardEntry[];
+  currentUserEntry: LeaderboardEntry | null;
+  totalPlayers: number;
+}
+
 // Fallback file persistence path for zero-dependency local development/testing
 const LOCAL_DATA_DIR = path.join(process.cwd(), ".data");
 const LOCAL_DATA_FILE = path.join(LOCAL_DATA_DIR, "survivors.json");
@@ -4210,6 +4236,223 @@ export const db = {
       return store.focusSessions[idx];
     }
     return null;
+  },
+
+  /**
+   * Get server-authoritative leaderboard rankings
+   *
+   * @boundary between #client and #server -- "Leaderboard query boundary"
+   * @handles character_data on App.DB.Leaderboard -- "Fetches public player progression and ranking"
+   * @mitigates App.DB.Leaderboard against #unauthorized-access using #prepared-queries -- "Public read-only projection"
+   * @mitigates App.DB.Leaderboard against #data-tampering using #prepared-queries -- "Server-side deterministic sorting"
+   */
+  async getLeaderboard(options?: {
+    currentUserId?: string;
+    limit?: number;
+  }): Promise<LeaderboardData> {
+    const limit = Math.max(1, Math.min(100, options?.limit || 100));
+    const currentUserId = options?.currentUserId;
+
+    // 1. Try Prisma PostgreSQL query
+    const pgData = await executePrisma(async () => {
+      const [topCharacters, totalCount] = await Promise.all([
+        prisma.character.findMany({
+          take: limit,
+          orderBy: [
+            { xp: "desc" },
+            { createdAt: "asc" },
+            { id: "asc" },
+          ],
+          select: {
+            id: true,
+            userId: true,
+            name: true,
+            archetype: true,
+            level: true,
+            xp: true,
+            credits: true,
+            mind: true,
+            body: true,
+            focus: true,
+            spirit: true,
+            connection: true,
+            createdAt: true,
+            user: {
+              select: {
+                username: true,
+                streak: {
+                  select: {
+                    currentStreak: true,
+                    longestStreak: true,
+                  },
+                },
+              },
+            },
+          },
+        }),
+        prisma.character.count(),
+      ]);
+
+      const entries: LeaderboardEntry[] = topCharacters.map((c, idx) => ({
+        rank: idx + 1,
+        userId: c.userId,
+        name: c.name || c.user.username,
+        username: c.user.username,
+        archetype: c.archetype,
+        level: c.level,
+        xp: c.xp,
+        credits: c.credits,
+        streak: c.user.streak?.currentStreak || 0,
+        stats: {
+          mind: c.mind,
+          body: c.body,
+          focus: c.focus,
+          spirit: c.spirit,
+          connection: c.connection,
+        },
+        isCurrentUser: currentUserId ? c.userId === currentUserId : false,
+      }));
+
+      let currentUserEntry: LeaderboardEntry | null = null;
+
+      if (currentUserId) {
+        const foundInTop = entries.find((e) => e.userId === currentUserId);
+        if (foundInTop) {
+          currentUserEntry = foundInTop;
+        } else {
+          // Query current user's character and exact rank if outside top limit
+          const userChar = await prisma.character.findUnique({
+            where: { userId: currentUserId },
+            select: {
+              id: true,
+              userId: true,
+              name: true,
+              archetype: true,
+              level: true,
+              xp: true,
+              credits: true,
+              mind: true,
+              body: true,
+              focus: true,
+              spirit: true,
+              connection: true,
+              createdAt: true,
+              user: {
+                select: {
+                  username: true,
+                  streak: {
+                    select: {
+                      currentStreak: true,
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          if (userChar) {
+            // Count players with higher rank
+            const higherRankCount = await prisma.character.count({
+              where: {
+                OR: [
+                  { xp: { gt: userChar.xp } },
+                  {
+                    AND: [
+                      { xp: userChar.xp },
+                      {
+                        OR: [
+                          { createdAt: { lt: userChar.createdAt } },
+                          {
+                            AND: [
+                              { createdAt: userChar.createdAt },
+                              { id: { lt: userChar.id } },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            });
+
+            currentUserEntry = {
+              rank: higherRankCount + 1,
+              userId: userChar.userId,
+              name: userChar.name || userChar.user.username,
+              username: userChar.user.username,
+              archetype: userChar.archetype,
+              level: userChar.level,
+              xp: userChar.xp,
+              credits: userChar.credits,
+              streak: userChar.user.streak?.currentStreak || 0,
+              stats: {
+                mind: userChar.mind,
+                body: userChar.body,
+                focus: userChar.focus,
+                spirit: userChar.spirit,
+                connection: userChar.connection,
+              },
+              isCurrentUser: true,
+            };
+          }
+        }
+      }
+
+      return {
+        entries,
+        currentUserEntry,
+        totalPlayers: totalCount,
+      };
+    });
+
+    if (pgData) return pgData;
+
+    // 2. Fallback local file store
+    const store = getLocalStore();
+    const sortedCharacters = [...store.characters].sort((a, b) => {
+      if (b.xp !== a.xp) return b.xp - a.xp;
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+      if (timeA !== timeB) return timeA - timeB;
+      return a.id.localeCompare(b.id);
+    });
+
+    const allEntries: LeaderboardEntry[] = sortedCharacters.map((c, idx) => {
+      const user = store.users.find((u) => u.id === c.userId);
+      const streak = store.userStreaks.find((s) => s.userId === c.userId);
+      return {
+        rank: idx + 1,
+        userId: c.userId,
+        name: c.name || user?.username || "Player",
+        username: user?.username || "Player",
+        archetype: c.archetype,
+        level: c.level,
+        xp: c.xp,
+        credits: c.credits || 0,
+        streak: streak?.currentStreak || 0,
+        stats: {
+          mind: c.mind,
+          body: c.body,
+          focus: c.focus,
+          spirit: c.spirit,
+          connection: c.connection,
+        },
+        isCurrentUser: currentUserId ? c.userId === currentUserId : false,
+      };
+    });
+
+    const entries = allEntries.slice(0, limit);
+    let currentUserEntry: LeaderboardEntry | null = null;
+    if (currentUserId) {
+      currentUserEntry = allEntries.find((e) => e.userId === currentUserId) || null;
+    }
+
+    return {
+      entries,
+      currentUserEntry,
+      totalPlayers: allEntries.length,
+    };
   },
 };
 

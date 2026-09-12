@@ -21,6 +21,8 @@ import {
   Package,
   Coins,
   LayoutGrid,
+  Trophy,
+  Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -169,6 +171,19 @@ export function WorldNavigation({
             >
               <Package className="w-3.5 h-3.5 text-purple-400" />
               <span>INVENTORY</span>
+            </Link>
+
+            <Link
+              href="/leaderboard"
+              className={cn(
+                "px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 border",
+                pathname === "/leaderboard"
+                  ? "bg-amber-950 border-amber-400 text-amber-200 font-bold shadow-[0_0_10px_rgba(245,158,11,0.4)]"
+                  : "border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700"
+              )}
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span>LEADERBOARD</span>
             </Link>
           </nav>
         )}
