@@ -7,6 +7,14 @@
       "username": "Aria",
       "createdAt": "2026-09-12T13:05:02.046Z",
       "updatedAt": "2026-09-12T13:05:02.046Z"
+    },
+    {
+      "id": "usr_mtyinu9t_kxmtdp3",
+      "email": "lekh0509sc@gmail.com",
+      "passwordHash": "$2b$10$butaqRWGmcml4yReGMxmWOzp0EqVJv92.n20bu83o8C3gZ0uJK25G",
+      "username": "lekana",
+      "createdAt": "2026-09-12T15:04:53.250Z",
+      "updatedAt": "2026-09-12T15:04:53.250Z"
     }
   ],
   "characters": [
