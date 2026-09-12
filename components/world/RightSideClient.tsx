@@ -21,6 +21,9 @@ import { SurvivalDashboard } from "@/components/survival/SurvivalDashboard";
 import { MilestoneUnlockOverlay } from "@/components/survival/MilestoneUnlockOverlay";
 import { MilestoneDefinition, getNextMilestone } from "@/lib/game/streakRewards";
 import { SignalStatus, getSignalStrength } from "@/lib/game/streaks";
+import { ActiveAnomalyHUD, ActiveAnomalyData } from "@/components/events/ActiveAnomalyHUD";
+import { AnomalyContainedOverlay, AnomalyContainedData } from "@/components/events/AnomalyContainedOverlay";
+import { SignalArchiveModal } from "@/components/events/SignalArchiveModal";
 
 export interface RightSideClientProps {
   user: DbUser;
@@ -42,6 +45,7 @@ export interface RightSideClientProps {
     previousStreak: number;
   };
   initialComeback?: any;
+  initialWorldEvent?: ActiveAnomalyData | null;
 }
 
 export function RightSideClient({
@@ -50,6 +54,7 @@ export function RightSideClient({
   initialWorldState,
   initialStreakSummary,
   initialComeback,
+  initialWorldEvent,
 }: RightSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
   const [character, setCharacter] = useState<DbCharacter>(initialCharacter);
@@ -57,6 +62,9 @@ export function RightSideClient({
   const [streakSummary, setStreakSummary] = useState(initialStreakSummary);
   const [activeComeback, setActiveComeback] = useState(initialComeback);
   const [unlockedMilestone, setUnlockedMilestone] = useState<MilestoneDefinition | null>(null);
+  const [activeEvent, setActiveEvent] = useState<ActiveAnomalyData | null>(initialWorldEvent || null);
+  const [containedEvent, setContainedEvent] = useState<AnomalyContainedData | null>(null);
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
   // Modals and Highlight states
   const [levelUpData, setLevelUpData] = useState<LevelUpData | null>(null);
@@ -239,6 +247,33 @@ export function RightSideClient({
         setAnnouncement((prev) => `${prev} COMEBACK PROTOCOL COMPLETED! Signal Restored!`);
       }
     }
+
+    // 11. World Event Telemetry & Containment
+    if (data.event) {
+      if (data.event.newlyCompleted) {
+        setContainedEvent({
+          title: data.event.title,
+          key: data.event.key,
+          rewardCredits: data.event.rewardCredits,
+          rewardXp: data.event.rewardXp,
+          corruptionReduced: data.event.corruptionReduced,
+          bossDamageDealt: data.event.bossDamageDealt,
+          loreUnlocked: data.event.loreUnlocked,
+        });
+        setActiveEvent(null);
+        setAnnouncement((prev) => `${prev} ANOMALY CONTAINED! ${data.event?.title} stabilized!`);
+      } else {
+        setActiveEvent((prev) =>
+          prev
+            ? {
+                ...prev,
+                progress: data.event!.progress,
+                completed: data.event!.completed,
+              }
+            : null
+        );
+      }
+    }
   };
 
   const currentCorruption = worldState?.corruption ?? 100;
@@ -266,6 +301,18 @@ export function RightSideClient({
       <MilestoneUnlockOverlay
         milestone={unlockedMilestone}
         onDismiss={() => setUnlockedMilestone(null)}
+      />
+
+      {/* Phase 8 Anomaly Contained Modal */}
+      <AnomalyContainedOverlay
+        data={containedEvent}
+        onDismiss={() => setContainedEvent(null)}
+      />
+
+      {/* Phase 8 Signal Archive (Past Anomalies & Lore Logs) */}
+      <SignalArchiveModal
+        isOpen={isArchiveOpen}
+        onClose={() => setIsArchiveOpen(false)}
       />
 
       {/* Main Content Area */}
@@ -345,6 +392,12 @@ export function RightSideClient({
           </motion.div>
         )}
 
+        {/* Phase 8 Active Anomaly HUD */}
+        <ActiveAnomalyHUD
+          event={activeEvent}
+          onOpenArchive={() => setIsArchiveOpen(true)}
+        />
+
         {/* Primary Game Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Character Dossier & Attributes */}
@@ -409,6 +462,42 @@ export function RightSideClient({
           <div className="text-cyan-400/80">CROSS DIMENSIONS VIA PORTAL GATEWAY</div>
         </div>
       </footer>
+
+      {/* Progression Overlays */}
+      {levelUpData && (
+        <LevelUpOverlay
+          data={levelUpData}
+          onDismiss={() => setLevelUpData(null)}
+        />
+      )}
+
+      {bossDefeatData && (
+        <BossDefeatOverlay
+          data={bossDefeatData}
+          onDismiss={() => setBossDefeatData(null)}
+        />
+      )}
+
+      {unlockedMilestone && (
+        <MilestoneUnlockOverlay
+          milestone={unlockedMilestone}
+          onDismiss={() => setUnlockedMilestone(null)}
+        />
+      )}
+
+      {/* Phase 8 Anomaly Contained Overlay */}
+      {containedEvent && (
+        <AnomalyContainedOverlay
+          data={containedEvent}
+          onDismiss={() => setContainedEvent(null)}
+        />
+      )}
+
+      {/* Phase 8 Signal Archive Modal */}
+      <SignalArchiveModal
+        isOpen={isArchiveOpen}
+        onClose={() => setIsArchiveOpen(false)}
+      />
     </div>
   );
 }

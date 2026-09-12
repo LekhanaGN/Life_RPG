@@ -136,7 +136,7 @@ export function processProgressionMath(
   });
 
   // 2. Compute new XP & Level
-  const previousXP = character.xp || 0;
+  const previousXP = (character as any).currentXp ?? character.xp ?? 0;
   const newXP = previousXP + rewards.xp;
   const levelUp = checkLevelUp(previousXP, newXP);
   const nextLevelProgression = getLevelFromXP(newXP);
@@ -146,6 +146,7 @@ export function processProgressionMath(
 
   // 4. Compute updated Attributes
   const updatedStats = {
+    currentXp: newXP,
     xp: newXP,
     credits: newCredits,
     level: nextLevelProgression.level,

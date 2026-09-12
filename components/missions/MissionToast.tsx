@@ -2,12 +2,12 @@
 
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, AlertTriangle, X } from "lucide-react";
+import { CheckCircle2, AlertTriangle, X, Zap } from "lucide-react";
 import { soundscape } from "@/lib/audio/soundscape";
 
 export interface ToastMessage {
   id: string;
-  type: "success" | "error" | "info";
+  type: "success" | "error" | "info" | "event";
   message: string;
 }
 
@@ -49,11 +49,12 @@ function ToastItem({
 
     const timer = setTimeout(() => {
       onDismiss(toast.id);
-    }, 4000);
+    }, 4500);
     return () => clearTimeout(timer);
   }, [toast, onDismiss]);
 
   const isError = toast.type === "error";
+  const isEvent = toast.type === "event";
 
   return (
     <motion.div
@@ -64,12 +65,16 @@ function ToastItem({
       className={`pointer-events-auto flex items-center justify-between p-3.5 rounded-xs backdrop-blur-md border text-xs font-mono tracking-wider shadow-lg ${
         isError
           ? "bg-red-950/90 border-red-500/80 text-red-200 shadow-[0_0_20px_rgba(239,68,68,0.3)]"
+          : isEvent
+          ? "bg-purple-950/95 border-purple-500/80 text-purple-200 shadow-[0_0_25px_rgba(168,85,247,0.4)]"
           : "bg-cyan-950/90 border-cyan-500/80 text-cyan-200 shadow-[0_0_20px_rgba(6,182,212,0.3)]"
       }`}
     >
       <div className="flex items-center gap-2.5">
         {isError ? (
           <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+        ) : isEvent ? (
+          <Zap className="w-4 h-4 text-purple-400 shrink-0 animate-pulse" />
         ) : (
           <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
         )}

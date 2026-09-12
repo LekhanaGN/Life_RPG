@@ -1,4 +1,4 @@
-@AGENTS.md
+# TheOtherSide — Project Instructions
 
 <!-- guardlink:begin -->
 ## GuardLink — Security Annotations (Required)

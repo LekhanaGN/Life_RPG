@@ -23,6 +23,7 @@ import {
   CheckCircle2,
   Radio,
 } from "lucide-react";
+import { ActiveAnomalyData } from "@/components/events/ActiveAnomalyHUD";
 
 export interface OtherSideClientProps {
   user: DbUser;
@@ -36,6 +37,7 @@ export interface OtherSideClientProps {
     streakBroken: boolean;
     previousStreak: number;
   };
+  initialWorldEvent?: ActiveAnomalyData | null;
 }
 
 export function OtherSideClient({
@@ -43,10 +45,12 @@ export function OtherSideClient({
   character,
   initialWorldState,
   initialStreakSummary,
+  initialWorldEvent,
 }: OtherSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
   const [worldState] = useState<WorldStateSummary | undefined>(initialWorldState);
   const [streak] = useState(initialStreakSummary);
+  const [activeEvent] = useState<ActiveAnomalyData | null>(initialWorldEvent || null);
 
   const handleReturnToRightSide = () => {
     triggerTransition("/right-side", "other-to-right");
@@ -55,9 +59,23 @@ export function OtherSideClient({
   const activeBoss = worldState?.activeBoss;
   const corruption = worldState?.corruption ?? 100;
   const areas = worldState?.areas || [];
+  const distortion = activeEvent?.visualEffect?.distortionStyle;
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
+    <div className={`relative min-h-screen flex flex-col justify-between overflow-hidden ${
+      distortion === "static"
+        ? "crt-scanlines animate-flicker"
+        : distortion === "vibration"
+        ? "animate-pulse"
+        : ""
+    }`}>
+      {/* Dynamic atmospheric distortion overlay */}
+      {distortion === "breach" && (
+        <div className="pointer-events-none fixed inset-0 z-10 border-[6px] border-red-600/40 shadow-[inset_0_0_80px_rgba(220,38,38,0.5)] animate-pulse" />
+      )}
+      {distortion === "darkness" && (
+        <div className="pointer-events-none fixed inset-0 z-10 bg-black/30 shadow-[inset_0_0_120px_rgba(0,0,0,0.95)]" />
+      )}
       {/* Corrupted Void, Deep Crimson, and Spore Particles */}
       <WorldBackground mode="other-side" />
 
@@ -207,6 +225,46 @@ export function OtherSideClient({
                         ? "Your sustained presence burns through the void matrix like white phosphorus."
                         : "Daily action in the Right Side stabilizes your anchor against the void."}
                     </p>
+                  </div>
+                )}
+
+                {/* Active World Event Anomaly Intercept */}
+                {activeEvent && (
+                  <div
+                    className="p-3.5 rounded-xs border space-y-2 transition-all duration-500"
+                    style={{
+                      borderColor: activeEvent.visualEffect.ambientColor + "66",
+                      backgroundColor: "rgba(15, 5, 10, 0.7)",
+                      boxShadow: `0 0 15px ${activeEvent.visualEffect.ambientColor}22`,
+                    }}
+                  >
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="font-bold uppercase flex items-center gap-1.5" style={{ color: activeEvent.visualEffect.ambientColor }}>
+                        <Zap className="w-3.5 h-3.5 animate-pulse" />
+                        ANOMALOUS INTERFERENCE
+                      </span>
+                      <span className="font-orbitron font-extrabold" style={{ color: activeEvent.visualEffect.ambientColor }}>
+                        {activeEvent.key.replace(/_/g, " ")}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] font-mono text-slate-300 leading-snug">
+                      {activeEvent.description}
+                    </p>
+
+                    <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-red-900/40">
+                      <span className="text-slate-400">ATMOSPHERIC REACTION:</span>
+                      <span className="font-bold uppercase" style={{ color: activeEvent.visualEffect.ambientColor }}>
+                        {activeEvent.visualEffect.distortionStyle.toUpperCase()}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] font-mono">
+                      <span className="text-slate-400">CONTAINMENT REQUIREMENT:</span>
+                      <span className="text-white font-mono font-bold">
+                        {activeEvent.progress} / {activeEvent.requiredProgress} CLEARANCES
+                      </span>
+                    </div>
                   </div>
                 )}
               </CardContent>

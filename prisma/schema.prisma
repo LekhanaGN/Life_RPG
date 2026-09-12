@@ -29,6 +29,8 @@ model User {
   dailyActivities DailyActivity[]
   milestones      UserMilestone[]
   comebackChallenges ComebackChallenge[]
+  worldEvents        UserWorldEvent[]
+  unlockedLore       UserLoreUnlock[]
 
   @@map("users")
 }
@@ -257,5 +259,63 @@ model ComebackChallenge {
 
   @@index([userId])
   @@map("comeback_challenges")
+}
+
+model WorldEvent {
+  id                  String           @id @default(cuid())
+  key                 String           @unique // SIGNAL_SURGE, STATIC_STORM, etc.
+  title               String
+  description         String
+  loreSnippet         String?
+  targetAttribute     String           // FOCUS, MIND, BODY, SPIRIT, CONNECTION, ANY
+  targetArea          String?          // e.g. THE_GATE
+  requiredCompletions Int              @default(3)
+  rewardCredits       Int              @default(60)
+  rewardXp            Int              @default(40)
+  corruptionChange    Int              @default(0) // Extra corruption reduction upon completion
+  bossDamageBonus     Int              @default(0) // Extra damage to active boss
+  rarity              String           @default("COMMON") // COMMON, RARE, SPECIAL
+  loreId              String?          // Lore log key unlocked on first containment
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  userEvents          UserWorldEvent[]
+
+  @@map("world_events")
+}
+
+model UserWorldEvent {
+  id                  String      @id @default(cuid())
+  userId              String
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  worldEventId        String
+  worldEvent          WorldEvent  @relation(fields: [worldEventId], references: [id], onDelete: Cascade)
+  status              String      @default("ACTIVE") // ACTIVE, COMPLETED, EXPIRED
+  progress            Int         @default(0)
+  requiredProgress    Int         @default(3)
+  completed           Boolean     @default(false)
+  rewardClaimed       Boolean     @default(false)
+  startsAt            DateTime    @default(now())
+  expiresAt           DateTime
+  completedAt         DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  @@index([userId, status, expiresAt])
+  @@map("user_world_events")
+}
+
+model UserLoreUnlock {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  loreKey    String   // LOG_07, LOG_12, etc.
+  title      String
+  content    String
+  source     String   // Event key or origin
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, loreKey])
+  @@index([userId])
+  @@map("user_lore_unlocks")
 }
 

@@ -51,6 +51,22 @@ import {
   isComebackExpired,
   getComebackTimeRemainingMs,
 } from "@/lib/game/comeback";
+import {
+  CANONICAL_WORLD_EVENTS,
+  WorldEventKey,
+  WorldEventTemplate,
+  WORLD_LORE_LOGS,
+  getWorldEventDefinition,
+  getLoreDefinition,
+  LoreLogDefinition,
+} from "@/lib/game/worldEvents";
+import {
+  selectEligibleEventTemplate,
+  isEligibleForNewEvent,
+  isEventExpired,
+  EventGenerationContext,
+} from "@/lib/game/eventGenerator";
+import { calculateEventReward } from "@/lib/game/eventRewards";
 
 // Global Prisma instance to avoid multiple connections in Next.js hot reload
 const globalForPrisma = globalThis as unknown as {
@@ -264,6 +280,52 @@ export interface DbComebackChallenge {
   updatedAt: Date;
 }
 
+export interface DbWorldEvent {
+  id: string;
+  key: string;
+  title: string;
+  description: string;
+  loreSnippet: string | null;
+  targetAttribute: string;
+  targetArea: string | null;
+  requiredCompletions: number;
+  rewardCredits: number;
+  rewardXp: number;
+  corruptionChange: number;
+  bossDamageBonus: number;
+  rarity: string;
+  loreId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DbUserWorldEvent {
+  id: string;
+  userId: string;
+  worldEventId: string;
+  status: "ACTIVE" | "COMPLETED" | "EXPIRED";
+  progress: number;
+  requiredProgress: number;
+  completed: boolean;
+  rewardClaimed: boolean;
+  startsAt: Date;
+  expiresAt: Date;
+  completedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  worldEvent?: DbWorldEvent;
+}
+
+export interface DbUserLoreUnlock {
+  id: string;
+  userId: string;
+  loreKey: string;
+  title: string;
+  content: string;
+  source: string;
+  unlockedAt: Date;
+}
+
 export interface WorldStateSummary {
   corruption: number;
   integrityPercent: number;
@@ -318,6 +380,9 @@ interface LocalDataStore {
   milestones: DbMilestone[];
   userMilestones: DbUserMilestone[];
   comebackChallenges: DbComebackChallenge[];
+  worldEvents: DbWorldEvent[];
+  userWorldEvents: DbUserWorldEvent[];
+  userLoreUnlocks: DbUserLoreUnlock[];
 }
 
 function generateId(prefix = "c"): string {
@@ -362,6 +427,30 @@ function getLocalStore(): LocalDataStore {
         createdAt: new Date(),
       }));
 
+      const seededWorldEvents: DbWorldEvent[] = (Object.keys(CANONICAL_WORLD_EVENTS) as WorldEventKey[]).map(
+        (k) => {
+          const t = CANONICAL_WORLD_EVENTS[k];
+          return {
+            id: `we_${t.key.toLowerCase()}`,
+            key: t.key,
+            title: t.title,
+            description: t.description,
+            loreSnippet: t.loreSnippet,
+            targetAttribute: t.targetAttribute,
+            targetArea: t.targetArea || null,
+            requiredCompletions: t.requiredCompletions,
+            rewardCredits: t.rewardCredits,
+            rewardXp: t.rewardXp,
+            corruptionChange: t.corruptionChange,
+            bossDamageBonus: t.bossDamageBonus,
+            rarity: t.rarity,
+            loreId: t.loreId || null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+        }
+      );
+
       const initial: LocalDataStore = {
         users: [],
         characters: [],
@@ -378,6 +467,9 @@ function getLocalStore(): LocalDataStore {
         milestones: seededMilestones,
         userMilestones: [],
         comebackChallenges: [],
+        worldEvents: seededWorldEvents,
+        userWorldEvents: [],
+        userLoreUnlocks: [],
       };
       fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(initial, null, 2), "utf-8");
       return initial;
@@ -408,7 +500,6 @@ function getLocalStore(): LocalDataStore {
     }));
     parsed.worldProgress = (parsed.worldProgress || []).map((wp: any) => ({
       ...wp,
-      createdAt: new Date(wp.createdAt),
       updatedAt: new Date(wp.updatedAt),
     }));
     parsed.worldAreaProgress = (parsed.worldAreaProgress || []).map((wap: any) => ({
@@ -518,6 +609,53 @@ function getLocalStore(): LocalDataStore {
       updatedAt: new Date(cc.updatedAt),
     }));
 
+    // Ensure canonical world events exist
+    const worldEvents = (parsed.worldEvents || []).map((we: any) => ({
+      ...we,
+      createdAt: new Date(we.createdAt),
+      updatedAt: new Date(we.updatedAt),
+    }));
+
+    const canonicalKeys = Object.keys(CANONICAL_WORLD_EVENTS) as WorldEventKey[];
+    for (const key of canonicalKeys) {
+      if (!worldEvents.some((we: any) => we.key === key)) {
+        const t = CANONICAL_WORLD_EVENTS[key];
+        worldEvents.push({
+          id: `we_${t.key.toLowerCase()}`,
+          key: t.key,
+          title: t.title,
+          description: t.description,
+          loreSnippet: t.loreSnippet,
+          targetAttribute: t.targetAttribute,
+          targetArea: t.targetArea || null,
+          requiredCompletions: t.requiredCompletions,
+          rewardCredits: t.rewardCredits,
+          rewardXp: t.rewardXp,
+          corruptionChange: t.corruptionChange,
+          bossDamageBonus: t.bossDamageBonus,
+          rarity: t.rarity,
+          loreId: t.loreId || null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
+    }
+    parsed.worldEvents = worldEvents;
+
+    parsed.userWorldEvents = (parsed.userWorldEvents || []).map((uwe: any) => ({
+      ...uwe,
+      startsAt: new Date(uwe.startsAt),
+      expiresAt: new Date(uwe.expiresAt),
+      completedAt: uwe.completedAt ? new Date(uwe.completedAt) : null,
+      createdAt: new Date(uwe.createdAt),
+      updatedAt: new Date(uwe.updatedAt),
+    }));
+
+    parsed.userLoreUnlocks = (parsed.userLoreUnlocks || []).map((ulu: any) => ({
+      ...ulu,
+      unlockedAt: new Date(ulu.unlockedAt),
+    }));
+
     return parsed;
   } catch (err) {
     console.error("[DB Fallback Store Error]:", err);
@@ -537,6 +675,9 @@ function getLocalStore(): LocalDataStore {
       milestones: [],
       userMilestones: [],
       comebackChallenges: [],
+      worldEvents: [],
+      userWorldEvents: [],
+      userLoreUnlocks: [],
     };
   }
 }
@@ -2030,6 +2171,403 @@ export const db = {
   },
 
   /**
+   * Find active unexpired UserWorldEvent with template included
+   */
+  async findActiveUserWorldEvent(userId: string): Promise<DbUserWorldEvent | null> {
+    const now = new Date();
+    const pgEvent = await executePrisma(async () => {
+      const event = await prisma.userWorldEvent.findFirst({
+        where: {
+          userId,
+          status: "ACTIVE",
+          expiresAt: { gt: now },
+        },
+        include: {
+          worldEvent: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!event) {
+        // Also check if an active event has expired and mark it
+        const expiredEvent = await prisma.userWorldEvent.findFirst({
+          where: {
+            userId,
+            status: "ACTIVE",
+            expiresAt: { lte: now },
+          },
+        });
+        if (expiredEvent) {
+          await prisma.userWorldEvent.update({
+            where: { id: expiredEvent.id },
+            data: { status: "EXPIRED" },
+          });
+        }
+        return null;
+      }
+
+      return event;
+    });
+
+    if (pgEvent !== null) return pgEvent as unknown as DbUserWorldEvent;
+
+    const store = getLocalStore();
+    const event = store.userWorldEvents.find(
+      (uwe) => uwe.userId === userId && uwe.status === "ACTIVE"
+    );
+    if (!event) return null;
+
+    if (now.getTime() >= new Date(event.expiresAt).getTime() && !event.completed) {
+      event.status = "EXPIRED";
+      saveLocalStore(store);
+      return null;
+    }
+
+    const template = store.worldEvents.find((we) => we.id === event.worldEventId);
+    return {
+      ...event,
+      worldEvent: template,
+    };
+  },
+
+  /**
+   * Find historical completed and expired events for a user
+   */
+  async findUserWorldEventHistory(userId: string, limit = 20): Promise<DbUserWorldEvent[]> {
+    const pgHistory = await executePrisma(async () => {
+      return prisma.userWorldEvent.findMany({
+        where: {
+          userId,
+          status: { in: ["COMPLETED", "EXPIRED"] },
+        },
+        include: {
+          worldEvent: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: limit,
+      });
+    });
+
+    if (pgHistory) return pgHistory as unknown as DbUserWorldEvent[];
+
+    const store = getLocalStore();
+    return store.userWorldEvents
+      .filter((uwe) => uwe.userId === userId && (uwe.status === "COMPLETED" || uwe.status === "EXPIRED"))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, limit)
+      .map((uwe) => ({
+        ...uwe,
+        worldEvent: store.worldEvents.find((we) => we.id === uwe.worldEventId),
+      }));
+  },
+
+  /**
+   * Retrieve all world lore logs discovered by a survivor
+   */
+  async findUserLoreUnlocks(userId: string): Promise<DbUserLoreUnlock[]> {
+    const pgLore = await executePrisma(async () => {
+      return prisma.userLoreUnlock.findMany({
+        where: { userId },
+        orderBy: { unlockedAt: "desc" },
+      });
+    });
+
+    if (pgLore) return pgLore as unknown as DbUserLoreUnlock[];
+
+    const store = getLocalStore();
+    return (store.userLoreUnlocks || [])
+      .filter((u) => u.userId === userId)
+      .sort((a, b) => new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime());
+  },
+
+  /**
+   * Idempotently unlock a lore log for a survivor
+   */
+  async saveUserLoreUnlock(userId: string, loreKey: string): Promise<DbUserLoreUnlock | null> {
+    const loreDef = getLoreDefinition(loreKey);
+    if (!loreDef) return null;
+
+    const pgLore = await executePrisma(async () => {
+      const existing = await prisma.userLoreUnlock.findUnique({
+        where: { userId_loreKey: { userId, loreKey } },
+      });
+      if (existing) return null;
+
+      return prisma.userLoreUnlock.create({
+        data: {
+          userId,
+          loreKey,
+          title: loreDef.title,
+          content: loreDef.content,
+          source: loreDef.source,
+          unlockedAt: new Date(),
+        },
+      });
+    });
+
+    if (pgLore !== undefined) return pgLore as unknown as DbUserLoreUnlock | null;
+
+    const store = getLocalStore();
+    const existing = (store.userLoreUnlocks || []).find(
+      (u) => u.userId === userId && u.loreKey === loreKey
+    );
+    if (existing) return null;
+
+    const newUnlock: DbUserLoreUnlock = {
+      id: generateId("lore"),
+      userId,
+      loreKey,
+      title: loreDef.title,
+      content: loreDef.content,
+      source: loreDef.source,
+      unlockedAt: new Date(),
+    };
+    store.userLoreUnlocks.push(newUnlock);
+    saveLocalStore(store);
+    return newUnlock;
+  },
+
+  /**
+   * Context-aware event generation: Ensures an active event exists if eligible
+   */
+  async ensureUserWorldEvent(userId: string, bypassCooldown = false): Promise<DbUserWorldEvent | null> {
+    const active = await this.findActiveUserWorldEvent(userId);
+    if (active) return active;
+
+    const history = await this.findUserWorldEventHistory(userId, 5);
+    const lastEvent = history[0];
+    const lastFinishedAt = lastEvent?.completedAt || lastEvent?.expiresAt || null;
+
+    if (!isEligibleForNewEvent(false, lastFinishedAt, new Date(), bypassCooldown)) {
+      return null;
+    }
+
+    const { worldProgress, activeBoss } = await this.findOrCreateWorldProgress(userId);
+    const char = await this.findCharacterByUserId(userId);
+
+    const ctx: EventGenerationContext = {
+      corruption: worldProgress.corruption,
+      activeBossDefeated: activeBoss.isDefeated,
+      activeBossKey: activeBoss.bossKey,
+      characterAttributes: char
+        ? {
+            mind: char.mind,
+            body: char.body,
+            focus: char.focus,
+            spirit: char.spirit,
+            connection: char.connection,
+          }
+        : undefined,
+      recentCompletedEventKeys: history
+        .map((h) => h.worldEvent?.key)
+        .filter(Boolean) as string[],
+      lastEventFinishedAt: lastFinishedAt,
+    };
+
+    const template = selectEligibleEventTemplate(ctx);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + template.durationHours * 60 * 60 * 1000);
+
+    const pgUserEvent = await executePrisma(async () => {
+      const dbTemplate = await prisma.worldEvent.upsert({
+        where: { key: template.key },
+        update: {},
+        create: {
+          key: template.key,
+          title: template.title,
+          description: template.description,
+          loreSnippet: template.loreSnippet,
+          targetAttribute: template.targetAttribute,
+          targetArea: template.targetArea || null,
+          requiredCompletions: template.requiredCompletions,
+          rewardCredits: template.rewardCredits,
+          rewardXp: template.rewardXp,
+          corruptionChange: template.corruptionChange,
+          bossDamageBonus: template.bossDamageBonus,
+          rarity: template.rarity,
+          loreId: template.loreId || null,
+        },
+      });
+
+      return prisma.userWorldEvent.create({
+        data: {
+          userId,
+          worldEventId: dbTemplate.id,
+          status: "ACTIVE",
+          progress: 0,
+          requiredProgress: template.requiredCompletions,
+          completed: false,
+          rewardClaimed: false,
+          startsAt: now,
+          expiresAt,
+        },
+        include: {
+          worldEvent: true,
+        },
+      });
+    });
+
+    if (pgUserEvent) return pgUserEvent as unknown as DbUserWorldEvent;
+
+    const store = getLocalStore();
+    let dbTemplate = store.worldEvents.find((we) => we.key === template.key);
+    if (!dbTemplate) {
+      dbTemplate = {
+        id: `we_${template.key.toLowerCase()}`,
+        key: template.key,
+        title: template.title,
+        description: template.description,
+        loreSnippet: template.loreSnippet,
+        targetAttribute: template.targetAttribute,
+        targetArea: template.targetArea || null,
+        requiredCompletions: template.requiredCompletions,
+        rewardCredits: template.rewardCredits,
+        rewardXp: template.rewardXp,
+        corruptionChange: template.corruptionChange,
+        bossDamageBonus: template.bossDamageBonus,
+        rarity: template.rarity,
+        loreId: template.loreId || null,
+        createdAt: now,
+        updatedAt: now,
+      };
+      store.worldEvents.push(dbTemplate);
+    }
+
+    const newUserEvent: DbUserWorldEvent = {
+      id: generateId("uwe"),
+      userId,
+      worldEventId: dbTemplate.id,
+      status: "ACTIVE",
+      progress: 0,
+      requiredProgress: template.requiredCompletions,
+      completed: false,
+      rewardClaimed: false,
+      startsAt: now,
+      expiresAt,
+      completedAt: null,
+      createdAt: now,
+      updatedAt: now,
+      worldEvent: dbTemplate,
+    };
+
+    store.userWorldEvents.push(newUserEvent);
+    saveLocalStore(store);
+    return newUserEvent;
+  },
+
+  /**
+   * Directly assign a specific World Event to a user (used for testing and deterministic triggers)
+   */
+  async ensureUserWorldEventForTesting(
+    userId: string,
+    eventKey: WorldEventKey,
+    options?: { customDurationHours?: number }
+  ): Promise<DbUserWorldEvent> {
+    const template = getWorldEventDefinition(eventKey);
+    const now = new Date();
+    const durationHours = options?.customDurationHours ?? template.durationHours;
+    const expiresAt = new Date(now.getTime() + durationHours * 60 * 60 * 1000);
+
+    const pgUserEvent = await executePrisma(async () => {
+      // Clean up previous active events for user to ensure single active event
+      await prisma.userWorldEvent.updateMany({
+        where: { userId, status: "ACTIVE" },
+        data: { status: "EXPIRED" },
+      });
+
+      const dbTemplate = await prisma.worldEvent.upsert({
+        where: { key: template.key },
+        update: {},
+        create: {
+          key: template.key,
+          title: template.title,
+          description: template.description,
+          loreSnippet: template.loreSnippet,
+          targetAttribute: template.targetAttribute,
+          targetArea: template.targetArea || null,
+          requiredCompletions: template.requiredCompletions,
+          rewardCredits: template.rewardCredits,
+          rewardXp: template.rewardXp,
+          corruptionChange: template.corruptionChange,
+          bossDamageBonus: template.bossDamageBonus,
+          rarity: template.rarity,
+          loreId: template.loreId || null,
+        },
+      });
+
+      return prisma.userWorldEvent.create({
+        data: {
+          userId,
+          worldEventId: dbTemplate.id,
+          status: "ACTIVE",
+          progress: 0,
+          requiredProgress: template.requiredCompletions,
+          completed: false,
+          rewardClaimed: false,
+          startsAt: now,
+          expiresAt,
+        },
+        include: {
+          worldEvent: true,
+        },
+      });
+    });
+
+    if (pgUserEvent) return pgUserEvent as unknown as DbUserWorldEvent;
+
+    const store = getLocalStore();
+    for (const uwe of store.userWorldEvents) {
+      if (uwe.userId === userId && uwe.status === "ACTIVE") {
+        uwe.status = "EXPIRED";
+      }
+    }
+
+    let dbTemplate = store.worldEvents.find((we) => we.key === template.key);
+    if (!dbTemplate) {
+      dbTemplate = {
+        id: `we_${template.key.toLowerCase()}`,
+        key: template.key,
+        title: template.title,
+        description: template.description,
+        loreSnippet: template.loreSnippet,
+        targetAttribute: template.targetAttribute,
+        targetArea: template.targetArea || null,
+        requiredCompletions: template.requiredCompletions,
+        rewardCredits: template.rewardCredits,
+        rewardXp: template.rewardXp,
+        corruptionChange: template.corruptionChange,
+        bossDamageBonus: template.bossDamageBonus,
+        rarity: template.rarity,
+        loreId: template.loreId || null,
+        createdAt: now,
+        updatedAt: now,
+      };
+      store.worldEvents.push(dbTemplate);
+    }
+
+    const newUserEvent: DbUserWorldEvent = {
+      id: generateId("uwe"),
+      userId,
+      worldEventId: dbTemplate.id,
+      status: "ACTIVE",
+      progress: 0,
+      requiredProgress: template.requiredCompletions,
+      completed: false,
+      rewardClaimed: false,
+      startsAt: now,
+      expiresAt,
+      completedAt: null,
+      createdAt: now,
+      updatedAt: now,
+      worldEvent: dbTemplate,
+    };
+
+    store.userWorldEvents.push(newUserEvent);
+    saveLocalStore(store);
+    return newUserEvent;
+  },
+
+  /**
    * ATOMIC TRANSACTION: Complete Mission & Award Full Phase 5, 6 & 7 Progression
    * 1. Validates ownership & existence
    * 2. Checks duplicate completion rules
@@ -2105,6 +2643,22 @@ export const db = {
       bonusCredits?: number;
     } | null;
     survivalSecuredToday?: boolean;
+    event?: {
+      id: string;
+      key: string;
+      title: string;
+      progress: number;
+      requiredProgress: number;
+      completed: boolean;
+      newlyCompleted: boolean;
+      rewardClaimed: boolean;
+      rewardCredits: number;
+      rewardXp: number;
+      corruptionReduced?: number;
+      bossDamageDealt?: number;
+      loreUnlocked?: DbUserLoreUnlock | null;
+      loreSnippet?: string | null;
+    } | null;
   }> {
     // 1. Fetch Mission, Character & User
     const mission = await this.findMissionById(missionId, userId);
@@ -2192,8 +2746,8 @@ export const db = {
       bossDamage
     );
 
-    const isBossDefeatedNow = damageCalc.isDefeated;
-    const defeatedAt = isBossDefeatedNow ? new Date() : activeBoss.defeatedAt;
+    let isBossDefeatedNow = damageCalc.isDefeated;
+    let defeatedAt = isBossDefeatedNow ? new Date() : activeBoss.defeatedAt;
     let nextBossKey: string | null = null;
     let nextBossName: string | null = null;
 
@@ -2318,6 +2872,141 @@ export const db = {
         missionsCompleted: 1,
         missionsRequired: COMEBACK_CONFIG.missionsRequired,
       };
+    }
+
+    // Phase 8: Active World Event Tracking
+    const activeUserEvent = await this.findActiveUserWorldEvent(userId);
+    let eventResult: {
+      id: string;
+      key: string;
+      title: string;
+      progress: number;
+      requiredProgress: number;
+      completed: boolean;
+      newlyCompleted: boolean;
+      rewardClaimed: boolean;
+      rewardCredits: number;
+      rewardXp: number;
+      corruptionReduced?: number;
+      bossDamageDealt?: number;
+      loreUnlocked?: DbUserLoreUnlock | null;
+      loreSnippet?: string | null;
+    } | null = null;
+
+    let userEventToUpdate: DbUserWorldEvent | null = null;
+    let eventLoreToUnlock: DbUserLoreUnlock | null = null;
+    let eventBonusCredits = 0;
+    let eventBonusXp = 0;
+
+    if (
+      activeUserEvent &&
+      activeUserEvent.status === "ACTIVE" &&
+      !activeUserEvent.completed &&
+      !isEventExpired(activeUserEvent.expiresAt, completedAt)
+    ) {
+      const targetAttr = activeUserEvent.worldEvent?.targetAttribute || "ANY";
+      const isMatch = targetAttr === "ANY" || targetAttr === mission.category;
+
+      if (isMatch) {
+        const nextProgress = Math.min(activeUserEvent.requiredProgress, activeUserEvent.progress + 1);
+        const newlyCompleted = nextProgress >= activeUserEvent.requiredProgress && !activeUserEvent.completed;
+
+        userEventToUpdate = {
+          ...activeUserEvent,
+          progress: nextProgress,
+          completed: newlyCompleted || activeUserEvent.completed,
+          status: newlyCompleted ? "COMPLETED" : "ACTIVE",
+          rewardClaimed: newlyCompleted || activeUserEvent.rewardClaimed,
+          completedAt: newlyCompleted ? completedAt : activeUserEvent.completedAt,
+          updatedAt: completedAt,
+        };
+
+        let extraCorruptionReduced = 0;
+        let extraBossDamage = 0;
+
+        if (newlyCompleted) {
+          eventBonusCredits = activeUserEvent.worldEvent?.rewardCredits || 0;
+          eventBonusXp = activeUserEvent.worldEvent?.rewardXp || 0;
+          updatedStats.credits += eventBonusCredits;
+          updatedStats.xp += eventBonusXp;
+
+          // Event corruption bonus
+          if (activeUserEvent.worldEvent?.corruptionChange && activeUserEvent.worldEvent.corruptionChange < 0) {
+            const extraRed = Math.abs(activeUserEvent.worldEvent.corruptionChange);
+            corruptionAfter = clampCorruption(corruptionAfter - extraRed);
+            extraCorruptionReduced = extraRed;
+          }
+
+          // Event boss damage bonus
+          if (
+            activeUserEvent.worldEvent?.bossDamageBonus &&
+            activeUserEvent.worldEvent.bossDamageBonus > 0 &&
+            !activeBoss.isDefeated
+          ) {
+            extraBossDamage = activeUserEvent.worldEvent.bossDamageBonus;
+            damageCalc.damageDealt += extraBossDamage;
+            damageCalc.hpAfter = Math.max(0, damageCalc.hpAfter - extraBossDamage);
+            if (damageCalc.hpAfter === 0) {
+              isBossDefeatedNow = true;
+              defeatedAt = completedAt;
+              const nextBoss = getNextBossDefinition(activeBoss.bossKey);
+              nextBossKey = nextBoss?.key || null;
+              nextBossName = nextBoss?.name || null;
+            }
+          }
+
+          // Check Lore Unlock
+          if (activeUserEvent.worldEvent?.loreId) {
+            const existingLores = await this.findUserLoreUnlocks(userId);
+            if (!existingLores.some((l) => l.loreKey === activeUserEvent.worldEvent!.loreId)) {
+              const loreDef = getLoreDefinition(activeUserEvent.worldEvent.loreId);
+              if (loreDef) {
+                eventLoreToUnlock = {
+                  id: generateId("lur"),
+                  userId,
+                  loreKey: loreDef.key,
+                  title: loreDef.title,
+                  content: loreDef.content,
+                  source: activeUserEvent.worldEvent.title,
+                  unlockedAt: completedAt,
+                };
+              }
+            }
+          }
+        }
+
+        eventResult = {
+          id: activeUserEvent.id,
+          key: activeUserEvent.worldEvent?.key || "ANOMALY",
+          title: activeUserEvent.worldEvent?.title || "SUPERVISION ANOMALY",
+          progress: nextProgress,
+          requiredProgress: activeUserEvent.requiredProgress,
+          completed: userEventToUpdate.completed,
+          newlyCompleted,
+          rewardClaimed: userEventToUpdate.rewardClaimed,
+          rewardCredits: eventBonusCredits,
+          rewardXp: eventBonusXp,
+          corruptionReduced: extraCorruptionReduced,
+          bossDamageDealt: extraBossDamage,
+          loreUnlocked: eventLoreToUnlock,
+          loreSnippet: activeUserEvent.worldEvent?.loreSnippet || null,
+        };
+      } else {
+        // Mission did not match category, return active status without progress increment
+        eventResult = {
+          id: activeUserEvent.id,
+          key: activeUserEvent.worldEvent?.key || "ANOMALY",
+          title: activeUserEvent.worldEvent?.title || "SUPERVISION ANOMALY",
+          progress: activeUserEvent.progress,
+          requiredProgress: activeUserEvent.requiredProgress,
+          completed: activeUserEvent.completed,
+          newlyCompleted: false,
+          rewardClaimed: activeUserEvent.rewardClaimed,
+          rewardCredits: 0,
+          rewardXp: 0,
+          loreSnippet: activeUserEvent.worldEvent?.loreSnippet || null,
+        };
+      }
     }
 
     // 5. Execute Atomic Persistence
@@ -2510,6 +3199,52 @@ export const db = {
           }
         }
 
+        // World Event persistence
+        if (userEventToUpdate) {
+          await tx.userWorldEvent.update({
+            where: { id: userEventToUpdate.id },
+            data: {
+              progress: userEventToUpdate.progress,
+              completed: userEventToUpdate.completed,
+              status: userEventToUpdate.status,
+              rewardClaimed: userEventToUpdate.rewardClaimed,
+              completedAt: userEventToUpdate.completedAt,
+              updatedAt: completedAt,
+            },
+          });
+
+          if (eventResult?.newlyCompleted && eventBonusCredits > 0) {
+            await tx.economyTransaction.create({
+              data: {
+                userId,
+                type: "MISSION_REWARD",
+                amount: eventBonusCredits,
+                description: `Anomaly Contained: ${eventResult.title}`,
+              },
+            });
+          }
+
+          if (eventLoreToUnlock) {
+            await tx.userLoreUnlock.upsert({
+              where: {
+                userId_loreKey: {
+                  userId,
+                  loreKey: eventLoreToUnlock.loreKey,
+                },
+              },
+              update: {},
+              create: {
+                userId,
+                loreKey: eventLoreToUnlock.loreKey,
+                title: eventLoreToUnlock.title,
+                content: eventLoreToUnlock.content,
+                source: eventLoreToUnlock.source,
+                unlockedAt: completedAt,
+              },
+            });
+          }
+        }
+
         return {
           updatedChar: updatedChar as unknown as DbCharacter,
           updatedMsn,
@@ -2576,6 +3311,7 @@ export const db = {
         milestonesUnlocked: newlyUnlockedMilestones,
         comeback: comebackStatus,
         survivalSecuredToday: true,
+        event: eventResult,
       };
     }
 
@@ -2746,6 +3482,43 @@ export const db = {
       }
     }
 
+    // Local World Event update & transactions
+    if (userEventToUpdate) {
+      const uweIdx = store.userWorldEvents.findIndex((u) => u.id === userEventToUpdate!.id);
+      if (uweIdx >= 0) {
+        store.userWorldEvents[uweIdx] = {
+          ...store.userWorldEvents[uweIdx],
+          progress: userEventToUpdate.progress,
+          completed: userEventToUpdate.completed,
+          status: userEventToUpdate.status,
+          rewardClaimed: userEventToUpdate.rewardClaimed,
+          completedAt: userEventToUpdate.completedAt,
+          updatedAt: completedAt,
+        };
+      }
+
+      if (eventResult?.newlyCompleted && eventBonusCredits > 0) {
+        store.economyTransactions.push({
+          id: generateId("etx"),
+          userId,
+          type: "MISSION_REWARD",
+          amount: eventBonusCredits,
+          itemId: null,
+          description: `Anomaly Contained: ${eventResult.title}`,
+          createdAt: completedAt,
+        });
+      }
+
+      if (eventLoreToUnlock) {
+        const existingIdx = store.userLoreUnlocks.findIndex(
+          (l) => l.userId === userId && l.loreKey === eventLoreToUnlock!.loreKey
+        );
+        if (existingIdx === -1) {
+          store.userLoreUnlocks.push(eventLoreToUnlock);
+        }
+      }
+    }
+
     store.missionCompletions.push(completionRecord);
     store.economyTransactions.push(economyRecord);
     store.characters[localCharIdx] = updatedChar;
@@ -2803,6 +3576,7 @@ export const db = {
       milestonesUnlocked: newlyUnlockedMilestones,
       comeback: comebackStatus,
       survivalSecuredToday: true,
+      event: eventResult,
     };
   },
 };

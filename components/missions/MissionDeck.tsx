@@ -87,6 +87,22 @@ export interface ProgressionPayload {
   milestonesUnlocked?: any[];
   comeback?: any;
   survivalSecuredToday?: boolean;
+  event?: {
+    id: string;
+    key: string;
+    title: string;
+    progress: number;
+    requiredProgress: number;
+    completed: boolean;
+    newlyCompleted: boolean;
+    rewardClaimed: boolean;
+    rewardCredits: number;
+    rewardXp: number;
+    corruptionReduced?: number;
+    bossDamageDealt?: number;
+    loreUnlocked?: any;
+    loreSnippet?: string | null;
+  } | null;
 }
 
 export interface MissionDeckProps {
@@ -98,7 +114,8 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("ALL");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ACTIVE");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState<"ACTIVE" | "COMPLETED">("ACTIVE");
   const [survivalSecuredToday, setSurvivalSecuredToday] = useState<boolean>(false);
 
@@ -111,7 +128,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
   // Toast feedback state
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const addToast = useCallback((type: "success" | "error" | "info", message: string) => {
+  const addToast = useCallback((type: "success" | "error" | "info" | "event", message: string) => {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     setToasts((prev) => [...prev, { id, type, message }]);
   }, []);
@@ -215,6 +232,21 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
 
       addToast("success", feedbackMsg);
 
+      // Trigger Anomaly event toast if event was affected
+      if (data.event) {
+        if (data.event.newlyCompleted) {
+          addToast(
+            "event",
+            `ANOMALY CONTAINED: ${data.event.title} (+${data.event.rewardCredits} CR | +${data.event.rewardXp} XP)`
+          );
+        } else if (data.event.progress > 0) {
+          addToast(
+            "event",
+            `EVENT PROGRESS: ${data.event.title} [${data.event.progress}/${data.event.requiredProgress}]`
+          );
+        }
+      }
+
       // 2. Mark survival secured today immediately
       setSurvivalSecuredToday(true);
 
@@ -245,6 +277,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
           milestonesUnlocked: data.milestonesUnlocked,
           comeback: data.comeback,
           survivalSecuredToday: true,
+          event: data.event,
         });
       }
     } catch (err) {
