@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { WorldBackground } from "@/components/world/WorldBackground";
 import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { DbCharacter, DbUser, ShopItemView } from "@/lib/db/client";
+import { SignalConsoleShell } from "@/components/navigation/SignalConsole";
 import { ItemCategory, ItemRarity, RARITY_CONFIG } from "@/lib/game/items";
 import { soundscape } from "@/lib/audio/soundscape";
 import { motion, AnimatePresence } from "framer-motion";
@@ -138,9 +139,15 @@ export function ArcadeClient({
   });
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
-      {/* Dark Navy Cyan Ambience */}
-      <WorldBackground mode="right-side" />
+    <SignalConsoleShell
+      user={user}
+      character={{ ...character, credits }}
+      corruption={initialCorruption}
+      realm="right-side"
+    >
+      <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
+        {/* Dark Navy Cyan Ambience */}
+        <WorldBackground mode="right-side" />
 
       {/* Top HUD Navigation */}
       <WorldNavigation currentRealm="right-side" user={user} character={{ ...character, credits }} />
@@ -387,5 +394,6 @@ export function ArcadeClient({
         </div>
       </footer>
     </div>
+  </SignalConsoleShell>
   );
 }

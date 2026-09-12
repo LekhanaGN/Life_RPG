@@ -7,7 +7,7 @@ import { db } from "@/lib/db/client";
  * Fetch public real-time server-authoritative leaderboard rankings and user position.
  *
  * @boundary between #client and #server -- "Public leaderboard query API"
- * @handles character_data on App.API.Leaderboard -- "Returns public ranking and character progression projections"
+ * @handles internal on App.API.Leaderboard -- "Returns public ranking and character progression projections"
  * @mitigates App.API.Leaderboard against #unauthorized-access using #prepared-queries -- "Safe public projection, no PII or password exposed"
  * @mitigates App.API.Leaderboard against #data-tampering using #prepared-queries -- "Read-only server sorted leaderboard"
  * @flows Client -> App.API.Leaderboard via HTTPS -- "Public leaderboard transmission"

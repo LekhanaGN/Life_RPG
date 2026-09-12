@@ -5,6 +5,7 @@ import Link from "next/link";
 import { WorldBackground } from "@/components/world/WorldBackground";
 import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { DbCharacter, DbInventoryItem, DbUser } from "@/lib/db/client";
+import { SignalConsoleShell } from "@/components/navigation/SignalConsole";
 import { ItemRarity, RARITY_CONFIG, EQUIPMENT_SLOTS, EquipmentSlot, isEquippable } from "@/lib/game/items";
 import { soundscape } from "@/lib/audio/soundscape";
 import { motion, AnimatePresence } from "framer-motion";
@@ -145,9 +146,14 @@ export function InventoryClient({
   });
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
-      {/* Dark Navy Ambience */}
-      <WorldBackground mode="right-side" />
+    <SignalConsoleShell
+      user={user}
+      character={character}
+      realm="right-side"
+    >
+      <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
+        {/* Dark Navy Ambience */}
+        <WorldBackground mode="right-side" />
 
       {/* Top HUD Navigation */}
       <WorldNavigation currentRealm="right-side" user={user} character={character} />
@@ -422,5 +428,6 @@ export function InventoryClient({
         </div>
       </footer>
     </div>
+  </SignalConsoleShell>
   );
 }

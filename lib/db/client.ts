@@ -4242,7 +4242,7 @@ export const db = {
    * Get server-authoritative leaderboard rankings
    *
    * @boundary between #client and #server -- "Leaderboard query boundary"
-   * @handles character_data on App.DB.Leaderboard -- "Fetches public player progression and ranking"
+   * @handles internal on App.DB.Leaderboard -- "Fetches public player progression and ranking"
    * @mitigates App.DB.Leaderboard against #unauthorized-access using #prepared-queries -- "Public read-only projection"
    * @mitigates App.DB.Leaderboard against #data-tampering using #prepared-queries -- "Server-side deterministic sorting"
    */

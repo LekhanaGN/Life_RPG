@@ -48,8 +48,10 @@ Every time you write or modify code that touches security-relevant behavior, you
 
 ### Existing Data Flows (extend, don't duplicate)
 
+- Client -> LandingPage via HTTPS
 - Client -> validateCreateMission via Input
 - Client -> validateUpdateMission via Input
+- Client -> App.API.Leaderboard via HTTPS
 - Survivor -> API.Missions.GET via HTTPS
 - Survivor -> API.Missions.POST via HTTPS
 - Survivor -> API.Missions.Single.GET via HTTPS
@@ -58,4 +60,4 @@ Every time you write or modify code that touches security-relevant behavior, you
 
 ### Model Stats
 
-135 annotations, 12 assets, 13 threats, 11 controls, 0 exposures, 53 mitigations, 7 flows
+146 annotations, 12 assets, 13 threats, 11 controls, 0 exposures, 58 mitigations, 9 flows

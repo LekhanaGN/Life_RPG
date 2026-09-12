@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { soundscape } from "@/lib/audio/soundscape";
 import { logoutAction } from "@/lib/auth/actions";
 import { DbCharacter, DbUser } from "@/lib/db/client";
@@ -11,18 +11,9 @@ import {
   Volume2,
   VolumeX,
   Tv,
-  Radio,
-  Compass,
-  Skull,
   LogOut,
   User,
-  Shield,
-  Gamepad2,
-  Package,
   Coins,
-  LayoutGrid,
-  Trophy,
-  Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,11 +25,9 @@ export interface WorldNavigationProps {
 
 export function WorldNavigation({
   currentRealm,
-  user,
   character,
 }: WorldNavigationProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const [isMuted, setIsMuted] = useState(() => soundscape.getMuted());
   const [crtEnabled, setCrtEnabled] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -130,63 +119,6 @@ export function WorldNavigation({
             </div>
           )}
         </div>
-
-        {/* Center: In-Game Nav Navigation Links (when authenticated) */}
-        {character && (
-          <nav className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-            <Link
-              href="/right-side"
-              className={cn(
-                "px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 border",
-                pathname === "/right-side"
-                  ? "bg-cyan-950 border-cyan-400 text-cyan-200 font-bold shadow-[0_0_10px_rgba(6,182,212,0.4)]"
-                  : "border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700"
-              )}
-            >
-              <Compass className="w-3.5 h-3.5 text-cyan-400" />
-              <span>MISSIONS</span>
-            </Link>
-
-            <Link
-              href="/arcade"
-              className={cn(
-                "px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 border",
-                pathname === "/arcade"
-                  ? "bg-amber-950 border-amber-400 text-amber-200 font-bold shadow-[0_0_10px_rgba(245,158,11,0.4)]"
-                  : "border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700"
-              )}
-            >
-              <Gamepad2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>SHOP</span>
-            </Link>
-
-            <Link
-              href="/inventory"
-              className={cn(
-                "px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 border",
-                pathname === "/inventory"
-                  ? "bg-purple-950 border-purple-400 text-purple-200 font-bold shadow-[0_0_10px_rgba(168,85,247,0.4)]"
-                  : "border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700"
-              )}
-            >
-              <Package className="w-3.5 h-3.5 text-purple-400" />
-              <span>INVENTORY</span>
-            </Link>
-
-            <Link
-              href="/leaderboard"
-              className={cn(
-                "px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 border",
-                pathname === "/leaderboard"
-                  ? "bg-amber-950 border-amber-400 text-amber-200 font-bold shadow-[0_0_10px_rgba(245,158,11,0.4)]"
-                  : "border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200 hover:border-slate-700"
-              )}
-            >
-              <Trophy className="w-3.5 h-3.5 text-amber-400" />
-              <span>LEADERBOARD</span>
-            </Link>
-          </nav>
-        )}
 
         {/* Right: Credits, Survivor Profile, Audio & CRT Controls */}
         <div className="flex items-center gap-2 self-end md:self-center">

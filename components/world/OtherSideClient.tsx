@@ -24,6 +24,7 @@ import {
   Radio,
 } from "lucide-react";
 import { ActiveAnomalyData } from "@/components/events/ActiveAnomalyHUD";
+import { SignalConsoleShell } from "@/components/navigation/SignalConsole";
 
 export interface OtherSideClientProps {
   user: DbUser;
@@ -72,13 +73,20 @@ export function OtherSideClient({
   const distortion = activeEvent?.visualEffect?.distortionStyle;
 
   return (
-    <div className={`relative min-h-screen flex flex-col justify-between overflow-hidden ${
-      distortion === "static"
-        ? "crt-scanlines animate-flicker"
-        : distortion === "vibration"
-        ? "animate-pulse"
-        : ""
-    }`}>
+    <SignalConsoleShell
+      user={user}
+      character={character}
+      corruption={worldState?.corruption ?? 100}
+      activeAnomaly={activeEvent}
+      realm="other-side"
+    >
+      <div className={`relative min-h-screen flex flex-col justify-between overflow-hidden ${
+        distortion === "static"
+          ? "crt-scanlines animate-flicker"
+          : distortion === "vibration"
+          ? "animate-pulse"
+          : ""
+      }`}>
       {/* Dynamic atmospheric distortion overlay */}
       {distortion === "breach" && (
         <div className="pointer-events-none fixed inset-0 z-10 border-[6px] border-red-600/40 shadow-[inset_0_0_80px_rgba(220,38,38,0.5)] animate-pulse" />
@@ -544,5 +552,6 @@ export function OtherSideClient({
         </div>
       </footer>
     </div>
+  </SignalConsoleShell>
   );
 }

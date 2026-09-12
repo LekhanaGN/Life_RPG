@@ -25,6 +25,7 @@ import { SignalStatus, getSignalStrength } from "@/lib/game/streaks";
 import { ActiveAnomalyHUD, ActiveAnomalyData } from "@/components/events/ActiveAnomalyHUD";
 import { AnomalyContainedOverlay, AnomalyContainedData } from "@/components/events/AnomalyContainedOverlay";
 import { SignalArchiveModal } from "@/components/events/SignalArchiveModal";
+import { SignalConsoleShell } from "@/components/navigation/SignalConsole";
 
 export interface RightSideClientProps {
   user: DbUser;
@@ -280,12 +281,21 @@ export function RightSideClient({
   const currentCorruption = worldState?.corruption ?? 100;
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
-      {/* Cyan Cyber Grid & Dark Navy Ambience */}
-      <WorldBackground mode="right-side" />
+    <SignalConsoleShell
+      user={user}
+      character={character}
+      corruption={currentCorruption}
+      signalStatus={streakSummary?.signal}
+      activeAnomaly={activeEvent}
+      activeComeback={activeComeback}
+      realm="right-side"
+    >
+      <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
+        {/* Cyan Cyber Grid & Dark Navy Ambience */}
+        <WorldBackground mode="right-side" />
 
-      {/* Top HUD Navigation Bar */}
-      <WorldNavigation currentRealm="right-side" user={user} character={character} />
+        {/* Top HUD Navigation Bar */}
+        <WorldNavigation currentRealm="right-side" user={user} character={character} />
 
       {/* Screen Reader Aria-Live Announcement */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
@@ -376,6 +386,8 @@ export function RightSideClient({
         {/* Phase 7 Survival Protocol HUD */}
         {streakSummary && (
           <motion.div
+            id="survival-protocol"
+            className="scroll-mt-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
@@ -394,10 +406,12 @@ export function RightSideClient({
         )}
 
         {/* Phase 8 Active Anomaly HUD */}
-        <ActiveAnomalyHUD
-          event={activeEvent}
-          onOpenArchive={() => setIsArchiveOpen(true)}
-        />
+        <div id="signal-archive" className="scroll-mt-6">
+          <ActiveAnomalyHUD
+            event={activeEvent}
+            onOpenArchive={() => setIsArchiveOpen(true)}
+          />
+        </div>
 
         {/* Primary Game Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -412,26 +426,28 @@ export function RightSideClient({
             <CharacterCard character={character} />
 
             {/* Core Attributes Panel with Dynamic Stats */}
-            <Card variant="cyan" className="space-y-4">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-cyan-400" />
-                    <CardTitle className="text-white text-base">YOUR STATS</CardTitle>
+            <div id="core-attributes" className="scroll-mt-6">
+              <Card variant="cyan" className="space-y-4">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-cyan-400" />
+                      <CardTitle className="text-white text-base">YOUR STATS</CardTitle>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-300 uppercase font-semibold">
+                      {character.archetype} STATS
+                    </span>
                   </div>
-                  <span className="text-[10px] font-mono text-cyan-300 uppercase font-semibold">
-                    {character.archetype} STATS
-                  </span>
-                </div>
-                <CardDescription>How your real-life activities are improving you.</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <AttributeBar
-                  character={character}
-                  highlightedAttribute={highlightedAttribute}
-                />
-              </CardContent>
-            </Card>
+                  <CardDescription>How your real-life activities are improving you.</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-2">
+                  <AttributeBar
+                    character={character}
+                    highlightedAttribute={highlightedAttribute}
+                  />
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Hall of Survivors / Leaderboard Quick Access Card */}
             <Card variant="default" className="border-amber-500/30 bg-black/60 hover:border-amber-400/60 transition-colors">
@@ -471,15 +487,19 @@ export function RightSideClient({
             className="lg:col-span-7 space-y-6"
           >
             {/* Mission Deck with progression updates */}
-            <MissionDeck onProgressionUpdate={handleProgressionUpdate} />
+            <div id="mission-deck" className="scroll-mt-6">
+              <MissionDeck onProgressionUpdate={handleProgressionUpdate} />
+            </div>
 
             {/* Phase 5 Dimensional Atlas / World Map */}
             {worldState && (
-              <WorldMap
-                areas={worldState.areas}
-                corruption={worldState.corruption}
-                highlightedArea={highlightedArea}
-              />
+              <div id="dimensional-atlas" className="scroll-mt-6">
+                <WorldMap
+                  areas={worldState.areas}
+                  corruption={worldState.corruption}
+                  highlightedArea={highlightedArea}
+                />
+              </div>
             )}
           </motion.div>
         </div>
@@ -529,5 +549,6 @@ export function RightSideClient({
         onClose={() => setIsArchiveOpen(false)}
       />
     </div>
+  </SignalConsoleShell>
   );
 }

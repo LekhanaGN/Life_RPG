@@ -5,6 +5,7 @@ import { db } from "@/lib/db/client";
 import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { WorldBackground } from "@/components/world/WorldBackground";
 import { LeaderboardClient } from "@/components/leaderboard/LeaderboardClient";
+import { SignalConsoleShell } from "@/components/navigation/SignalConsole";
 
 export const metadata: Metadata = {
   title: "Global Leaderboard // The Other Side",
@@ -21,7 +22,7 @@ export default async function LeaderboardPage() {
     limit: 100,
   });
 
-  return (
+  const pageContent = (
     <div className="relative min-h-screen text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
       {/* Dynamic Background Atmosphere */}
       <WorldBackground mode={authData?.character ? "right-side" : "landing"} />
@@ -53,4 +54,18 @@ export default async function LeaderboardPage() {
       </footer>
     </div>
   );
+
+  if (authData?.user && authData?.character) {
+    return (
+      <SignalConsoleShell
+        user={authData.user}
+        character={authData.character}
+        realm="right-side"
+      >
+        {pageContent}
+      </SignalConsoleShell>
+    );
+  }
+
+  return pageContent;
 }

@@ -1101,7 +1101,7 @@ export function LandingClient({
               <div>
                 <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-3">
                   <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                    {item.rarity} // {item.type}
+                    {`${item.rarity} // ${item.type}`}
                   </span>
                   <span className="font-mono text-xs font-bold text-amber-400">
                     ◈ {item.cost}

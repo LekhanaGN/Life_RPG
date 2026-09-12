@@ -65,8 +65,10 @@ This project uses [GuardLink](https://guardlink.bugb.io) annotations in source c
 
 ### Existing Data Flows (extend, don't duplicate)
 
+- Client -> LandingPage via HTTPS
 - Client -> validateCreateMission via Input
 - Client -> validateUpdateMission via Input
+- Client -> App.API.Leaderboard via HTTPS
 - Survivor -> API.Missions.GET via HTTPS
 - Survivor -> API.Missions.POST via HTTPS
 - Survivor -> API.Missions.Single.GET via HTTPS
@@ -75,13 +77,16 @@ This project uses [GuardLink](https://guardlink.bugb.io) annotations in source c
 
 ### Model Stats
 
-135 annotations, 12 assets, 13 threats, 11 controls, 0 exposures, 53 mitigations, 7 flows
+146 annotations, 12 assets, 13 threats, 11 controls, 0 exposures, 58 mitigations, 9 flows
 
 > **Note:** This section is auto-generated. Run `guardlink sync` to update after code changes.
 > Any coding agent (Cursor, Claude, Copilot, Windsurf, etc.) should reference these IDs
 > and continue annotating new code using the same threat model vocabulary.
 
 <!-- guardlink:end -->
+
+
+
 
 
 

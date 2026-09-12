@@ -417,7 +417,7 @@ export function Particles({
       }
 
       // Main Render Loop
-      let startTime = performance.now();
+      const startTime = performance.now();
       let burstStart = 0;
       let currentRealmTransition = isOtherSide ? 1.0 : 0.0;
 
