@@ -17,9 +17,30 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   character    Character?
+  missions     Mission[]
 
   @@map("users")
 }
+
+model Mission {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  category    String
+  difficulty  String
+  frequency   String
+  dueDate     DateTime?
+  isActive    Boolean   @default(true)
+  status      String    @default("ACTIVE")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("missions")
+}
+
 
 model Character {
   id         String   @id @default(cuid())

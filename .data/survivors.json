@@ -9,12 +9,12 @@
       "updatedAt": "2026-09-12T13:05:02.046Z"
     },
     {
-      "id": "usr_mtyinu9t_kxmtdp3",
+      "id": "usr_mtyg5kvb_pata3wy",
       "email": "lekh0509sc@gmail.com",
-      "passwordHash": "$2b$10$butaqRWGmcml4yReGMxmWOzp0EqVJv92.n20bu83o8C3gZ0uJK25G",
+      "passwordHash": "$2b$10$F9KCojEVaR2r1c9pMRo2Du9knsNFD0JMv4HiUeLZ1/O7rJ5nThRpO",
       "username": "lekana",
-      "createdAt": "2026-09-12T15:04:53.250Z",
-      "updatedAt": "2026-09-12T15:04:53.250Z"
+      "createdAt": "2026-09-12T13:54:42.023Z",
+      "updatedAt": "2026-09-12T13:54:42.023Z"
     }
   ],
   "characters": [
@@ -33,6 +33,66 @@
       "connection": 6,
       "createdAt": "2026-09-12T13:07:24.033Z",
       "updatedAt": "2026-09-12T13:07:24.033Z"
+    },
+    {
+      "id": "chr_mtyg6drr_kap2cdf",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "name": "lekana",
+      "archetype": "EXPLORER",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 10,
+      "body": 10,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 10,
+      "createdAt": "2026-09-12T13:55:19.479Z",
+      "updatedAt": "2026-09-12T13:55:19.479Z"
+    }
+  ],
+  "missions": [
+    {
+      "id": "msn_mtygu36w_g5kegyq",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "title": "Morning Solar Alignment (Extended 30m)",
+      "description": "15m sunlight and brisk walk",
+      "category": "BODY",
+      "difficulty": "EASY",
+      "frequency": "DAILY",
+      "dueDate": "2026-09-12T15:13:45.510Z",
+      "isActive": false,
+      "status": "ARCHIVED",
+      "createdAt": "2026-09-12T14:13:45.512Z",
+      "updatedAt": "2026-09-12T14:13:45.608Z"
+    },
+    {
+      "id": "msn_mtygu371_vr7gqih",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "title": "Cognitive Fortification (Read 20 Pages)",
+      "description": "Read distributed systems paper",
+      "category": "MIND",
+      "difficulty": "HARD",
+      "frequency": "WEEKLY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T14:13:45.517Z",
+      "updatedAt": "2026-09-12T14:13:45.517Z"
+    },
+    {
+      "id": "msn_mtyhtkll_txgzvvr",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "title": "strengthtraining",
+      "description": "workout for an hour",
+      "category": "BODY",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T14:41:21.033Z",
+      "updatedAt": "2026-09-12T14:41:21.033Z"
     }
   ]
 }
