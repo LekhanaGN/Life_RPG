@@ -6,7 +6,7 @@ import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { useWorldTransition } from "@/components/world/WorldInversionTransition";
 import { CharacterCard } from "@/components/character/CharacterCard";
 import { AttributeBar } from "@/components/character/AttributeBar";
-import { MissionCard } from "@/components/missions/MissionCard";
+import { MissionDeck } from "@/components/missions/MissionDeck";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -126,7 +126,7 @@ export function RightSideClient({ user, character }: RightSideClientProps) {
             className="lg:col-span-7 space-y-6"
           >
             {/* Mission Deck */}
-            <MissionCard />
+            <MissionDeck />
 
             {/* Dimensional Resonance Card */}
             <Card variant="default">
