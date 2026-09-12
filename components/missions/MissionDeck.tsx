@@ -30,6 +30,8 @@ import { MissionCreateModal } from "./MissionCreateModal";
 import { MissionEditModal } from "./MissionEditModal";
 import { MissionDetailsModal } from "./MissionDetailsModal";
 import { MissionAbandonDialog } from "./MissionAbandonDialog";
+import { EvidenceModal } from "./EvidenceModal";
+import { FocusProtocolModal } from "../focus/FocusProtocolModal";
 import { MissionToast, ToastMessage } from "./MissionToast";
 
 export interface ProgressionPayload {
@@ -124,6 +126,10 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
   const [selectedMissionForDetails, setSelectedMissionForDetails] = useState<DbMission | null>(null);
   const [selectedMissionForEdit, setSelectedMissionForEdit] = useState<DbMission | null>(null);
   const [selectedMissionForAbandon, setSelectedMissionForAbandon] = useState<DbMission | null>(null);
+  const [selectedMissionForEvidence, setSelectedMissionForEvidence] = useState<DbMission | null>(null);
+  const [selectedMissionForFocus, setSelectedMissionForFocus] = useState<DbMission | null>(null);
+  const [verifiedMissionIds, setVerifiedMissionIds] = useState<Set<string>>(new Set());
+  const [evidenceSubmittedMissionIds, setEvidenceSubmittedMissionIds] = useState<Set<string>>(new Set());
 
   // Toast feedback state
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -186,6 +192,16 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
       setSelectedMissionForDetails(updated);
     }
     addToast("success", "MISSION UPDATED");
+  };
+
+  const handleEvidenceSubmitted = (m: DbMission) => {
+    setEvidenceSubmittedMissionIds((prev) => new Set([...prev, m.id]));
+    addToast("info", `EVIDENCE RECEIVED: Signal Integrity 70% attached to "${m.title}".`);
+  };
+
+  const handleSessionVerified = (m: DbMission) => {
+    setVerifiedMissionIds((prev) => new Set([...prev, m.id]));
+    addToast("info", `SESSION VERIFIED: Signal Integrity 91% attached to "${m.title}".`);
   };
 
   // Handle complete mission with multi-stage Phase 5 & 7 feedback
@@ -543,6 +559,10 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
                   onEdit={(m) => setSelectedMissionForEdit(m)}
                   onAbandon={(m) => setSelectedMissionForAbandon(m)}
                   onComplete={handleCompleteMission}
+                  onStartFocus={(m) => setSelectedMissionForFocus(m)}
+                  onSubmitEvidence={(m) => setSelectedMissionForEvidence(m)}
+                  hasEvidenceSubmitted={evidenceSubmittedMissionIds.has(mission.id)}
+                  hasFocusVerified={verifiedMissionIds.has(mission.id)}
                 />
               ))}
             </AnimatePresence>
@@ -589,6 +609,30 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
         isOpen={!!selectedMissionForAbandon}
         onClose={() => setSelectedMissionForAbandon(null)}
         onConfirm={handleConfirmAbandon}
+      />
+
+      {/* Evidence Submission Modal */}
+      <EvidenceModal
+        mission={selectedMissionForEvidence}
+        isOpen={!!selectedMissionForEvidence}
+        onClose={() => setSelectedMissionForEvidence(null)}
+        onEvidenceSubmitted={handleEvidenceSubmitted}
+        onProceedToComplete={(m) => {
+          setSelectedMissionForEvidence(null);
+          handleCompleteMission(m);
+        }}
+      />
+
+      {/* Focus Protocol Modal */}
+      <FocusProtocolModal
+        mission={selectedMissionForFocus}
+        isOpen={!!selectedMissionForFocus}
+        onClose={() => setSelectedMissionForFocus(null)}
+        onSessionVerified={handleSessionVerified}
+        onProceedToComplete={(m) => {
+          setSelectedMissionForFocus(null);
+          handleCompleteMission(m);
+        }}
       />
     </div>
   );

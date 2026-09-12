@@ -24,6 +24,7 @@ import {
   MISSION_DIFFICULTIES,
   MISSION_FREQUENCIES,
 } from "@/lib/missions/types";
+import { VerificationBadge } from "./VerificationBadge";
 
 interface MissionDetailsModalProps {
   mission: DbMission | null;
@@ -231,6 +232,28 @@ export function MissionDetailsModal({
                 <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
                   Initiated: {createdFormatted}
+                </div>
+              </div>
+
+              {/* Verification Protocol */}
+              <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1.5 sm:col-span-2">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                  SIGNAL INTEGRITY & VERIFICATION METHOD
+                </div>
+                <div className="flex items-center gap-3">
+                  <VerificationBadge type={mission.verificationType || "SELF_REPORT"} size="md" />
+                  {mission.verificationType === "FOCUS_SESSION" && (
+                    <span className="text-xs font-mono text-amber-300">
+                      Duration: {mission.focusDurationMinutes || 25} Minutes
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] font-mono text-slate-400">
+                  {mission.verificationType === "FOCUS_SESSION"
+                    ? "Requires server-verified active focus duration before completion clearance."
+                    : mission.verificationType === "EVIDENCE"
+                    ? "Requires supporting image upload or observation note before completion clearance."
+                    : "Self-confirmed completion. Standard telemetry signal."}
                 </div>
               </div>
             </div>

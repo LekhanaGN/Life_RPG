@@ -6,7 +6,7 @@ import { getSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/client";
 
 /**
- * @boundary between #client and #server (#api-boundary) -- "Streak query endpoint"
+ * @boundary between #client and #server -- "Streak query endpoint"
  * @handles pii on App.API.Streak -- "Processes authenticated survivor session token"
  * @mitigates App.API.Streak against #unauthorized-access using #session-auth -- "Enforces JWT session check"
  * @mitigates App.API.Streak against #idor using #user-scoping -- "Scoping queries strictly to session.userId"

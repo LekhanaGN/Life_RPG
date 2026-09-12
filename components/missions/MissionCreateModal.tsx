@@ -19,6 +19,7 @@ import {
   MissionDifficulty,
   MissionFrequency,
   DbMission,
+  VerificationType,
   MISSION_CATEGORIES,
   MISSION_DIFFICULTIES,
   MISSION_FREQUENCIES,
@@ -42,6 +43,8 @@ export function MissionCreateModal({
   const [difficulty, setDifficulty] = useState<MissionDifficulty>("MEDIUM");
   const [frequency, setFrequency] = useState<MissionFrequency>("DAILY");
   const [dueDate, setDueDate] = useState("");
+  const [verificationType, setVerificationType] = useState<VerificationType>("SELF_REPORT");
+  const [focusDurationMinutes, setFocusDurationMinutes] = useState<number>(25);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
@@ -55,6 +58,8 @@ export function MissionCreateModal({
       setDifficulty("MEDIUM");
       setFrequency("DAILY");
       setDueDate("");
+      setVerificationType("SELF_REPORT");
+      setFocusDurationMinutes(25);
       setErrors({});
       setGeneralError(null);
     }
@@ -83,6 +88,8 @@ export function MissionCreateModal({
       difficulty,
       frequency,
       dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
+      verificationType,
+      focusDurationMinutes: verificationType === "FOCUS_SESSION" ? focusDurationMinutes : undefined,
     });
 
     if (!validation.isValid) {
@@ -98,12 +105,14 @@ export function MissionCreateModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          description: description || undefined,
-          category,
-          difficulty,
-          frequency,
-          dueDate: dueDate ? new Date(dueDate).toISOString() : null,
+          title: validation.data.title,
+          description: validation.data.description,
+          category: validation.data.category,
+          difficulty: validation.data.difficulty,
+          frequency: validation.data.frequency,
+          dueDate: validation.data.dueDate?.toISOString(),
+          verificationType: validation.data.verificationType,
+          focusDurationMinutes: validation.data.focusDurationMinutes,
         }),
       });
 
@@ -386,6 +395,93 @@ export function MissionCreateModal({
                     <p className="text-[11px] font-mono text-red-400">{errors.frequency}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Verification Protocol & Signal Integrity */}
+              <div className="space-y-2">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                  SIGNAL INTEGRITY // VERIFICATION METHOD
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setVerificationType("SELF_REPORT")}
+                    className={`p-3 rounded-xs border text-left transition-all cursor-pointer ${
+                      verificationType === "SELF_REPORT"
+                        ? "bg-slate-900 border-cyan-500 text-cyan-300 ring-1 ring-cyan-400/50"
+                        : "bg-slate-900/40 border-slate-800 text-slate-400 hover:border-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-orbitron font-bold">SELF REPORT</span>
+                      <span className="text-xs text-amber-400 font-mono">★</span>
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-400 mt-1">
+                      Direct clearance. 50% baseline signal.
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setVerificationType("EVIDENCE")}
+                    className={`p-3 rounded-xs border text-left transition-all cursor-pointer ${
+                      verificationType === "EVIDENCE"
+                        ? "bg-emerald-950/60 border-emerald-500 text-emerald-300 ring-1 ring-emerald-400/50"
+                        : "bg-slate-900/40 border-slate-800 text-slate-400 hover:border-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-orbitron font-bold">EVIDENCE</span>
+                      <span className="text-xs text-amber-400 font-mono">★★</span>
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-400 mt-1">
+                      Photo or note. 70% integrity signal.
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setVerificationType("FOCUS_SESSION")}
+                    className={`p-3 rounded-xs border text-left transition-all cursor-pointer ${
+                      verificationType === "FOCUS_SESSION"
+                        ? "bg-amber-950/60 border-amber-500 text-amber-300 ring-1 ring-amber-400/50"
+                        : "bg-slate-900/40 border-slate-800 text-slate-400 hover:border-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-orbitron font-bold">FOCUS PROTOCOL</span>
+                      <span className="text-xs text-amber-400 font-mono">★★★</span>
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-400 mt-1">
+                      Timed session. 91% integrity signal.
+                    </div>
+                  </button>
+                </div>
+
+                {/* Duration selector for Focus Protocol */}
+                {verificationType === "FOCUS_SESSION" && (
+                  <div className="p-3 bg-amber-950/30 border border-amber-500/30 rounded-xs space-y-2 mt-2">
+                    <label className="block text-[11px] font-mono text-amber-300 uppercase tracking-wider">
+                      Focus Duration: {focusDurationMinutes} Minutes
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[15, 25, 30, 45, 60].map((mins) => (
+                        <button
+                          key={mins}
+                          type="button"
+                          onClick={() => setFocusDurationMinutes(mins)}
+                          className={`px-3 py-1 rounded-xs text-xs font-mono transition-all cursor-pointer ${
+                            focusDurationMinutes === mins
+                              ? "bg-amber-500 text-black font-bold"
+                              : "bg-slate-900 border border-slate-700 text-slate-300 hover:border-amber-400"
+                          }`}
+                        >
+                          {mins}m
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Due Date (Optional) */}

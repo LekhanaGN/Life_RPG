@@ -40,9 +40,16 @@ Every time you write or modify code that touches security-relevant behavior, you
 
 ## Live Threat Model Context (auto-synced by `guardlink sync`)
 
+### Current Definitions (REUSE these IDs — do NOT redefine)
+
+**Assets:** #client (client), #server (server), #user-session (user_session), #mission-data (mission_data), #character-data (character_data), #streak-data (streak_data), #milestone-data (milestone_data), #comeback-challenge (comeback_challenge), #world-event-data (world_event_data), #lore-archive (lore_archive), #evidence-data (evidence_data), #focus-session-data (focus_session_data)
+**Threats:** #unauthorized-access (Unauthorized Access) [high], #idor (Insecure Direct Object Reference) [high], #input-validation-failure (Input Validation Failure) [medium], #data-tampering (Data Tampering) [high], #streak-tampering (Streak Tampering) [medium], #duplicate-reward-exploit (Duplicate Reward Exploit) [high], #comeback-spoofing (Comeback Spoofing) [medium], #event-tampering (Event Tampering) [high], #event-replay-exploit (Event Replay Exploit) [high], #lore-tampering (Lore Tampering) [medium], #evidence-tampering (Evidence Tampering) [high], #focus-spoofing (Focus Spoofing) [high], #heartbeat-replay (Heartbeat Replay) [high]
+**Controls:** #session-auth (Session Authentication), #user-scoping (User Scoping), #input-validation (Input Validation), #prepared-queries (Prepared Queries), #server-authoritative-time (Server Authoritative Time), #atomic-streak-transaction (Atomic Streak Transaction), #authoritative-event-engine (Authoritative Event Engine), #atomic-event-transaction (Atomic Event Transaction), #server-timed-heartbeat (Server Timed Heartbeat), #evidence-ownership-guard (Evidence Ownership Guard), #verification-bypass-blocker (Verification Bypass Blocker)
 
 ### Existing Data Flows (extend, don't duplicate)
 
+- Client -> validateCreateMission via Input
+- Client -> validateUpdateMission via Input
 - Survivor -> API.Missions.GET via HTTPS
 - Survivor -> API.Missions.POST via HTTPS
 - Survivor -> API.Missions.Single.GET via HTTPS
@@ -51,4 +58,4 @@ Every time you write or modify code that touches security-relevant behavior, you
 
 ### Model Stats
 
-58 annotations, 0 assets, 0 threats, 0 controls, 0 exposures, 35 mitigations, 5 flows
+135 annotations, 12 assets, 13 threats, 11 controls, 0 exposures, 53 mitigations, 7 flows

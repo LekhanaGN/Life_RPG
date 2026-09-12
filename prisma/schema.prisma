@@ -31,6 +31,8 @@ model User {
   comebackChallenges ComebackChallenge[]
   worldEvents        UserWorldEvent[]
   unlockedLore       UserLoreUnlock[]
+  evidence           MissionEvidence[]
+  focusSessions      FocusSession[]
 
   @@map("users")
 }
@@ -44,12 +46,16 @@ model Mission {
   category    String
   difficulty  String
   frequency   String
-  dueDate     DateTime?
-  isActive    Boolean             @default(true)
-  status      String              @default("ACTIVE")
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  completions MissionCompletion[]
+  dueDate              DateTime?
+  isActive             Boolean             @default(true)
+  status               String              @default("ACTIVE")
+  verificationType     String              @default("SELF_REPORT") // SELF_REPORT, EVIDENCE, FOCUS_SESSION
+  focusDurationMinutes Int?                @default(25)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  completions          MissionCompletion[]
+  evidence             MissionEvidence[]
+  focusSessions        FocusSession[]
 
   @@index([userId])
   @@map("missions")
@@ -317,5 +323,42 @@ model UserLoreUnlock {
   @@unique([userId, loreKey])
   @@index([userId])
   @@map("user_lore_unlocks")
+}
+
+model MissionEvidence {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missionId   String
+  mission     Mission  @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  type        String   @default("IMAGE") // IMAGE, TEXT
+  fileUrl     String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([missionId])
+  @@map("mission_evidence")
+}
+
+model FocusSession {
+  id                       String    @id @default(cuid())
+  userId                   String
+  user                     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missionId                String
+  mission                  Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  startedAt                DateTime  @default(now())
+  lastHeartbeatAt          DateTime  @default(now())
+  requiredDurationSeconds  Int
+  accumulatedActiveSeconds Int       @default(0)
+  idleSeconds              Int       @default(0)
+  status                   String    @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED, EXPIRED, CANCELLED
+  completedAt              DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  @@index([userId, status])
+  @@index([missionId])
+  @@map("focus_sessions")
 }
 

@@ -16,7 +16,7 @@ interface RouteParams {
  * @flows Survivor -> API.Missions.Single.GET via HTTPS -- "Fetch single mission details"
  * @mitigates API.Missions.Single.GET against #unauthorized-access using #session-auth -- "Requires valid HTTP session"
  * @mitigates API.Missions.Single.GET against #idor using #user-scoping -- "Verifies mission belongs strictly to authenticated user"
- * @handles #mission-data on API.Missions.Single.GET -- "Returns full single mission record"
+ * @handles internal on API.Missions.Single.GET -- "Returns full single mission record"
  */
 export async function GET(
   _req: NextRequest,
@@ -62,7 +62,7 @@ export async function GET(
  * @mitigates API.Missions.Single.PATCH against #unauthorized-access using #session-auth -- "Enforces session validation"
  * @mitigates API.Missions.Single.PATCH against #idor using #user-scoping -- "Disallows modifying another user's mission"
  * @mitigates API.Missions.Single.PATCH against #input-validation-failure using #input-validation -- "Sanitizes update payload"
- * @handles #mission-data on API.Missions.Single.PATCH -- "Updates mutable mission fields"
+ * @handles internal on API.Missions.Single.PATCH -- "Updates mutable mission fields"
  */
 export async function PATCH(
   req: NextRequest,
@@ -126,7 +126,7 @@ export async function PATCH(
  * @flows Survivor -> API.Missions.Single.DELETE via HTTPS -- "Abandon/Delete mission"
  * @mitigates API.Missions.Single.DELETE against #unauthorized-access using #session-auth -- "Enforces session validation"
  * @mitigates API.Missions.Single.DELETE against #idor using #user-scoping -- "Only allows abandoning owned missions"
- * @handles #mission-data on API.Missions.Single.DELETE -- "Permanently purges mission record"
+ * @handles internal on API.Missions.Single.DELETE -- "Permanently purges mission record"
  */
 export async function DELETE(
   _req: NextRequest,

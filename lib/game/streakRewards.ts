@@ -2,7 +2,6 @@
 // Centralized milestone rules, lore narratives, and credit/XP rewards.
 
 /**
- * @asset #milestone-data -- "Survivor milestones and unlock rewards"
  * @mitigates App.StreakRewards against #duplicate-reward-exploit using #prepared-queries -- "Enforces single claim per milestone key"
  */
 

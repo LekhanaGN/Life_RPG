@@ -38,6 +38,14 @@ export interface OtherSideClientProps {
     previousStreak: number;
   };
   initialWorldEvent?: ActiveAnomalyData | null;
+  activeFocusSession?: {
+    id: string;
+    missionTitle?: string;
+    accumulatedActiveSeconds: number;
+    requiredDurationSeconds: number;
+    status: string;
+    signalIntegrity: number;
+  } | null;
 }
 
 export function OtherSideClient({
@@ -46,11 +54,13 @@ export function OtherSideClient({
   initialWorldState,
   initialStreakSummary,
   initialWorldEvent,
+  activeFocusSession,
 }: OtherSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
   const [worldState] = useState<WorldStateSummary | undefined>(initialWorldState);
   const [streak] = useState(initialStreakSummary);
   const [activeEvent] = useState<ActiveAnomalyData | null>(initialWorldEvent || null);
+  const [focusSession] = useState(activeFocusSession || null);
 
   const handleReturnToRightSide = () => {
     triggerTransition("/right-side", "other-to-right");
@@ -92,10 +102,19 @@ export function OtherSideClient({
           className="flex flex-col md:flex-row md:items-end justify-between border-b border-red-800/40 pb-6 gap-4"
         >
           <div>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <Badge variant="crimson" pulse>
                 CORRUPTED REALM
               </Badge>
+              {focusSession ? (
+                <Badge variant="cyan" pulse>
+                  ANCHOR: {focusSession.signalIntegrity}% STABLE
+                </Badge>
+              ) : (
+                <Badge variant="amber">
+                  SIGNAL DISTORTED
+                </Badge>
+              )}
               <span className="text-xs font-mono text-red-500 uppercase tracking-widest animate-pulse">
                 ZONE 99: THE VOID MATRIX // TARGET: {character.name.toUpperCase()} [
                 {character.archetype}]
@@ -267,6 +286,77 @@ export function OtherSideClient({
                     </div>
                   </div>
                 )}
+
+                {/* Signal Integrity Telemetry Intercept */}
+                <div
+                  className={`p-3.5 rounded-xs border space-y-2 transition-all duration-500 ${
+                    focusSession
+                      ? "bg-cyan-950/40 border-cyan-500/60 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                      : "bg-red-950/40 border-red-900/60"
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span
+                      className={`font-bold uppercase flex items-center gap-1.5 ${
+                        focusSession ? "text-cyan-400" : "text-amber-400"
+                      }`}
+                    >
+                      <Radio
+                        className={`w-3.5 h-3.5 ${
+                          focusSession ? "text-cyan-400 animate-pulse" : "text-amber-500"
+                        }`}
+                      />
+                      SIGNAL INTEGRITY TELEMETRY
+                    </span>
+                    <span
+                      className={`font-orbitron font-extrabold px-1.5 py-0.5 rounded-xs text-[10px] ${
+                        focusSession
+                          ? "bg-cyan-950 text-cyan-300 border border-cyan-500/50"
+                          : "bg-red-950 text-red-400 border border-red-800/40"
+                      }`}
+                    >
+                      {focusSession ? "SIGNAL STABLE" : "SIGNAL DISTORTED"}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-red-900/30">
+                    <span className="text-slate-400">TRANSMISSION ANCHOR:</span>
+                    <span
+                      className={`font-bold uppercase ${
+                        focusSession ? "text-cyan-300" : "text-red-400/80"
+                      }`}
+                    >
+                      {focusSession
+                        ? `${focusSession.signalIntegrity}% VERIFIED INTEGRITY`
+                        : "NO ACTIVE FOCUS PROTOCOL"}
+                    </span>
+                  </div>
+
+                  {focusSession ? (
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex items-center justify-between text-[11px] font-mono text-cyan-200/80">
+                        <span className="truncate max-w-[200px]">{focusSession.missionTitle}</span>
+                        <span>
+                          {Math.floor(focusSession.accumulatedActiveSeconds / 60)}m /{" "}
+                          {Math.floor(focusSession.requiredDurationSeconds / 60)}m
+                        </span>
+                      </div>
+                      <ProgressBar
+                        value={focusSession.accumulatedActiveSeconds}
+                        max={focusSession.requiredDurationSeconds}
+                        variant="cyan"
+                        label="FOCUS ACCUMULATION"
+                      />
+                      <p className="text-[10px] font-mono text-cyan-300/70 italic pt-0.5">
+                        Target locked in cognitive focus channel. Dimensional interference reduced.
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[10px] font-mono text-slate-400/70 italic pt-0.5">
+                      Standard transmission mode. Engage Focus Protocols or submit verified Evidence to strengthen dimensional resistance.
+                    </p>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

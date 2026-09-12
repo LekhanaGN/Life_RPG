@@ -6,6 +6,7 @@ import {
   MissionDifficulty,
   MissionFrequency,
   MissionStatus,
+  VerificationType,
 } from "./types";
 
 export interface CreateMissionInput {
@@ -15,17 +16,17 @@ export interface CreateMissionInput {
   difficulty?: unknown;
   frequency?: unknown;
   dueDate?: unknown;
+  verificationType?: unknown;
+  focusDurationMinutes?: unknown;
 }
 
 export interface UpdateMissionInput extends Partial<CreateMissionInput> {
   status?: unknown;
 }
 
-export interface ValidationResult<T> {
-  isValid: boolean;
-  errors: Record<string, string>;
-  data?: T;
-}
+export type ValidationResult<T> =
+  | { isValid: true; errors: Record<string, string>; data: T }
+  | { isValid: false; errors: Record<string, string>; data?: undefined };
 
 export interface ValidatedMissionData {
   title: string;
@@ -35,6 +36,8 @@ export interface ValidatedMissionData {
   frequency: MissionFrequency;
   dueDate: Date | null;
   status?: MissionStatus;
+  verificationType?: VerificationType;
+  focusDurationMinutes?: number | null;
 }
 
 const VALID_CATEGORIES: readonly MissionCategory[] = [
@@ -60,10 +63,16 @@ const VALID_FREQUENCIES: readonly MissionFrequency[] = [
 
 const VALID_STATUSES: readonly MissionStatus[] = ["ACTIVE", "ARCHIVED"];
 
+const VALID_VERIFICATION_TYPES: readonly VerificationType[] = [
+  "SELF_REPORT",
+  "EVIDENCE",
+  "FOCUS_SESSION",
+];
+
 /**
- * @flows Client -> validateCreateMission -> API.Missions -- "Validates inbound new mission payload"
+ * @flows Client -> validateCreateMission via Input -- "Validates inbound new mission payload"
  * @mitigates validateCreateMission against #input-validation-failure using #input-validation -- "Sanitizes and enforces field constraints"
- * @handles #mission-data on validateCreateMission -- "Parses title, description, category, difficulty, frequency, and dueDate"
+ * @handles internal on validateCreateMission -- "Parses title, description, category, difficulty, frequency, and dueDate"
  * @comment -- "Ensures title length between 2 and 100 characters and valid enum types"
  */
 export function validateCreateMission(
@@ -133,6 +142,43 @@ export function validateCreateMission(
     }
   }
 
+  // 7. Verification Type Validation (optional)
+  let cleanVerificationType: VerificationType = "SELF_REPORT";
+  if (
+    input.verificationType !== undefined &&
+    input.verificationType !== null &&
+    input.verificationType !== ""
+  ) {
+    const rawVType =
+      typeof input.verificationType === "string"
+        ? input.verificationType.toUpperCase().trim()
+        : "";
+    if (!VALID_VERIFICATION_TYPES.includes(rawVType as VerificationType)) {
+      errors.verificationType =
+        "Invalid verification type. Select SELF_REPORT, EVIDENCE, or FOCUS_SESSION.";
+    } else {
+      cleanVerificationType = rawVType as VerificationType;
+    }
+  }
+
+  // 8. Focus Duration Validation (optional)
+  let cleanFocusDurationMinutes: number | null = null;
+  if (cleanVerificationType === "FOCUS_SESSION") {
+    cleanFocusDurationMinutes = 25;
+    if (
+      input.focusDurationMinutes !== undefined &&
+      input.focusDurationMinutes !== null &&
+      input.focusDurationMinutes !== ""
+    ) {
+      const parsedNum = Number(input.focusDurationMinutes);
+      if (isNaN(parsedNum) || parsedNum < 1 || parsedNum > 240) {
+        errors.focusDurationMinutes = "Focus duration must be between 1 and 240 minutes.";
+      } else {
+        cleanFocusDurationMinutes = Math.round(parsedNum);
+      }
+    }
+  }
+
   if (Object.keys(errors).length > 0) {
     return { isValid: false, errors };
   }
@@ -147,14 +193,16 @@ export function validateCreateMission(
       difficulty: rawDifficulty as MissionDifficulty,
       frequency: rawFrequency as MissionFrequency,
       dueDate: parsedDueDate,
+      verificationType: cleanVerificationType,
+      focusDurationMinutes: cleanFocusDurationMinutes,
     },
   };
 }
 
 /**
- * @flows Client -> validateUpdateMission -> API.Missions -- "Validates mission update request"
+ * @flows Client -> validateUpdateMission via Input -- "Validates mission update request"
  * @mitigates validateUpdateMission against #input-validation-failure using #input-validation -- "Guards against malformed fields during patch"
- * @handles #mission-data on validateUpdateMission -- "Supports partial updates for all editable mission attributes"
+ * @handles internal on validateUpdateMission -- "Supports partial updates for all editable mission attributes"
  * @comment -- "Validates status field when transitioning between ACTIVE and ARCHIVED"
  */
 export function validateUpdateMission(
@@ -241,6 +289,31 @@ export function validateUpdateMission(
       errors.status = "Invalid status. Select ACTIVE or ARCHIVED.";
     } else {
       data.status = rawStatus as MissionStatus;
+    }
+  }
+
+  if (input.verificationType !== undefined) {
+    const rawVType =
+      typeof input.verificationType === "string"
+        ? input.verificationType.toUpperCase().trim()
+        : "";
+    if (!VALID_VERIFICATION_TYPES.includes(rawVType as VerificationType)) {
+      errors.verificationType = "Invalid verification type.";
+    } else {
+      data.verificationType = rawVType as VerificationType;
+    }
+  }
+
+  if (input.focusDurationMinutes !== undefined) {
+    if (input.focusDurationMinutes === null || input.focusDurationMinutes === "") {
+      data.focusDurationMinutes = null;
+    } else {
+      const parsedNum = Number(input.focusDurationMinutes);
+      if (isNaN(parsedNum) || parsedNum < 1 || parsedNum > 240) {
+        errors.focusDurationMinutes = "Focus duration must be between 1 and 240 minutes.";
+      } else {
+        data.focusDurationMinutes = Math.round(parsedNum);
+      }
     }
   }
 

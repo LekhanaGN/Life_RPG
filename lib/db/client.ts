@@ -67,6 +67,17 @@ import {
   EventGenerationContext,
 } from "@/lib/game/eventGenerator";
 import { calculateEventReward } from "@/lib/game/eventRewards";
+import {
+  VerificationType,
+  EvidenceType,
+  FocusSessionStatus,
+  calculateSignalIntegrity,
+} from "@/lib/game/verification";
+import {
+  evaluateHeartbeat,
+  validateSessionCompletion,
+  FOCUS_CONSTANTS,
+} from "@/lib/game/focusSessions";
 
 // Global Prisma instance to avoid multiple connections in Next.js hot reload
 const globalForPrisma = globalThis as unknown as {
@@ -128,6 +139,7 @@ export type MissionCategory = "MIND" | "BODY" | "FOCUS" | "SPIRIT" | "CONNECTION
 export type MissionDifficulty = "EASY" | "MEDIUM" | "HARD" | "EPIC";
 export type MissionFrequency = "ONCE" | "DAILY" | "WEEKLY";
 export type MissionStatus = "ACTIVE" | "ARCHIVED" | "COMPLETED";
+export type { VerificationType, EvidenceType, FocusSessionStatus };
 
 export interface DbMission {
   id: string;
@@ -140,10 +152,37 @@ export interface DbMission {
   dueDate: Date | null;
   isActive: boolean;
   status: MissionStatus;
+  verificationType?: VerificationType;
+  focusDurationMinutes?: number | null;
   createdAt: Date;
   updatedAt: Date;
   lastCompletedAt?: Date | null;
   isCompletedToday?: boolean;
+}
+
+export interface DbMissionEvidence {
+  id: string;
+  userId: string;
+  missionId: string;
+  type: EvidenceType;
+  fileUrl: string | null;
+  description: string | null;
+  createdAt: Date;
+}
+
+export interface DbFocusSession {
+  id: string;
+  userId: string;
+  missionId: string;
+  startedAt: Date;
+  lastHeartbeatAt: Date;
+  requiredDurationSeconds: number;
+  accumulatedActiveSeconds: number;
+  idleSeconds: number;
+  status: FocusSessionStatus;
+  completedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface DbMissionCompletion {
@@ -383,6 +422,8 @@ interface LocalDataStore {
   worldEvents: DbWorldEvent[];
   userWorldEvents: DbUserWorldEvent[];
   userLoreUnlocks: DbUserLoreUnlock[];
+  missionEvidences: DbMissionEvidence[];
+  focusSessions: DbFocusSession[];
 }
 
 function generateId(prefix = "c"): string {
@@ -470,6 +511,8 @@ function getLocalStore(): LocalDataStore {
         worldEvents: seededWorldEvents,
         userWorldEvents: [],
         userLoreUnlocks: [],
+        missionEvidences: [],
+        focusSessions: [],
       };
       fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(initial, null, 2), "utf-8");
       return initial;
@@ -491,6 +534,13 @@ function getLocalStore(): LocalDataStore {
       dueDate: m.dueDate ? new Date(m.dueDate) : null,
       isActive: m.isActive !== undefined ? m.isActive : m.status !== "ARCHIVED",
       status: (m.status as MissionStatus) || (m.isActive === false ? "ARCHIVED" : "ACTIVE"),
+      verificationType: (m.verificationType as VerificationType) || "SELF_REPORT",
+      focusDurationMinutes:
+        m.focusDurationMinutes !== undefined
+          ? m.focusDurationMinutes
+          : m.verificationType === "FOCUS_SESSION"
+          ? 25
+          : null,
       createdAt: new Date(m.createdAt),
       updatedAt: new Date(m.updatedAt),
     }));
@@ -656,6 +706,20 @@ function getLocalStore(): LocalDataStore {
       unlockedAt: new Date(ulu.unlockedAt),
     }));
 
+    parsed.missionEvidences = (parsed.missionEvidences || []).map((me: any) => ({
+      ...me,
+      createdAt: new Date(me.createdAt),
+    }));
+
+    parsed.focusSessions = (parsed.focusSessions || []).map((fs: any) => ({
+      ...fs,
+      startedAt: new Date(fs.startedAt),
+      lastHeartbeatAt: new Date(fs.lastHeartbeatAt),
+      completedAt: fs.completedAt ? new Date(fs.completedAt) : null,
+      createdAt: new Date(fs.createdAt),
+      updatedAt: new Date(fs.updatedAt),
+    }));
+
     return parsed;
   } catch (err) {
     console.error("[DB Fallback Store Error]:", err);
@@ -678,6 +742,8 @@ function getLocalStore(): LocalDataStore {
       worldEvents: [],
       userWorldEvents: [],
       userLoreUnlocks: [],
+      missionEvidences: [],
+      focusSessions: [],
     };
   }
 }
@@ -918,6 +984,13 @@ export const db = {
 
         return {
           ...m,
+          verificationType: (m.verificationType as VerificationType) || "SELF_REPORT",
+          focusDurationMinutes:
+            m.focusDurationMinutes !== undefined
+              ? m.focusDurationMinutes
+              : m.verificationType === "FOCUS_SESSION"
+              ? 25
+              : null,
           lastCompletedAt: lastCompletion ? new Date(lastCompletion.completedAt) : null,
           isCompletedToday: !eligibility.eligible,
         } as DbMission;
@@ -948,6 +1021,13 @@ export const db = {
 
       return {
         ...m,
+        verificationType: (m.verificationType as VerificationType) || "SELF_REPORT",
+        focusDurationMinutes:
+          m.focusDurationMinutes !== undefined
+            ? m.focusDurationMinutes
+            : m.verificationType === "FOCUS_SESSION"
+            ? 25
+            : null,
         lastCompletedAt: lastCompletion ? lastCompletion.completedAt : null,
         isCompletedToday: !eligibility.eligible,
       };
@@ -986,6 +1066,13 @@ export const db = {
       const lastCompletion = (pgMission as any).completions?.[0];
       return {
         ...pgMission,
+        verificationType: ((pgMission as any).verificationType as VerificationType) || "SELF_REPORT",
+        focusDurationMinutes:
+          (pgMission as any).focusDurationMinutes !== undefined
+            ? (pgMission as any).focusDurationMinutes
+            : (pgMission as any).verificationType === "FOCUS_SESSION"
+            ? 25
+            : null,
         lastCompletedAt: lastCompletion ? new Date(lastCompletion.completedAt) : null,
       } as unknown as DbMission;
     }
@@ -1000,6 +1087,13 @@ export const db = {
 
     return {
       ...mission,
+      verificationType: (mission.verificationType as VerificationType) || "SELF_REPORT",
+      focusDurationMinutes:
+        mission.focusDurationMinutes !== undefined
+          ? mission.focusDurationMinutes
+          : mission.verificationType === "FOCUS_SESSION"
+          ? 25
+          : null,
       lastCompletedAt: lastCompletion ? lastCompletion.completedAt : null,
     };
   },
@@ -1015,9 +1109,14 @@ export const db = {
     difficulty: MissionDifficulty;
     frequency: MissionFrequency;
     dueDate?: Date | null;
+    verificationType?: VerificationType;
+    focusDurationMinutes?: number | null;
   }): Promise<DbMission> {
     const cleanTitle = data.title.trim();
     const cleanDescription = data.description ? data.description.trim() : null;
+    const vType = data.verificationType || "SELF_REPORT";
+    const focusDuration =
+      vType === "FOCUS_SESSION" ? Math.max(1, data.focusDurationMinutes || 25) : null;
 
     const pgMission = await executePrisma(() =>
       prisma.mission.create({
@@ -1031,10 +1130,18 @@ export const db = {
           dueDate: data.dueDate || null,
           isActive: true,
           status: "ACTIVE",
+          verificationType: vType,
+          focusDurationMinutes: focusDuration,
         },
       })
     );
-    if (pgMission) return pgMission as unknown as DbMission;
+    if (pgMission) {
+      return {
+        ...pgMission,
+        verificationType: vType,
+        focusDurationMinutes: focusDuration,
+      } as unknown as DbMission;
+    }
 
     const store = getLocalStore();
     const newMission: DbMission = {
@@ -1048,6 +1155,8 @@ export const db = {
       dueDate: data.dueDate || null,
       isActive: true,
       status: "ACTIVE",
+      verificationType: vType,
+      focusDurationMinutes: focusDuration,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -1071,6 +1180,8 @@ export const db = {
       dueDate: Date | null;
       isActive: boolean;
       status: MissionStatus;
+      verificationType: VerificationType;
+      focusDurationMinutes: number | null;
     }>
   ): Promise<DbMission | null> {
     const pgMission = await executePrisma(async () => {
@@ -1087,7 +1198,13 @@ export const db = {
         },
       });
     });
-    if (pgMission) return pgMission as unknown as DbMission;
+    if (pgMission) {
+      return {
+        ...pgMission,
+        verificationType: ((pgMission as any).verificationType as VerificationType) || "SELF_REPORT",
+        focusDurationMinutes: (pgMission as any).focusDurationMinutes,
+      } as unknown as DbMission;
+    }
 
     const store = getLocalStore();
     const missionIdx = store.missions.findIndex((m) => m.id === id && m.userId === userId);
@@ -1106,6 +1223,8 @@ export const db = {
       ...data,
       status: updatedStatus as MissionStatus,
       isActive: updatedStatus === "ACTIVE",
+      verificationType: data.verificationType !== undefined ? data.verificationType : current.verificationType || "SELF_REPORT",
+      focusDurationMinutes: data.focusDurationMinutes !== undefined ? data.focusDurationMinutes : current.focusDurationMinutes,
       updatedAt: new Date(),
     };
 
@@ -2643,6 +2762,11 @@ export const db = {
       bonusCredits?: number;
     } | null;
     survivalSecuredToday?: boolean;
+    verification?: {
+      type: VerificationType;
+      signalIntegrity: number;
+      status: string;
+    };
     event?: {
       id: string;
       key: string;
@@ -2693,6 +2817,28 @@ export const db = {
         error: eligibility.reason || "MISSION ALREADY COMPLETED",
         statusCode: 400,
       };
+    }
+
+    // 2b. Phase 9 Signal Integrity & Anti-Bypass Enforcement
+    const vType = (mission.verificationType as VerificationType) || "SELF_REPORT";
+    if (vType === "EVIDENCE") {
+      const evidence = await this.findMissionEvidence(userId, missionId);
+      if (!evidence || evidence.length === 0) {
+        return {
+          success: false,
+          error: "EVIDENCE REQUIRED: Submit verification evidence before closing this mission.",
+          statusCode: 400,
+        };
+      }
+    } else if (vType === "FOCUS_SESSION") {
+      const completedSession = await this.findCompletedFocusSession(userId, missionId);
+      if (!completedSession) {
+        return {
+          success: false,
+          error: "FOCUS SESSION REQUIRED: Complete the verification protocol before closing this mission.",
+          statusCode: 400,
+        };
+      }
     }
 
     // 3. Load Current World & Boss State
@@ -3311,6 +3457,16 @@ export const db = {
         milestonesUnlocked: newlyUnlockedMilestones,
         comeback: comebackStatus,
         survivalSecuredToday: true,
+        verification: {
+          type: vType,
+          signalIntegrity: calculateSignalIntegrity(vType),
+          status:
+            vType === "EVIDENCE"
+              ? "EVIDENCE RECEIVED"
+              : vType === "FOCUS_SESSION"
+              ? "SESSION VERIFIED"
+              : "SELF CONFIRMED",
+        },
         event: eventResult,
       };
     }
@@ -3576,8 +3732,484 @@ export const db = {
       milestonesUnlocked: newlyUnlockedMilestones,
       comeback: comebackStatus,
       survivalSecuredToday: true,
+      verification: {
+        type: vType,
+        signalIntegrity: calculateSignalIntegrity(vType),
+        status:
+          vType === "EVIDENCE"
+            ? "EVIDENCE RECEIVED"
+            : vType === "FOCUS_SESSION"
+            ? "SESSION VERIFIED"
+            : "SELF CONFIRMED",
+      },
       event: eventResult,
     };
+  },
+
+  // ==========================================
+  // PHASE 9: SIGNAL INTEGRITY & TASK VALIDATION
+  // ==========================================
+
+  /**
+   * Create a server-authoritative Focus Session
+   */
+  async createFocusSession(data: {
+    userId: string;
+    missionId: string;
+    requiredDurationSeconds?: number;
+  }): Promise<DbFocusSession> {
+    const mission = await this.findMissionById(data.missionId, data.userId);
+    const authoritativeDuration = (mission?.focusDurationMinutes || 25) * 60;
+    const now = new Date();
+    const pgSession = await executePrisma(() =>
+      prisma.focusSession.create({
+        data: {
+          userId: data.userId,
+          missionId: data.missionId,
+          startedAt: now,
+          lastHeartbeatAt: now,
+          requiredDurationSeconds: authoritativeDuration,
+          accumulatedActiveSeconds: 0,
+          idleSeconds: 0,
+          status: "ACTIVE",
+        },
+      })
+    );
+    if (pgSession) return pgSession as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    const newSession: DbFocusSession = {
+      id: generateId("fcs"),
+      userId: data.userId,
+      missionId: data.missionId,
+      startedAt: now,
+      lastHeartbeatAt: now,
+      requiredDurationSeconds: authoritativeDuration,
+      accumulatedActiveSeconds: 0,
+      idleSeconds: 0,
+      status: "ACTIVE",
+      completedAt: null,
+      createdAt: now,
+      updatedAt: now,
+    };
+    store.focusSessions.push(newSession);
+    saveLocalStore(store);
+    return newSession;
+  },
+
+  /**
+   * Find active Focus Session for user, optionally filtered by mission
+   * Automatically handles expiration if session has gone silent
+   */
+  async findActiveFocusSession(userId: string, missionId?: string): Promise<DbFocusSession | null> {
+    const pgSession = await executePrisma(async () => {
+      const where: any = { userId, status: "ACTIVE" };
+      if (missionId) where.missionId = missionId;
+      const session = await prisma.focusSession.findFirst({
+        where,
+        orderBy: { createdAt: "desc" },
+      });
+      if (!session) return null;
+
+      // Auto-expire stale session if silence exceeds timeout
+      const silentSeconds = Math.floor((Date.now() - new Date(session.lastHeartbeatAt).getTime()) / 1000);
+      if (silentSeconds > FOCUS_CONSTANTS.SESSION_EXPIRATION_TIMEOUT_SECONDS) {
+        await prisma.focusSession.update({
+          where: { id: session.id },
+          data: { status: "EXPIRED" },
+        });
+        return null;
+      }
+      return session;
+    });
+    if (pgSession !== null) return pgSession as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    const sessionIdx = store.focusSessions.findIndex(
+      (fs) => fs.userId === userId && fs.status === "ACTIVE" && (!missionId || fs.missionId === missionId)
+    );
+    if (sessionIdx === -1) return null;
+
+    const session = store.focusSessions[sessionIdx];
+    const silentSeconds = Math.floor((Date.now() - session.lastHeartbeatAt.getTime()) / 1000);
+    if (silentSeconds > FOCUS_CONSTANTS.SESSION_EXPIRATION_TIMEOUT_SECONDS) {
+      session.status = "EXPIRED";
+      session.updatedAt = new Date();
+      saveLocalStore(store);
+      return null;
+    }
+    return session;
+  },
+
+  /**
+   * Find Focus Session by ID with user isolation
+   */
+  async findFocusSessionById(id: string, userId: string): Promise<DbFocusSession | null> {
+    const pgSession = await executePrisma(() =>
+      prisma.focusSession.findFirst({
+        where: { id, userId },
+      })
+    );
+    if (pgSession) return pgSession as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    return store.focusSessions.find((fs) => fs.id === id && fs.userId === userId) || null;
+  },
+
+  /**
+   * Record periodic heartbeat with server-calculated elapsed active/idle time
+   */
+  async recordFocusHeartbeat(
+    id: string,
+    userId: string,
+    clientReportedState: "ACTIVE" | "IDLE" = "ACTIVE"
+  ): Promise<{
+    success: boolean;
+    session?: DbFocusSession;
+    error?: string;
+    signalIntegrity?: number;
+  }> {
+    const session = await this.findFocusSessionById(id, userId);
+    if (!session) {
+      return { success: false, error: "Focus session anomaly: Session not found." };
+    }
+    if (session.status !== "ACTIVE") {
+      return {
+        success: false,
+        error: `Session is not active (current status: ${session.status}).`,
+        session,
+      };
+    }
+
+    const now = new Date();
+    const evalResult = evaluateHeartbeat({
+      lastHeartbeatAt: session.lastHeartbeatAt,
+      now,
+      clientReportedState,
+      currentActiveSeconds: session.accumulatedActiveSeconds,
+      currentIdleSeconds: session.idleSeconds,
+      requiredDurationSeconds: session.requiredDurationSeconds,
+      sessionStatus: session.status,
+    });
+
+    const pgUpdated = await executePrisma(() =>
+      prisma.focusSession.update({
+        where: { id },
+        data: {
+          lastHeartbeatAt: now,
+          accumulatedActiveSeconds: evalResult.newActiveSeconds,
+          idleSeconds: evalResult.newIdleSeconds,
+          status: evalResult.status,
+        },
+      })
+    );
+
+    if (pgUpdated) {
+      return {
+        success: true,
+        session: pgUpdated as unknown as DbFocusSession,
+        signalIntegrity: evalResult.signalIntegrity,
+      };
+    }
+
+    const store = getLocalStore();
+    const idx = store.focusSessions.findIndex((fs) => fs.id === id && fs.userId === userId);
+    if (idx !== -1) {
+      store.focusSessions[idx] = {
+        ...store.focusSessions[idx],
+        lastHeartbeatAt: now,
+        accumulatedActiveSeconds: evalResult.newActiveSeconds,
+        idleSeconds: evalResult.newIdleSeconds,
+        status: evalResult.status,
+        updatedAt: now,
+      };
+      saveLocalStore(store);
+      return {
+        success: true,
+        session: store.focusSessions[idx],
+        signalIntegrity: evalResult.signalIntegrity,
+      };
+    }
+    return { success: false, error: "Unable to update session telemetry." };
+  },
+
+  /**
+   * Pause an active focus session
+   */
+  async pauseFocusSession(id: string, userId: string): Promise<DbFocusSession | null> {
+    const session = await this.findFocusSessionById(id, userId);
+    if (!session || session.status !== "ACTIVE") return null;
+
+    const now = new Date();
+    const pgUpdated = await executePrisma(() =>
+      prisma.focusSession.update({
+        where: { id },
+        data: { status: "PAUSED" },
+      })
+    );
+    if (pgUpdated) return pgUpdated as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    const idx = store.focusSessions.findIndex((fs) => fs.id === id && fs.userId === userId);
+    if (idx !== -1) {
+      store.focusSessions[idx].status = "PAUSED";
+      store.focusSessions[idx].updatedAt = now;
+      saveLocalStore(store);
+      return store.focusSessions[idx];
+    }
+    return null;
+  },
+
+  /**
+   * Resume a paused focus session
+   */
+  async resumeFocusSession(id: string, userId: string): Promise<DbFocusSession | null> {
+    const session = await this.findFocusSessionById(id, userId);
+    if (!session || session.status !== "PAUSED") return null;
+
+    const now = new Date();
+    const pgUpdated = await executePrisma(() =>
+      prisma.focusSession.update({
+        where: { id },
+        data: { status: "ACTIVE", lastHeartbeatAt: now },
+      })
+    );
+    if (pgUpdated) return pgUpdated as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    const idx = store.focusSessions.findIndex((fs) => fs.id === id && fs.userId === userId);
+    if (idx !== -1) {
+      store.focusSessions[idx].status = "ACTIVE";
+      store.focusSessions[idx].lastHeartbeatAt = now;
+      store.focusSessions[idx].updatedAt = now;
+      saveLocalStore(store);
+      return store.focusSessions[idx];
+    }
+    return null;
+  },
+
+  /**
+   * Cancel/Abort a focus session
+   */
+  async cancelFocusSession(id: string, userId: string): Promise<DbFocusSession | null> {
+    const session = await this.findFocusSessionById(id, userId);
+    if (!session || session.status === "COMPLETED") return null;
+
+    const now = new Date();
+    const pgUpdated = await executePrisma(() =>
+      prisma.focusSession.update({
+        where: { id },
+        data: { status: "CANCELLED" },
+      })
+    );
+    if (pgUpdated) return pgUpdated as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    const idx = store.focusSessions.findIndex((fs) => fs.id === id && fs.userId === userId);
+    if (idx !== -1) {
+      store.focusSessions[idx].status = "CANCELLED";
+      store.focusSessions[idx].updatedAt = now;
+      saveLocalStore(store);
+      return store.focusSessions[idx];
+    }
+    return null;
+  },
+
+  /**
+   * Authoritatively finish and validate a focus session
+   */
+  async finishFocusSession(
+    id: string,
+    userId: string
+  ): Promise<{
+    success: boolean;
+    session?: DbFocusSession;
+    error?: string;
+    signalIntegrity?: number;
+  }> {
+    const session = await this.findFocusSessionById(id, userId);
+    if (!session) {
+      return { success: false, error: "Focus session not found." };
+    }
+    if (session.status === "COMPLETED") {
+      const integrity = calculateSignalIntegrity(
+        "FOCUS_SESSION",
+        session.accumulatedActiveSeconds,
+        session.idleSeconds
+      );
+      return { success: true, session, signalIntegrity: integrity };
+    }
+
+    const check = validateSessionCompletion(
+      session.accumulatedActiveSeconds,
+      session.requiredDurationSeconds,
+      session.status
+    );
+    if (!check.eligible) {
+      return {
+        success: false,
+        error: check.reason || "Required focus duration not reached.",
+        session,
+      };
+    }
+
+    const now = new Date();
+    const signalIntegrity = calculateSignalIntegrity(
+      "FOCUS_SESSION",
+      session.accumulatedActiveSeconds,
+      session.idleSeconds
+    );
+
+    const pgUpdated = await executePrisma(() =>
+      prisma.focusSession.update({
+        where: { id },
+        data: {
+          status: "COMPLETED",
+          completedAt: now,
+        },
+      })
+    );
+    if (pgUpdated) {
+      return {
+        success: true,
+        session: pgUpdated as unknown as DbFocusSession,
+        signalIntegrity,
+      };
+    }
+
+    const store = getLocalStore();
+    const idx = store.focusSessions.findIndex((fs) => fs.id === id && fs.userId === userId);
+    if (idx !== -1) {
+      store.focusSessions[idx].status = "COMPLETED";
+      store.focusSessions[idx].completedAt = now;
+      store.focusSessions[idx].updatedAt = now;
+      saveLocalStore(store);
+      return {
+        success: true,
+        session: store.focusSessions[idx],
+        signalIntegrity,
+      };
+    }
+    return { success: false, error: "Failed to persist session completion." };
+  },
+
+  /**
+   * Check if a completed FocusSession exists for mission
+   */
+  async findCompletedFocusSession(userId: string, missionId: string): Promise<DbFocusSession | null> {
+    const pgSession = await executePrisma(() =>
+      prisma.focusSession.findFirst({
+        where: { userId, missionId, status: "COMPLETED" },
+        orderBy: { completedAt: "desc" },
+      })
+    );
+    if (pgSession) return pgSession as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    return (
+      store.focusSessions
+        .filter((fs) => fs.userId === userId && fs.missionId === missionId && fs.status === "COMPLETED")
+        .sort((a, b) => (b.completedAt?.getTime() || 0) - (a.completedAt?.getTime() || 0))[0] || null
+    );
+  },
+
+  /**
+   * Create mission evidence (photo or observation note)
+   */
+  async createMissionEvidence(data: {
+    userId: string;
+    missionId: string;
+    type: EvidenceType;
+    fileUrl?: string | null;
+    description?: string | null;
+  }): Promise<DbMissionEvidence> {
+    const now = new Date();
+    const pgEvidence = await executePrisma(() =>
+      prisma.missionEvidence.create({
+        data: {
+          userId: data.userId,
+          missionId: data.missionId,
+          type: data.type,
+          fileUrl: data.fileUrl || null,
+          description: data.description || null,
+          createdAt: now,
+        },
+      })
+    );
+    if (pgEvidence) return pgEvidence as unknown as DbMissionEvidence;
+
+    const store = getLocalStore();
+    const newEvidence: DbMissionEvidence = {
+      id: generateId("mve"),
+      userId: data.userId,
+      missionId: data.missionId,
+      type: data.type,
+      fileUrl: data.fileUrl || null,
+      description: data.description || null,
+      createdAt: now,
+    };
+    store.missionEvidences.push(newEvidence);
+    saveLocalStore(store);
+    return newEvidence;
+  },
+
+  /**
+   * Find evidence submitted for mission by user
+   */
+  async findMissionEvidence(userId: string, missionId: string): Promise<DbMissionEvidence[]> {
+    const pgEvidences = await executePrisma(() =>
+      prisma.missionEvidence.findMany({
+        where: { userId, missionId },
+        orderBy: { createdAt: "desc" },
+      })
+    );
+    if (pgEvidences) return pgEvidences as unknown as DbMissionEvidence[];
+
+    const store = getLocalStore();
+    return store.missionEvidences
+      .filter((me) => me.userId === userId && me.missionId === missionId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  },
+
+  /**
+   * Fast-forward / simulate focus session telemetry for testing purposes
+   */
+  async simulateFocusSessionProgressForTesting(
+    id: string,
+    userId: string,
+    data: { accumulatedActiveSeconds?: number; idleSeconds?: number; lastHeartbeatAt?: Date }
+  ): Promise<DbFocusSession | null> {
+    const pgUpdated = await executePrisma(() =>
+      prisma.focusSession.update({
+        where: { id },
+        data: {
+          ...(data.accumulatedActiveSeconds !== undefined
+            ? { accumulatedActiveSeconds: data.accumulatedActiveSeconds }
+            : {}),
+          ...(data.idleSeconds !== undefined ? { idleSeconds: data.idleSeconds } : {}),
+          ...(data.lastHeartbeatAt !== undefined ? { lastHeartbeatAt: data.lastHeartbeatAt } : {}),
+        },
+      })
+    );
+    if (pgUpdated) return pgUpdated as unknown as DbFocusSession;
+
+    const store = getLocalStore();
+    const idx = store.focusSessions.findIndex((fs) => fs.id === id && fs.userId === userId);
+    if (idx !== -1) {
+      if (data.accumulatedActiveSeconds !== undefined) {
+        store.focusSessions[idx].accumulatedActiveSeconds = data.accumulatedActiveSeconds;
+      }
+      if (data.idleSeconds !== undefined) {
+        store.focusSessions[idx].idleSeconds = data.idleSeconds;
+      }
+      if (data.lastHeartbeatAt !== undefined) {
+        store.focusSessions[idx].lastHeartbeatAt = data.lastHeartbeatAt;
+      }
+      store.focusSessions[idx].updatedAt = new Date();
+      saveLocalStore(store);
+      return store.focusSessions[idx];
+    }
+    return null;
   },
 };
 

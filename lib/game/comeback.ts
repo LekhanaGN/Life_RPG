@@ -2,8 +2,6 @@
 // Lightweight, server-authoritative recovery mechanic when a survival streak is broken.
 
 /**
- * @asset #comeback-challenge -- "Active comeback recovery challenges and countdown timers"
- * @threat #comeback-spoofing -- "Direct modification of comeback challenge progress or completion status"
  * @mitigates App.Comeback against #comeback-spoofing using #prepared-queries -- "Server increments mission counts"
  * @comment -- "24-hour window, 3 completed missions grant +50 credits and -5 corruption"
  */

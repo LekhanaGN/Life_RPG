@@ -11,7 +11,7 @@ import { validateCreateMission } from "@/lib/missions/validation";
  * @flows Survivor -> API.Missions.GET via HTTPS -- "Fetch survivor missions"
  * @mitigates API.Missions.GET against #unauthorized-access using #session-auth -- "Requires valid HTTP-only session JWT"
  * @mitigates API.Missions.GET against #idor using #user-scoping -- "Queries database scoped strictly to session.userId"
- * @handles #mission-data on API.Missions.GET -- "Returns array of DbMission records"
+ * @handles internal on API.Missions.GET -- "Returns array of DbMission records"
  */
 export async function GET(req: NextRequest) {
   try {
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
  * @mitigates API.Missions.POST against #unauthorized-access using #session-auth -- "Verifies session token before creation"
  * @mitigates API.Missions.POST against #idor using #user-scoping -- "Binds new mission userId directly from server session"
  * @mitigates API.Missions.POST against #input-validation-failure using #input-validation -- "Enforces schema validity and sanitization"
- * @handles #mission-data on API.Missions.POST -- "Stores new persistent mission record"
+ * @handles internal on API.Missions.POST -- "Stores new persistent mission record"
  */
 export async function POST(req: NextRequest) {
   try {
@@ -86,6 +86,8 @@ export async function POST(req: NextRequest) {
       difficulty: validation.data.difficulty,
       frequency: validation.data.frequency,
       dueDate: validation.data.dueDate,
+      verificationType: validation.data.verificationType,
+      focusDurationMinutes: validation.data.focusDurationMinutes,
     });
 
     return NextResponse.json({ mission: newMission }, { status: 201 });

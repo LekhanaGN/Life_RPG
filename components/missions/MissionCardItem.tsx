@@ -18,6 +18,7 @@ import {
   Check,
   Loader2,
   Zap,
+  FileText,
 } from "lucide-react";
 import {
   DbMission,
@@ -25,6 +26,7 @@ import {
   MISSION_CATEGORIES,
   MISSION_DIFFICULTIES,
 } from "@/lib/missions/types";
+import { VerificationBadge } from "./VerificationBadge";
 
 interface MissionCardItemProps {
   mission: DbMission;
@@ -32,6 +34,10 @@ interface MissionCardItemProps {
   onEdit: (mission: DbMission) => void;
   onAbandon: (mission: DbMission) => void;
   onComplete?: (mission: DbMission) => Promise<void> | void;
+  onStartFocus?: (mission: DbMission) => void;
+  onSubmitEvidence?: (mission: DbMission) => void;
+  hasEvidenceSubmitted?: boolean;
+  hasFocusVerified?: boolean;
 }
 
 export function MissionCardItem({
@@ -40,6 +46,10 @@ export function MissionCardItem({
   onEdit,
   onAbandon,
   onComplete,
+  onStartFocus,
+  onSubmitEvidence,
+  hasEvidenceSubmitted = false,
+  hasFocusVerified = false,
 }: MissionCardItemProps) {
   const [isResolving, setIsResolving] = useState(false);
   const categoryMeta = MISSION_CATEGORIES[mission.category];
@@ -132,7 +142,7 @@ export function MissionCardItem({
           </div>
 
           <div className="min-w-0 flex-1 space-y-1.5">
-            {/* Header badges: Category, Difficulty, Frequency, Due Date, Completed status */}
+            {/* Header badges: Category, Difficulty, Verification Type, Frequency, Due Date, Completed status */}
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-xs text-[10px] font-mono uppercase tracking-widest font-semibold border ${categoryMeta.borderColor} ${categoryMeta.bgColor} ${categoryMeta.textColor}`}
@@ -145,6 +155,9 @@ export function MissionCardItem({
               >
                 {difficultyMeta.label}
               </span>
+
+              {/* Verification Level Badge */}
+              <VerificationBadge type={mission.verificationType || "SELF_REPORT"} size="sm" />
 
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs bg-slate-900/80 border border-slate-700/60 text-[10px] font-mono text-slate-300 uppercase tracking-widest">
                 <Repeat className="w-2.5 h-2.5 text-cyan-400" />
@@ -195,26 +208,59 @@ export function MissionCardItem({
 
         {/* Right Side: Action Buttons */}
         <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 self-end lg:self-center shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-800/60 w-full lg:w-auto justify-end">
-          {/* COMPLETE MISSION Button */}
-          {!isCompleted && !isArchived && onComplete && (
-            <button
-              onClick={handleCompleteClick}
-              disabled={isResolving}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-black font-extrabold text-xs font-mono uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(6,182,212,0.4)] hover:shadow-[0_0_20px_rgba(16,185,129,0.7)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label={`Complete mission: ${mission.title}`}
-            >
-              {isResolving ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>RESOLVING...</span>
-                </>
-              ) : (
-                <>
-                  <Zap className="w-3.5 h-3.5 fill-black" />
-                  <span>COMPLETE</span>
-                </>
+          {/* Context-aware Action Buttons */}
+          {!isCompleted && !isArchived && (
+            <>
+              {/* If mission requires FOCUS_SESSION and not yet verified */}
+              {mission.verificationType === "FOCUS_SESSION" && !hasFocusVerified && onStartFocus && (
+                <button
+                  onClick={() => onStartFocus(mission)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs font-mono uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(251,191,36,0.4)] hover:shadow-[0_0_20px_rgba(251,191,36,0.7)] cursor-pointer"
+                  aria-label={`Start Focus Protocol for ${mission.title}`}
+                >
+                  <Crosshair className="w-3.5 h-3.5 fill-black text-black" />
+                  <span>START PROTOCOL</span>
+                </button>
               )}
-            </button>
+
+              {/* If mission requires EVIDENCE and not yet submitted */}
+              {mission.verificationType === "EVIDENCE" && !hasEvidenceSubmitted && onSubmitEvidence && (
+                <button
+                  onClick={() => onSubmitEvidence(mission)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold text-xs font-mono uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(16,185,129,0.4)] hover:shadow-[0_0_20px_rgba(16,185,129,0.7)] cursor-pointer"
+                  aria-label={`Submit evidence for ${mission.title}`}
+                >
+                  <FileText className="w-3.5 h-3.5 text-black" />
+                  <span>SUBMIT EVIDENCE</span>
+                </button>
+              )}
+
+              {/* If verified, submitted, or self-report -> COMPLETE button */}
+              {(mission.verificationType === "SELF_REPORT" ||
+                !mission.verificationType ||
+                (mission.verificationType === "FOCUS_SESSION" && hasFocusVerified) ||
+                (mission.verificationType === "EVIDENCE" && hasEvidenceSubmitted)) &&
+                onComplete && (
+                  <button
+                    onClick={handleCompleteClick}
+                    disabled={isResolving}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-black font-extrabold text-xs font-mono uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(6,182,212,0.4)] hover:shadow-[0_0_20px_rgba(16,185,129,0.7)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label={`Complete mission: ${mission.title}`}
+                  >
+                    {isResolving ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>RESOLVING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-3.5 h-3.5 fill-black" />
+                        <span>COMPLETE</span>
+                      </>
+                    )}
+                  </button>
+                )}
+            </>
           )}
 
           {isCompleted && (

@@ -7,6 +7,7 @@ import {
   MissionFrequency,
   MissionStatus,
   DbMission,
+  VerificationType,
 } from "@/lib/db/client";
 
 export type {
@@ -15,6 +16,7 @@ export type {
   MissionFrequency,
   MissionStatus,
   DbMission,
+  VerificationType,
 };
 
 export type CategoryFilter = "ALL" | MissionCategory;
