@@ -608,6 +608,24 @@
       "timezone": "UTC",
       "createdAt": "2026-09-12T20:12:11.015Z",
       "updatedAt": "2026-09-12T20:12:11.015Z"
+    },
+    {
+      "id": "usr_mtyuwecs_kax3uv6",
+      "email": "survivor_p6_1789246043787@theotherside.world",
+      "passwordHash": "mock_hash_p6",
+      "username": "Lyra",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T20:47:27.916Z",
+      "updatedAt": "2026-09-12T20:47:27.916Z"
+    },
+    {
+      "id": "usr_mtyuweip_w0volt4",
+      "email": "intruder_p6_1789246048121@badactor.net",
+      "passwordHash": "hash_malory",
+      "username": "Malory",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T20:47:28.129Z",
+      "updatedAt": "2026-09-12T20:47:28.129Z"
     }
   ],
   "characters": [
@@ -1729,6 +1747,38 @@
       "connection": 6,
       "createdAt": "2026-09-12T20:12:11.042Z",
       "updatedAt": "2026-09-12T20:12:11.042Z"
+    },
+    {
+      "id": "chr_mtyuwed7_j2nz05r",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "name": "Lyra",
+      "archetype": "STRATEGIST",
+      "level": 1,
+      "xp": 0,
+      "credits": 250,
+      "mind": 12,
+      "body": 8,
+      "focus": 16,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T20:47:27.931Z",
+      "updatedAt": "2026-09-12T20:47:28.358Z"
+    },
+    {
+      "id": "chr_mtyuweja_eki30k6",
+      "userId": "usr_mtyuweip_w0volt4",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T20:47:28.150Z",
+      "updatedAt": "2026-09-12T20:47:28.150Z"
     }
   ],
   "missions": [
@@ -6062,6 +6112,27 @@
       "corruption": 24,
       "createdAt": "2026-09-12T20:12:09.457Z",
       "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wp_mtyuween_2h4oae0",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "corruption": 60,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:28.234Z"
+    },
+    {
+      "id": "wp_mtyuwejs_hj3g31t",
+      "userId": "usr_mtyuweip_w0volt4",
+      "corruption": 100,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wp_mtyv8uu3_p55sm2f",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "corruption": 100,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
     }
   ],
   "worldAreaProgress": [
@@ -8170,6 +8241,168 @@
       "restorationPercent": 0,
       "createdAt": "2026-09-12T20:12:09.457Z",
       "updatedAt": "2026-09-12T20:12:10.898Z"
+    },
+    {
+      "id": "wap_mtyuween_l7kvchl",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "wap_mtyuween_jcfglon",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "wap_mtyuween_uten7dg",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "wap_mtyuween_65x2ogy",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "wap_mtyuween_3csmr0q",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "wap_mtyuween_ogwer1c",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "wap_mtyuwejs_ixns4iz",
+      "userId": "usr_mtyuweip_w0volt4",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wap_mtyuwejs_jgi78ip",
+      "userId": "usr_mtyuweip_w0volt4",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wap_mtyuwejs_hofakh3",
+      "userId": "usr_mtyuweip_w0volt4",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wap_mtyuwejs_ogzhfjw",
+      "userId": "usr_mtyuweip_w0volt4",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wap_mtyuwejs_za5vv6q",
+      "userId": "usr_mtyuweip_w0volt4",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wap_mtyuwejs_nt5hbla",
+      "userId": "usr_mtyuweip_w0volt4",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:47:28.168Z",
+      "updatedAt": "2026-09-12T20:47:28.168Z"
+    },
+    {
+      "id": "wap_mtyv8uu3_nnitdld",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "wap_mtyv8uu3_9u17di2",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "wap_mtyv8uu3_xsiffla",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "wap_mtyv8uu3_kcwhqew",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "wap_mtyv8uu3_ifo5hfr",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "wap_mtyv8uu3_mzd5bkd",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
     }
   ],
   "bossProgress": [
@@ -9888,6 +10121,138 @@
       "defeatedAt": null,
       "createdAt": "2026-09-12T20:12:09.458Z",
       "updatedAt": "2026-09-12T20:12:09.458Z"
+    },
+    {
+      "id": "bp_mtyuween_dclq3bo",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "bp_mtyuween_ok8dkxw",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "bp_mtyuween_b72rc6n",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "bp_mtyuween_vrlm17p",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:27.983Z",
+      "updatedAt": "2026-09-12T20:47:27.983Z"
+    },
+    {
+      "id": "bp_mtyuwejt_8ncmlgv",
+      "userId": "usr_mtyuweip_w0volt4",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:28.169Z",
+      "updatedAt": "2026-09-12T20:47:28.169Z"
+    },
+    {
+      "id": "bp_mtyuwejt_he0guj3",
+      "userId": "usr_mtyuweip_w0volt4",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:28.169Z",
+      "updatedAt": "2026-09-12T20:47:28.169Z"
+    },
+    {
+      "id": "bp_mtyuwejt_uilr6oc",
+      "userId": "usr_mtyuweip_w0volt4",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:28.169Z",
+      "updatedAt": "2026-09-12T20:47:28.169Z"
+    },
+    {
+      "id": "bp_mtyuwejt_4947yo9",
+      "userId": "usr_mtyuweip_w0volt4",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:47:28.169Z",
+      "updatedAt": "2026-09-12T20:47:28.169Z"
+    },
+    {
+      "id": "bp_mtyv8uu3_9eqqmkk",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "bp_mtyv8uu3_8p0d3vu",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "bp_mtyv8uu3_xo5qylf",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
+    },
+    {
+      "id": "bp_mtyv8uu3_dupz4sg",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T20:57:09.147Z",
+      "updatedAt": "2026-09-12T20:57:09.147Z"
     }
   ],
   "items": [
@@ -10384,6 +10749,84 @@
       "isEquipped": false,
       "acquiredAt": "2026-09-12T20:11:53.385Z",
       "updatedAt": "2026-09-12T20:11:53.385Z",
+      "item": {
+        "id": "itm_focus_tonic",
+        "key": "FOCUS_TONIC",
+        "name": "FOCUS TONIC",
+        "description": "A temporary energetic charge for intense focus sessions.",
+        "category": "CONSUMABLE",
+        "rarity": "COMMON",
+        "price": 50,
+        "icon": "Zap",
+        "effectType": "FOCUS_BOOST",
+        "effectValue": 2,
+        "slot": null,
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtyuwef7_r2p0tqp",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "itemId": "itm_stable_circuit",
+      "quantity": 1,
+      "isEquipped": true,
+      "acquiredAt": "2026-09-12T20:47:27.998Z",
+      "updatedAt": "2026-09-12T20:47:28.197Z",
+      "item": {
+        "id": "itm_stable_circuit",
+        "key": "STABLE_CIRCUIT",
+        "name": "STABLE CIRCUIT",
+        "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+        "category": "EQUIPMENT",
+        "rarity": "COMMON",
+        "price": 75,
+        "icon": "Cpu",
+        "effectType": "STABILITY_BOOST",
+        "effectValue": 3,
+        "slot": "FOCUS",
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtyuwemx_1us4dge",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "itemId": "itm_memory_shard",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T20:47:28.277Z",
+      "updatedAt": "2026-09-12T20:47:28.313Z",
+      "item": {
+        "id": "itm_memory_shard",
+        "key": "MEMORY_SHARD",
+        "name": "MEMORY SHARD",
+        "description": "A crystallized data fragment recovered from the restored Knowledge Forest.",
+        "category": "EQUIPMENT",
+        "rarity": "RARE",
+        "price": 200,
+        "icon": "Brain",
+        "effectType": "MIND_BOOST",
+        "effectValue": 5,
+        "slot": "MIND",
+        "requiredCorruption": 70,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtyuwep6_3j7susz",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "itemId": "itm_focus_tonic",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T20:47:28.358Z",
+      "updatedAt": "2026-09-12T20:47:28.358Z",
       "item": {
         "id": "itm_focus_tonic",
         "key": "FOCUS_TONIC",
@@ -12077,6 +12520,33 @@
       "itemId": null,
       "description": "Reward for clearing mission: Final Strike Phase 5",
       "createdAt": "2026-09-12T20:12:10.855Z"
+    },
+    {
+      "id": "etx_mtyuwef7_5v9mmet",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "type": "PURCHASE",
+      "amount": -75,
+      "itemId": "itm_stable_circuit",
+      "description": "Acquired STABLE CIRCUIT from The Arcade",
+      "createdAt": "2026-09-12T20:47:27.998Z"
+    },
+    {
+      "id": "etx_mtyuwemx_f3ayuvu",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "type": "PURCHASE",
+      "amount": -200,
+      "itemId": "itm_memory_shard",
+      "description": "Acquired MEMORY SHARD from The Arcade",
+      "createdAt": "2026-09-12T20:47:28.277Z"
+    },
+    {
+      "id": "etx_mtyuwep6_6wck2kc",
+      "userId": "usr_mtyuwecs_kax3uv6",
+      "type": "PURCHASE",
+      "amount": -50,
+      "itemId": "itm_focus_tonic",
+      "description": "Acquired FOCUS TONIC from The Arcade",
+      "createdAt": "2026-09-12T20:47:28.358Z"
     }
   ],
   "milestones": [
@@ -13879,6 +14349,39 @@
         "bossDamageBonus": 40,
         "rarity": "COMMON",
         "loreId": "LOG_19",
+        "createdAt": "2026-09-12T18:21:51.276Z",
+        "updatedAt": "2026-09-12T18:21:51.276Z"
+      }
+    },
+    {
+      "id": "uwe_mtyv8uz4_m09rylw",
+      "userId": "usr_mtyiv78o_pgzl67y",
+      "worldEventId": "we_open_channel",
+      "status": "ACTIVE",
+      "progress": 0,
+      "requiredProgress": 2,
+      "completed": false,
+      "rewardClaimed": false,
+      "startsAt": "2026-09-12T20:57:09.275Z",
+      "expiresAt": "2026-09-13T08:57:09.275Z",
+      "completedAt": null,
+      "createdAt": "2026-09-12T20:57:09.275Z",
+      "updatedAt": "2026-09-12T20:57:09.275Z",
+      "worldEvent": {
+        "id": "we_open_channel",
+        "key": "OPEN_CHANNEL",
+        "title": "OPEN CHANNEL",
+        "description": "A harmonic carrier wave has locked onto a distant human transmission. Cooperative resonance reinforces our outpost.",
+        "loreSnippet": "The signal has found another human frequency.",
+        "targetAttribute": "CONNECTION",
+        "targetArea": "THE_CITADEL",
+        "requiredCompletions": 2,
+        "rewardCredits": 60,
+        "rewardXp": 40,
+        "corruptionChange": -3,
+        "bossDamageBonus": 0,
+        "rarity": "COMMON",
+        "loreId": null,
         "createdAt": "2026-09-12T18:21:51.276Z",
         "updatedAt": "2026-09-12T18:21:51.276Z"
       }

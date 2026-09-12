@@ -30,6 +30,7 @@ import {
 import { WorldBackground } from "@/components/world/WorldBackground";
 import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { useWorldTransition } from "@/components/world/WorldInversionTransition";
+import { Particles } from "@/components/ui/Particles";
 import { soundscape } from "@/lib/audio/soundscape";
 import { DbUser, DbCharacter } from "@/lib/db/client";
 import { Button } from "@/components/ui/Button";
@@ -92,6 +93,19 @@ export function LandingClient({
       {/* Background Ambience & Atmospheric Particles */}
       <WorldBackground mode="landing" />
 
+      {/* Full-Viewport Living Dimensional Dust & Signal Synapses WebGL Canvas */}
+      <Particles
+        particleColors={["#19D9FF", "#8BEAFF", "#FF2424", "#FFFFFF"]}
+        altColors={["#FF1A24", "#DC2626", "#FF4D4D", "#FFFFFF"]}
+        particleSpread={11}
+        speed={0.09}
+        particleBaseSize={135}
+        moveParticlesOnHover={true}
+        particleHoverFactor={0.85}
+        enableConnections={true}
+        className="fixed inset-0 pointer-events-none z-10"
+      />
+
       {/* Persistent Top Navigation Bar */}
       <WorldNavigation
         currentRealm="landing"
@@ -111,7 +125,7 @@ export function LandingClient({
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-6 rounded-full border border-red-900/60 bg-red-950/40 text-red-400 text-xs font-mono tracking-[0.25em] uppercase shadow-[0_0_15px_rgba(239,68,68,0.25)] backdrop-blur-xs"
+          className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 mb-6 rounded-full border border-red-900/60 bg-red-950/40 text-red-400 text-xs font-mono tracking-[0.25em] uppercase shadow-[0_0_15px_rgba(239,68,68,0.25)] backdrop-blur-xs"
         >
           <Radio className="w-3.5 h-3.5 animate-pulse text-red-500" />
           <span>DIMENSIONAL ANOMALY DETECTED</span>
@@ -300,7 +314,7 @@ export function LandingClient({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="relative z-10 text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
@@ -980,7 +994,7 @@ export function LandingClient({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="relative z-10 text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-red-950/80 border border-red-700 text-red-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -1138,7 +1152,7 @@ export function LandingClient({
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
-          className="space-y-8"
+          className="relative z-10 space-y-8"
         >
           <h2 className="font-cinzel text-4xl sm:text-6xl md:text-7xl font-black tracking-wider text-red-500 neon-glow-red uppercase leading-tight">
             THE OTHER SIDE IS WAITING.
