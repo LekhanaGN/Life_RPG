@@ -13,6 +13,8 @@ import {
   AlertTriangle,
   RotateCcw,
   Layers,
+  CheckCircle2,
+  Zap,
 } from "lucide-react";
 import {
   DbMission,
@@ -21,6 +23,8 @@ import {
   StatusFilter,
   MISSION_CATEGORIES,
 } from "@/lib/missions/types";
+import { DbCharacter } from "@/lib/db/client";
+import { soundscape } from "@/lib/audio/soundscape";
 import { MissionCardItem } from "./MissionCardItem";
 import { MissionCreateModal } from "./MissionCreateModal";
 import { MissionEditModal } from "./MissionEditModal";
@@ -28,12 +32,32 @@ import { MissionDetailsModal } from "./MissionDetailsModal";
 import { MissionAbandonDialog } from "./MissionAbandonDialog";
 import { MissionToast, ToastMessage } from "./MissionToast";
 
-export function MissionDeck() {
+export interface MissionDeckProps {
+  onProgressionUpdate?: (data: {
+    character: DbCharacter;
+    levelUp?: {
+      occurred: boolean;
+      previousLevel: number;
+      newLevel: number;
+      levelsGained: number;
+    };
+    rewards?: {
+      xp: number;
+      credits: number;
+      attribute: string;
+      attributeLabel: string;
+      attributeIncrease: number;
+    };
+  }) => void;
+}
+
+export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
   const [missions, setMissions] = useState<DbMission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("ALL");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ACTIVE");
+  const [activeSection, setActiveSection] = useState<"ACTIVE" | "COMPLETED">("ACTIVE");
 
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -93,78 +117,132 @@ export function MissionDeck() {
   // Handle mission update
   const handleMissionUpdated = (updated: DbMission) => {
     setMissions((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
-    // Also update detail modal if open
     if (selectedMissionForDetails?.id === updated.id) {
       setSelectedMissionForDetails(updated);
     }
     addToast("success", "MISSION UPDATED");
   };
 
-  // Handle optimistic abandon/delete
+  // Handle complete mission
+  const handleCompleteMission = async (targetMission: DbMission) => {
+    soundscape.playHover();
+    try {
+      const res = await fetch(`/api/missions/${targetMission.id}/complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        soundscape.playGlitch();
+        addToast(
+          "error",
+          data.error || "The Other Side resisted your action. Mission completion rejected."
+        );
+        return;
+      }
+
+      // 1. Success sound & visual feedback
+      soundscape.playRestoration();
+
+      const r = data.rewards;
+      const feedbackMsg = `MISSION CLEARED: +${r.xp} XP | +${r.credits} CREDITS | ${r.attributeLabel} +${r.attributeIncrease}`;
+      addToast("success", feedbackMsg);
+
+      // 2. Update local mission status
+      setMissions((prev) =>
+        prev.map((m) =>
+          m.id === targetMission.id
+            ? {
+                ...m,
+                ...data.mission,
+                isCompletedToday: true,
+                status: data.mission.status || m.status,
+              }
+            : m
+        )
+      );
+
+      // 3. Notify parent about progression update
+      if (onProgressionUpdate && data.character) {
+        onProgressionUpdate({
+          character: data.character,
+          levelUp: data.levelUp,
+          rewards: data.rewards,
+        });
+      }
+    } catch (err) {
+      soundscape.playGlitch();
+      addToast("error", "The Other Side resisted your action. Network anomaly.");
+    }
+  };
+
+  // Handle abandon/delete
   const handleConfirmAbandon = async (targetMission: DbMission) => {
-    // 1. Close dialog
     setSelectedMissionForAbandon(null);
     if (selectedMissionForDetails?.id === targetMission.id) {
       setSelectedMissionForDetails(null);
     }
 
-    // 2. Optimistic UI update: remove card immediately with animation
     const previousMissions = [...missions];
     setMissions((prev) => prev.filter((m) => m.id !== targetMission.id));
     addToast("success", "MISSION ABANDONED");
 
-    // 3. Confirm with server
     try {
       const res = await fetch(`/api/missions/${targetMission.id}`, {
         method: "DELETE",
       });
 
       if (!res.ok) {
-        // Rollback on rejection
         setMissions(previousMissions);
         addToast("error", "THE OTHER SIDE REJECTED THE CHANGE.");
       }
     } catch (err) {
-      // Rollback on network failure
       setMissions(previousMissions);
       addToast("error", "THE OTHER SIDE REJECTED THE CHANGE.");
     }
   };
 
+  // Split into Active vs Completed
+  const { activeMissions, completedMissions } = useMemo(() => {
+    const active: DbMission[] = [];
+    const completed: DbMission[] = [];
+
+    missions.forEach((m) => {
+      const isDone = m.status === "COMPLETED" || m.isCompletedToday;
+      if (isDone) {
+        completed.push(m);
+      } else if (m.status === "ACTIVE") {
+        active.push(m);
+      } else if (m.status === "ARCHIVED") {
+        completed.push(m);
+      }
+    });
+
+    return { activeMissions: active, completedMissions: completed };
+  }, [missions]);
+
   // Client-side filtering & sorting
-  const filteredMissions = useMemo(() => {
-    return missions
+  const displayedMissions = useMemo(() => {
+    const baseList = activeSection === "ACTIVE" ? activeMissions : completedMissions;
+
+    return baseList
       .filter((mission) => {
-        // Category filter
         if (categoryFilter !== "ALL" && mission.category !== categoryFilter) {
-          return false;
-        }
-        // Status filter
-        if (statusFilter !== "ALL" && mission.status !== statusFilter) {
           return false;
         }
         return true;
       })
       .sort((a, b) => {
-        // 1. Active missions first
-        if (a.status !== b.status) {
-          return a.status === "ACTIVE" ? -1 : 1;
-        }
-        // 2. Due date soonest
         if (a.dueDate && b.dueDate) {
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
         }
         if (a.dueDate) return -1;
         if (b.dueDate) return 1;
-        // 3. Recently created
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
-  }, [missions, categoryFilter, statusFilter]);
-
-  const activeCount = useMemo(
-    () => missions.filter((m) => m.status === "ACTIVE").length,
-    [missions]
-  );
+  }, [activeSection, activeMissions, completedMissions, categoryFilter]);
 
   const getCategoryIcon = (cat: MissionCategory) => {
     switch (cat) {
@@ -198,189 +276,154 @@ export function MissionDeck() {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-white text-lg font-cinzel font-bold tracking-widest uppercase">
-                TODAY&apos;S MISSIONS
+                MISSION DECK
               </h3>
-              <span className="px-2 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-600/70 text-[10px] font-mono text-cyan-300 font-bold tracking-wider">
-                {activeCount} ACTIVE
+              <span className="px-2 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-500/50 text-[10px] font-mono text-cyan-300 font-bold">
+                {activeMissions.length} ACTIVE
               </span>
             </div>
-            <p className="text-xs font-mono uppercase tracking-widest text-slate-400 mt-0.5">
-              Anchor your reality through real-world execution.
+            <p className="text-xs font-mono text-slate-400">
+              Execute daily objectives to train attributes and gain XP.
             </p>
           </div>
         </div>
 
+        {/* Primary CTA: Create Mission */}
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="self-start sm:self-center flex items-center gap-2 px-5 py-2 rounded-xs bg-cyan-950/50 hover:bg-cyan-500 border-2 border-cyan-500 hover:border-cyan-300 text-cyan-200 hover:text-black font-orbitron font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.35)] hover:shadow-[0_0_30px_rgba(6,182,212,0.8)] cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xs bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-cinzel font-extrabold text-xs tracking-widest uppercase transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:shadow-[0_0_25px_rgba(6,182,212,0.7)] cursor-pointer self-start sm:self-center"
+          aria-label="Forge new mission protocol"
         >
-          <Plus className="w-4 h-4" />
-          <span>+ NEW MISSION</span>
+          <Plus className="w-4 h-4 text-black stroke-[3]" />
+          <span>NEW MISSION</span>
         </button>
       </div>
 
-      {/* Filters Bar */}
-      <div className="py-4 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3">
-        {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-1.5">
+      {/* Sub-header: Active / Completed Section Toggle */}
+      <div className="pt-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/60 pb-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveSection("ACTIVE")}
+            className={`px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeSection === "ACTIVE"
+                ? "bg-cyan-950/80 border border-cyan-500 text-cyan-200 shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                : "bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+            <span>TODAY&apos;S MISSIONS ({activeMissions.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSection("COMPLETED")}
+            className={`px-3 py-1.5 rounded-xs text-xs font-mono uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeSection === "COMPLETED"
+                ? "bg-emerald-950/80 border border-emerald-500 text-emerald-200 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                : "bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <span>COMPLETED ({completedMissions.length})</span>
+          </button>
+        </div>
+
+        {/* Category Pills Filter */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 max-w-full">
           <button
             onClick={() => setCategoryFilter("ALL")}
-            className={`px-3 py-1 rounded-xs text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer border ${
+            className={`px-2.5 py-1 rounded-xs text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${
               categoryFilter === "ALL"
-                ? "bg-cyan-950/80 border-cyan-500 text-cyan-300 font-bold"
-                : "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
+                ? "bg-cyan-950 border border-cyan-500/80 text-cyan-300 font-bold"
+                : "bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-slate-200"
             }`}
           >
             ALL
           </button>
 
-          {(Object.keys(MISSION_CATEGORIES) as MissionCategory[]).map((catKey) => {
-            const cat = MISSION_CATEGORIES[catKey];
-            const isSelected = categoryFilter === catKey;
+          {(Object.keys(MISSION_CATEGORIES) as MissionCategory[]).map((cat) => {
+            const meta = MISSION_CATEGORIES[cat];
+            const isSelected = categoryFilter === cat;
 
             return (
               <button
-                key={catKey}
-                onClick={() => setCategoryFilter(catKey)}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-xs text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer border ${
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-xs text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer border ${
                   isSelected
-                    ? `${cat.bgColor} ${cat.borderColor} ${cat.textColor} font-bold ring-1 ring-cyan-400/40`
-                    : "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
+                    ? `${meta.borderColor} ${meta.bgColor} ${meta.textColor} font-bold shadow-[0_0_10px_rgba(0,0,0,0.5)]`
+                    : "border-slate-800 bg-slate-900/40 text-slate-400 hover:text-slate-200"
                 }`}
               >
-                {getCategoryIcon(catKey)}
-                <span>{cat.label}</span>
+                {getCategoryIcon(cat)}
+                <span>{meta.label}</span>
               </button>
             );
           })}
         </div>
-
-        {/* Status Toggle Filter */}
-        <div className="flex items-center gap-1 self-start md:self-auto bg-slate-900/80 p-0.5 rounded-xs border border-slate-800">
-          {(["ACTIVE", "ARCHIVED", "ALL"] as StatusFilter[]).map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-2.5 py-1 rounded-xs text-[11px] font-mono uppercase tracking-wider transition-colors cursor-pointer ${
-                statusFilter === st
-                  ? "bg-slate-800 text-cyan-300 font-semibold border border-slate-700"
-                  : "text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              {st}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="pt-5">
-        {/* Loading State: Skeletons */}
-        {isLoading && (
-          <div className="space-y-3">
-            {[1, 2, 3].map((idx) => (
+      {/* Main Mission List Area */}
+      <div className="pt-4">
+        {isLoading ? (
+          <div className="space-y-3 py-6">
+            {Array.from({ length: 3 }).map((_, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-xs bg-slate-900/40 border border-slate-800/80 animate-pulse space-y-2.5"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="h-4 bg-slate-800 rounded-xs w-1/3" />
-                  <div className="h-4 bg-slate-800 rounded-xs w-16" />
-                </div>
-                <div className="h-3 bg-slate-800/60 rounded-xs w-2/3" />
-                <div className="flex items-center gap-2 pt-1">
-                  <div className="h-4 bg-slate-800 rounded-xs w-14" />
-                  <div className="h-4 bg-slate-800 rounded-xs w-14" />
-                  <div className="h-4 bg-slate-800 rounded-xs w-20" />
-                </div>
-              </div>
+                className="h-24 rounded-xs bg-slate-900/40 border border-slate-800 animate-pulse"
+              />
             ))}
           </div>
-        )}
-
-        {/* Error State: SIGNAL LOST */}
-        {!isLoading && isError && (
-          <div className="py-12 px-4 text-center rounded-xs bg-red-950/20 border border-red-900/40 space-y-3">
+        ) : isError ? (
+          <div className="p-8 text-center space-y-3 rounded-xs border border-red-900/50 bg-red-950/20">
             <AlertTriangle className="w-8 h-8 text-red-500 mx-auto animate-bounce" />
-            <div className="space-y-1">
-              <h4 className="font-cinzel text-lg font-bold text-red-200 tracking-widest uppercase">
-                SIGNAL LOST
-              </h4>
-              <p className="text-xs font-mono text-slate-400">
-                We couldn&apos;t reach your missions. Dimensional interference detected.
-              </p>
+            <div className="font-cinzel text-base text-red-300 font-bold tracking-wider">
+              TRANSMISSION INTERRUPTED
             </div>
-            <button
-              onClick={fetchMissions}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono uppercase tracking-wider text-slate-200 hover:text-white transition-colors cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>TRY AGAIN</span>
-            </button>
-          </div>
-        )}
-
-        {/* Empty State 1: Zero Missions in Database */}
-        {!isLoading && !isError && missions.length === 0 && (
-          <div className="py-14 px-4 text-center rounded-xs bg-slate-900/30 border border-dashed border-cyan-500/30 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-cyan-950/50 border border-cyan-500/40 flex items-center justify-center mx-auto text-cyan-400">
-              <Layers className="w-6 h-6" />
-            </div>
-            <div className="space-y-1.5 max-w-md mx-auto">
-              <h4 className="font-cinzel text-xl font-black text-white tracking-[0.15em] uppercase neon-glow-cyan">
-                THE WORLD IS QUIET.
-              </h4>
-              <p className="text-xs font-mono text-cyan-300/90 tracking-wide">
-                You have no missions yet.
-              </p>
-              <p className="text-xs font-cinzel italic text-slate-400 tracking-wide">
-                &ldquo;Every journey begins with a first step.&rdquo;
-              </p>
-            </div>
-            <div className="pt-2">
-              <button
-                onClick={() => setIsCreateOpen(true)}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xs bg-cyan-950/60 hover:bg-cyan-500 border-2 border-cyan-500 hover:border-cyan-300 text-cyan-200 hover:text-black font-orbitron font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.4)] cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>+ CREATE FIRST MISSION</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Empty State 2: Missions exist but filter matches zero */}
-        {!isLoading && !isError && missions.length > 0 && filteredMissions.length === 0 && (
-          <div className="py-10 px-4 text-center rounded-xs bg-slate-900/20 border border-slate-800 space-y-2">
-            <div className="font-orbitron text-sm font-semibold uppercase tracking-wider text-slate-400">
-              NO RESONANCE DETECTED
-            </div>
-            <p className="text-xs font-mono text-slate-500">
-              No missions found matching the selected filter ({categoryFilter} / {statusFilter}).
+            <p className="text-xs font-mono text-slate-400 max-w-sm mx-auto">
+              Failed to retrieve mission dossier from the dimensional archive.
             </p>
             <button
-              onClick={() => {
-                setCategoryFilter("ALL");
-                setStatusFilter("ALL");
-              }}
-              className="mt-2 text-xs font-mono text-cyan-400 hover:underline uppercase tracking-wider"
+              onClick={fetchMissions}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300 transition-colors cursor-pointer"
             >
-              Reset Filters
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>RETRY TRANSMISSION</span>
             </button>
           </div>
-        )}
-
-        {/* Mission List */}
-        {!isLoading && !isError && filteredMissions.length > 0 && (
+        ) : displayedMissions.length === 0 ? (
+          <div className="p-10 text-center space-y-3 rounded-xs border border-slate-800/80 bg-slate-900/30">
+            <Layers className="w-8 h-8 text-slate-600 mx-auto" />
+            <div className="font-cinzel text-base text-slate-300 font-bold tracking-wider">
+              {activeSection === "ACTIVE"
+                ? "NO ACTIVE MISSIONS IN THIS SECTOR"
+                : "NO COMPLETED MISSIONS YET"}
+            </div>
+            <p className="text-xs font-mono text-slate-400 max-w-sm mx-auto">
+              {activeSection === "ACTIVE"
+                ? "Forge a new objective to begin your daily real-world growth."
+                : "Complete active missions to log your historical achievements."}
+            </p>
+            {activeSection === "ACTIVE" && (
+              <button
+                onClick={() => setIsCreateOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xs bg-cyan-950/60 border border-cyan-500/60 text-cyan-300 hover:text-white hover:bg-cyan-500 text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>CREATE FIRST MISSION</span>
+              </button>
+            )}
+          </div>
+        ) : (
           <div className="space-y-3">
             <AnimatePresence mode="popLayout">
-              {filteredMissions.map((mission) => (
+              {displayedMissions.map((mission) => (
                 <MissionCardItem
                   key={mission.id}
                   mission={mission}
                   onView={(m) => setSelectedMissionForDetails(m)}
                   onEdit={(m) => setSelectedMissionForEdit(m)}
                   onAbandon={(m) => setSelectedMissionForAbandon(m)}
+                  onComplete={handleCompleteMission}
                 />
               ))}
             </AnimatePresence>
@@ -388,19 +431,17 @@ export function MissionDeck() {
         )}
       </div>
 
-      {/* Footer Lore Status */}
-      <div className="pt-4 mt-5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-        <span>SORT ORDER: ACTIVE &gt; DUE SOON &gt; RECENT</span>
-        <span>THE OTHER SIDE // MISSION DECK V1.0</span>
-      </div>
+      {/* Toast Feedback Stack */}
+      <MissionToast toasts={toasts} onDismiss={dismissToast} />
 
-      {/* Modals & Dialogs */}
+      {/* Create Mission Modal */}
       <MissionCreateModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         onCreated={handleMissionCreated}
       />
 
+      {/* Edit Mission Modal */}
       <MissionEditModal
         mission={selectedMissionForEdit}
         isOpen={!!selectedMissionForEdit}
@@ -408,6 +449,7 @@ export function MissionDeck() {
         onUpdated={handleMissionUpdated}
       />
 
+      {/* View Mission Details Modal */}
       <MissionDetailsModal
         mission={selectedMissionForDetails}
         isOpen={!!selectedMissionForDetails}
@@ -422,15 +464,13 @@ export function MissionDeck() {
         }}
       />
 
+      {/* Abandon Confirmation Dialog */}
       <MissionAbandonDialog
         mission={selectedMissionForAbandon}
         isOpen={!!selectedMissionForAbandon}
         onClose={() => setSelectedMissionForAbandon(null)}
         onConfirm={handleConfirmAbandon}
       />
-
-      {/* Toast Notifications */}
-      <MissionToast toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

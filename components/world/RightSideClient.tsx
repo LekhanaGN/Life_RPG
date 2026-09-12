@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { WorldBackground } from "@/components/world/WorldBackground";
 import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { useWorldTransition } from "@/components/world/WorldInversionTransition";
 import { CharacterCard } from "@/components/character/CharacterCard";
 import { AttributeBar } from "@/components/character/AttributeBar";
+import { LevelUpOverlay, LevelUpData } from "@/components/character/LevelUpOverlay";
 import { MissionDeck } from "@/components/missions/MissionDeck";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -19,11 +20,61 @@ export interface RightSideClientProps {
   character: DbCharacter;
 }
 
-export function RightSideClient({ user, character }: RightSideClientProps) {
+export function RightSideClient({ user, character: initialCharacter }: RightSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
+  const [character, setCharacter] = useState<DbCharacter>(initialCharacter);
+  const [levelUpData, setLevelUpData] = useState<LevelUpData | null>(null);
+  const [highlightedAttribute, setHighlightedAttribute] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState<string>("");
 
   const handleEnterOtherSide = () => {
     triggerTransition("/other-side", "right-to-other");
+  };
+
+  const handleProgressionUpdate = (data: {
+    character: DbCharacter;
+    levelUp?: {
+      occurred: boolean;
+      previousLevel: number;
+      newLevel: number;
+      levelsGained: number;
+    };
+    rewards?: {
+      xp: number;
+      credits: number;
+      attribute: string;
+      attributeLabel: string;
+      attributeIncrease: number;
+    };
+  }) => {
+    // 1. Update live character state
+    setCharacter(data.character);
+
+    // 2. Announce for screen readers
+    if (data.rewards) {
+      const msg = `Mission completed! Awarded ${data.rewards.xp} XP, ${data.rewards.credits} credits, and ${data.rewards.attributeIncrease} ${data.rewards.attributeLabel}.`;
+      setAnnouncement(msg);
+    }
+
+    // 3. Highlight boosted attribute
+    if (data.rewards?.attribute) {
+      setHighlightedAttribute(data.rewards.attribute);
+      setTimeout(() => {
+        setHighlightedAttribute(null);
+      }, 2500);
+    }
+
+    // 4. Trigger level up overlay if occurred
+    if (data.levelUp?.occurred) {
+      setLevelUpData({
+        previousLevel: data.levelUp.previousLevel,
+        newLevel: data.levelUp.newLevel,
+        levelsGained: data.levelUp.levelsGained,
+        characterName: character.name,
+        archetype: character.archetype,
+      });
+      setAnnouncement((prev) => `${prev} LEVEL UP! Advanced to Level ${data.levelUp?.newLevel}!`);
+    }
   };
 
   return (
@@ -33,6 +84,17 @@ export function RightSideClient({ user, character }: RightSideClientProps) {
 
       {/* Top HUD Navigation Bar */}
       <WorldNavigation currentRealm="right-side" user={user} character={character} />
+
+      {/* Screen Reader Aria-Live Announcement */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
+
+      {/* Level-Up Cinematic Celebration Modal */}
+      <LevelUpOverlay
+        data={levelUpData}
+        onDismiss={() => setLevelUpData(null)}
+      />
 
       {/* Main Content Area */}
       <main className="relative z-20 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8 space-y-8">
@@ -113,7 +175,10 @@ export function RightSideClient({ user, character }: RightSideClientProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <AttributeBar character={character} />
+                <AttributeBar
+                  character={character}
+                  highlightedAttribute={highlightedAttribute}
+                />
               </CardContent>
             </Card>
           </motion.div>
@@ -125,8 +190,8 @@ export function RightSideClient({ user, character }: RightSideClientProps) {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="lg:col-span-7 space-y-6"
           >
-            {/* Mission Deck */}
-            <MissionDeck />
+            {/* Mission Deck with progression updates */}
+            <MissionDeck onProgressionUpdate={handleProgressionUpdate} />
 
             {/* Dimensional Resonance Card */}
             <Card variant="default">

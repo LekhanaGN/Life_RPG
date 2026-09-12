@@ -10,37 +10,54 @@ generator client {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
+  id           String              @id @default(cuid())
+  email        String              @unique
   passwordHash String
   username     String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
   character    Character?
   missions     Mission[]
+  completions  MissionCompletion[]
 
   @@map("users")
 }
 
 model Mission {
-  id          String    @id @default(cuid())
+  id          String              @id @default(cuid())
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String?
   category    String
   difficulty  String
   frequency   String
   dueDate     DateTime?
-  isActive    Boolean   @default(true)
-  status      String    @default("ACTIVE")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isActive    Boolean             @default(true)
+  status      String              @default("ACTIVE")
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  completions MissionCompletion[]
 
   @@index([userId])
   @@map("missions")
 }
 
+model MissionCompletion {
+  id            String   @id @default(cuid())
+  missionId     String
+  mission       Mission  @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt   DateTime @default(now())
+  xpEarned      Int
+  creditsEarned Int
+
+  @@index([missionId])
+  @@index([userId])
+  @@index([userId, completedAt])
+  @@map("mission_completions")
+}
 
 model Character {
   id         String   @id @default(cuid())
