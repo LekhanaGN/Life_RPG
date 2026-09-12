@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { WorldBackground } from "@/components/world/WorldBackground";
 import { WorldNavigation } from "@/components/world/WorldNavigation";
 import { useWorldTransition } from "@/components/world/WorldInversionTransition";
@@ -9,21 +9,41 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
-import { DbCharacter, DbUser } from "@/lib/db/client";
+import { DbCharacter, DbUser, WorldStateSummary } from "@/lib/db/client";
 import { motion } from "framer-motion";
-import { Skull, AlertOctagon, RotateCcw, Flame, ShieldAlert, Sparkles } from "lucide-react";
+import {
+  Skull,
+  AlertOctagon,
+  RotateCcw,
+  Flame,
+  ShieldAlert,
+  Sparkles,
+  Zap,
+  Lock,
+  CheckCircle2,
+} from "lucide-react";
 
 export interface OtherSideClientProps {
   user: DbUser;
   character: DbCharacter;
+  initialWorldState?: WorldStateSummary;
 }
 
-export function OtherSideClient({ user, character }: OtherSideClientProps) {
+export function OtherSideClient({
+  user,
+  character,
+  initialWorldState,
+}: OtherSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
+  const [worldState] = useState<WorldStateSummary | undefined>(initialWorldState);
 
   const handleReturnToRightSide = () => {
     triggerTransition("/right-side", "other-to-right");
   };
+
+  const activeBoss = worldState?.activeBoss;
+  const corruption = worldState?.corruption ?? 100;
+  const areas = worldState?.areas || [];
 
   return (
     <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
@@ -48,7 +68,8 @@ export function OtherSideClient({ user, character }: OtherSideClientProps) {
                 CORRUPTED REALM
               </Badge>
               <span className="text-xs font-mono text-red-500 uppercase tracking-widest animate-pulse">
-                ZONE 99: THE VOID MATRIX // TARGET: {character.name.toUpperCase()} [{character.archetype}]
+                ZONE 99: THE VOID MATRIX // TARGET: {character.name.toUpperCase()} [
+                {character.archetype}]
               </span>
             </div>
             <h1 className="font-cinzel text-3xl sm:text-5xl lg:text-6xl font-black tracking-[0.12em] text-white neon-glow-red uppercase">
@@ -96,12 +117,14 @@ export function OtherSideClient({ user, character }: OtherSideClientProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <AlertOctagon className="w-5 h-5 text-red-500 animate-pulse" />
-                    <CardTitle className="text-red-300">
-                      CORRUPTION DETECTED
-                    </CardTitle>
+                    <CardTitle className="text-red-300">CORRUPTION DETECTED</CardTitle>
                   </div>
                   <Badge variant="crimson" pulse>
-                    LEVEL HIGH
+                    {corruption > 75
+                      ? "CRITICAL"
+                      : corruption > 40
+                      ? "UNSTABLE"
+                      : "PURGING"}
                   </Badge>
                 </div>
                 <CardDescription className="text-red-400/80">
@@ -111,16 +134,17 @@ export function OtherSideClient({ user, character }: OtherSideClientProps) {
 
               <CardContent className="space-y-4 pt-2">
                 <ProgressBar
-                  value={32}
+                  value={corruption}
                   max={100}
                   variant="crimson"
                   segmented
                   label="WORLD CORRUPTION"
-                  sublabel="GROWTH RATE: +0.4% / HR"
+                  sublabel={`${corruption}% REMAINING`}
                 />
 
                 <div className="p-3 rounded-xs bg-red-950/40 border border-red-900/60 text-xs font-mono text-red-200/90 leading-relaxed">
-                  The Other Side feeds on postponed decisions, broken promises, and unspent creative energy. If corruption exceeds 75%, reality distortion accelerates.
+                  The Other Side feeds on postponed decisions, broken promises, and unspent creative energy.
+                  Completing real-life missions reduces corruption by 2% to 10% per victory.
                 </div>
               </CardContent>
             </Card>
@@ -147,84 +171,153 @@ export function OtherSideClient({ user, character }: OtherSideClientProps) {
             </Card>
           </motion.div>
 
-          {/* Right Column: Current Threat Dossier */}
+          {/* Right Column: Active Threat Dossier & Corrupted Map Fragments */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="lg:col-span-7 space-y-6"
           >
-            {/* Current Threat Card: THE PROCRASTINATOR */}
-            <Card variant="corrupted" glow className="space-y-5">
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-sm border-2 border-red-600 bg-red-950/70 flex items-center justify-center text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)]">
-                      <Skull className="w-6 h-6 animate-pulse" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-red-400 text-lg sm:text-xl tracking-widest font-cinzel">
-                          THE PROCRASTINATOR
-                        </CardTitle>
-                        <Badge variant="crimson">BOSS ANOMALY</Badge>
+            {/* Active Threat Card */}
+            {activeBoss ? (
+              <Card variant="corrupted" glow className="space-y-5">
+                <CardHeader>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-sm border-2 border-red-600 bg-red-950/70 flex items-center justify-center text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)]">
+                        <Skull className="w-6 h-6 animate-pulse" />
                       </div>
-                      <CardDescription className="text-red-400/70">
-                        PRIMARY DIMENSIONAL PARASITE [PLACEHOLDER]
-                      </CardDescription>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-red-400 text-lg sm:text-xl tracking-widest font-cinzel">
+                            {activeBoss.name}
+                          </CardTitle>
+                          <Badge variant="crimson">
+                            {activeBoss.isDefeated ? "BANISHED" : "ACTIVE ENTITY"}
+                          </Badge>
+                        </div>
+                        <CardDescription className="text-red-400/70">
+                          {activeBoss.title} // TIER 0{activeBoss.order}
+                        </CardDescription>
+                      </div>
+                    </div>
+
+                    <div className="px-3 py-1.5 rounded-xs bg-red-950/60 border border-red-700/80 text-left sm:text-right">
+                      <div className="text-[10px] font-mono text-red-400 font-bold uppercase">
+                        VITALITY MATRIX
+                      </div>
+                      <div className="text-xs sm:text-sm font-orbitron font-extrabold text-red-200">
+                        {activeBoss.currentHp} / {activeBoss.maxHp} HP ({activeBoss.hpPercent}%)
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-5">
+                  {/* Dynamic Boss HP Bar */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-mono">
+                      <span className="text-red-300 font-bold">ENTITY INTEGRITY</span>
+                      <span className="text-red-400 font-orbitron">{activeBoss.hpPercent}%</span>
+                    </div>
+                    <div className="h-4 w-full bg-slate-950 rounded-xs border border-red-900/80 p-0.5 overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-red-700 to-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-[1px]"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${activeBoss.hpPercent}%` }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                      />
                     </div>
                   </div>
 
-                  <div className="px-3 py-1.5 rounded-xs bg-red-950/60 border border-red-700/80 text-left sm:text-right">
-                    <div className="text-[10px] font-mono text-red-400 font-bold uppercase">
-                      STATUS
+                  {/* Threat Traits */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 bg-black/60 border border-red-900/60 rounded-xs">
+                      <div className="text-[10px] font-mono uppercase text-slate-400">
+                        THREAT TRAIT
+                      </div>
+                      <div className="font-orbitron text-sm font-bold text-red-400 mt-0.5">
+                        {activeBoss.threatTrait}
+                      </div>
+                      <p className="text-[11px] font-mono text-slate-400 mt-1">
+                        {activeBoss.threatTraitDesc}
+                      </p>
                     </div>
-                    <div className="text-xs sm:text-sm font-orbitron font-extrabold text-red-200">
-                      AWAITING YOUR CHALLENGE
+
+                    <div className="p-3 bg-black/60 border border-red-900/60 rounded-xs">
+                      <div className="text-[10px] font-mono uppercase text-slate-400">
+                        CORRUPTION SOURCE
+                      </div>
+                      <div className="font-orbitron text-sm font-bold text-purple-400 mt-0.5">
+                        {activeBoss.corruptionSource}
+                      </div>
+                      <p className="text-[11px] font-mono text-slate-400 mt-1">
+                        {activeBoss.corruptionSourceDesc}
+                      </p>
                     </div>
                   </div>
+
+                  {/* Combat Instruction Banner */}
+                  <div className="p-4 bg-red-950/30 border border-red-900/50 rounded-xs space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold text-red-300">
+                      <Flame className="w-4 h-4 text-red-500" />
+                      <span>BANISHMENT PROTOCOL ACTIVE</span>
+                    </div>
+                    <p className="text-xs font-mono text-slate-300 leading-relaxed">
+                      Every completed mission in The Right Side channels strike energy directly against{" "}
+                      <span className="text-white font-bold">{activeBoss.name}</span> (-10 to -80 HP).
+                      When HP reaches 0, the entity will be banished and the next anomaly will awaken.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {/* Corrupted World Fragments Card */}
+            <Card variant="corrupted">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-red-400" />
+                    <CardTitle className="text-red-300 text-base">
+                      CORRUPTED REALM SECTORS
+                    </CardTitle>
+                  </div>
+                  <Badge variant="crimson">{areas.length} SECTORS</Badge>
                 </div>
+                <CardDescription className="text-red-400/80">
+                  DIMENSIONAL CONTAMINATION OVERVIEW
+                </CardDescription>
               </CardHeader>
-
-              <CardContent className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-black/60 border border-red-900/60 rounded-xs">
-                    <div className="text-[10px] font-mono uppercase text-slate-400">
-                      THREAT TRAIT
+              <CardContent className="pt-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {areas.map((area) => (
+                    <div
+                      key={area.areaKey}
+                      className={`p-2.5 rounded-xs border text-left ${
+                        !area.isUnlocked
+                          ? "border-slate-900 bg-slate-950/60 text-slate-600"
+                          : area.status === "RESTORED"
+                          ? "border-emerald-900/50 bg-emerald-950/20 text-emerald-300"
+                          : "border-red-950 bg-red-950/20 text-red-300"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-cinzel font-bold truncate">
+                          {area.name}
+                        </span>
+                        {!area.isUnlocked ? (
+                          <Lock className="w-3 h-3 text-slate-600" />
+                        ) : area.status === "RESTORED" ? (
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        ) : (
+                          <span className="text-[9px] font-mono text-red-400">
+                            {100 - area.restorationPercent}% CORRUPTED
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className="font-orbitron text-sm font-bold text-red-400 mt-0.5">
-                      TEMPORAL DISTORTION
-                    </div>
-                    <p className="text-[11px] font-mono text-slate-400 mt-1">
-                      Convinces you that tomorrow has infinite hours.
-                    </p>
-                  </div>
-
-                  <div className="p-3 bg-black/60 border border-red-900/60 rounded-xs">
-                    <div className="text-[10px] font-mono uppercase text-slate-400">
-                      CORRUPTION SOURCE
-                    </div>
-                    <div className="font-orbitron text-sm font-bold text-purple-400 mt-0.5">
-                      INFINITE SCROLL VORTEX
-                    </div>
-                    <p className="text-[11px] font-mono text-slate-400 mt-1">
-                      Siphons dopamine before real-world tasks begin.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-red-950/30 border border-red-900/50 rounded-xs space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold text-red-300">
-                    <Flame className="w-4 h-4 text-red-500" />
-                    <span>BANISHMENT PROTOCOL (SLATED FOR FUTURE PHASES)</span>
-                  </div>
-                  <p className="text-xs font-mono text-slate-300 leading-relaxed">
-                    [NOTICE]: Boss battles, corruption purging, and combat progression are scheduled for upcoming phases. Currently observing dimension resonance for survivor <span className="text-white font-bold">{character.name}</span>.
-                  </p>
-                </div>
-
-                <div className="pt-2 text-center text-xs font-mono text-red-400/80 tracking-widest">
-                  [DIMENSIONAL GATEWAY STANDING BY — RETURN TO SANCTUARY TO COMMENCE MISSIONS]
+                  ))}
                 </div>
               </CardContent>
             </Card>

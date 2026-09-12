@@ -71,6 +71,22 @@
       "username": "TestHeroB",
       "createdAt": "2026-09-12T15:44:33.833Z",
       "updatedAt": "2026-09-12T15:44:33.833Z"
+    },
+    {
+      "id": "usr_mtyl5g1e_si1dtiy",
+      "email": "survivor_p5_1789229669355@theotherside.world",
+      "passwordHash": "mock_hash_p5",
+      "username": "Kaelen",
+      "createdAt": "2026-09-12T16:14:33.842Z",
+      "updatedAt": "2026-09-12T16:14:33.842Z"
+    },
+    {
+      "id": "usr_mtyl5g2t_0a4yy4t",
+      "email": "intruder_1789229673893@badactor.net",
+      "passwordHash": "intruder_hash",
+      "username": "Malory",
+      "createdAt": "2026-09-12T16:14:33.893Z",
+      "updatedAt": "2026-09-12T16:14:33.893Z"
     }
   ],
   "characters": [
@@ -80,15 +96,15 @@
       "name": "Aria",
       "archetype": "STRATEGIST",
       "level": 2,
-      "xp": 140,
-      "credits": 70,
-      "mind": 13,
+      "xp": 180,
+      "credits": 90,
+      "mind": 15,
       "body": 8,
       "focus": 21,
       "spirit": 8,
       "connection": 6,
       "createdAt": "2026-09-12T13:07:24.033Z",
-      "updatedAt": "2026-09-12T15:45:08.901Z"
+      "updatedAt": "2026-09-12T16:19:18.375Z"
     },
     {
       "id": "chr_mtyg6drr_kap2cdf",
@@ -217,6 +233,38 @@
       "connection": 6,
       "createdAt": "2026-09-12T15:44:33.836Z",
       "updatedAt": "2026-09-12T15:44:33.836Z"
+    },
+    {
+      "id": "chr_mtyl5g1g_i37jac9",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "name": "Kaelen",
+      "archetype": "SCHOLAR",
+      "level": 3,
+      "xp": 980,
+      "credits": 390,
+      "mind": 22,
+      "body": 33,
+      "focus": 14,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:14:33.844Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "chr_mtyl5g2v_2sbmwhp",
+      "userId": "usr_mtyl5g2t_0a4yy4t",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:14:33.895Z",
+      "updatedAt": "2026-09-12T16:14:33.895Z"
     }
   ],
   "missions": [
@@ -389,6 +437,150 @@
       "updatedAt": "2026-09-12T15:44:33.852Z",
       "lastCompletedAt": "2026-09-12T15:44:33.851Z",
       "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g1j_5ipy26j",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Read 10 pages of OS architecture",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EASY",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.847Z",
+      "updatedAt": "2026-09-12T16:14:33.852Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.852Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g1r_rw72db4",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "30-minute deep focus sprint",
+      "description": null,
+      "category": "FOCUS",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T16:14:33.855Z",
+      "updatedAt": "2026-09-12T16:14:33.861Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.860Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g1y_n5xoxqs",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Ship production microservice",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.862Z",
+      "updatedAt": "2026-09-12T16:14:33.866Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.865Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g25_6jjllou",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Final Strike Phase 1",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.869Z",
+      "updatedAt": "2026-09-12T16:14:33.872Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.872Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g29_t7ksn7y",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Final Strike Phase 2",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.873Z",
+      "updatedAt": "2026-09-12T16:14:33.876Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.876Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g2d_75zihr3",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Final Strike Phase 3",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.877Z",
+      "updatedAt": "2026-09-12T16:14:33.881Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.880Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g2i_gvmxtoj",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Final Strike Phase 4",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.882Z",
+      "updatedAt": "2026-09-12T16:14:33.885Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.885Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyl5g2m_zyp1tho",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "title": "Final Strike Phase 5",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:14:33.886Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z",
+      "lastCompletedAt": "2026-09-12T16:14:33.889Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtylazz7_oib6jze",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "title": "Study OS Architecture",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T16:18:52.963Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z",
+      "lastCompletedAt": "2026-09-12T16:19:18.373Z",
+      "isCompletedToday": true
     }
   ],
   "missionCompletions": [
@@ -455,6 +647,294 @@
       "xpEarned": 20,
       "creditsEarned": 10,
       "completedAt": "2026-09-12T15:45:08.901Z"
+    },
+    {
+      "id": "cmp_mtyl5g1o_ep775xx",
+      "missionId": "msn_mtyl5g1j_5ipy26j",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T16:14:33.852Z"
+    },
+    {
+      "id": "cmp_mtyl5g1x_v5kj4d7",
+      "missionId": "msn_mtyl5g1r_rw72db4",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T16:14:33.860Z"
+    },
+    {
+      "id": "cmp_mtyl5g22_1hmshjm",
+      "missionId": "msn_mtyl5g1y_n5xoxqs",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:14:33.865Z"
+    },
+    {
+      "id": "cmp_mtyl5g28_hzgxhwu",
+      "missionId": "msn_mtyl5g25_6jjllou",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:14:33.872Z"
+    },
+    {
+      "id": "cmp_mtyl5g2c_2j4t50o",
+      "missionId": "msn_mtyl5g29_t7ksn7y",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:14:33.876Z"
+    },
+    {
+      "id": "cmp_mtyl5g2h_buz40gx",
+      "missionId": "msn_mtyl5g2d_75zihr3",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:14:33.880Z"
+    },
+    {
+      "id": "cmp_mtyl5g2l_5hsqxps",
+      "missionId": "msn_mtyl5g2i_gvmxtoj",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:14:33.885Z"
+    },
+    {
+      "id": "cmp_mtyl5g2p_cggjfc6",
+      "missionId": "msn_mtyl5g2m_zyp1tho",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "cmp_mtylbjl3_u5n94t0",
+      "missionId": "msn_mtylazz7_oib6jze",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T16:19:18.373Z"
+    }
+  ],
+  "worldProgress": [
+    {
+      "id": "wp_mtyl5g1i_kjk8lvt",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "corruption": 24,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wp_mtyl7so9_coab7l9",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "corruption": 96,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    }
+  ],
+  "worldAreaProgress": [
+    {
+      "id": "wap_mtyl5g1i_1m8exwc",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wap_mtyl5g1i_gb01tid",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": true,
+      "restorationPercent": 12,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wap_mtyl5g1i_zl7sp0k",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": true,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wap_mtyl5g1i_r293cqv",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": true,
+      "restorationPercent": 50,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wap_mtyl5g1i_hbmitqs",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "areaKey": "STILLWATER",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wap_mtyl5g1i_5zp1loo",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "wap_mtyl7so9_cl62plb",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wap_mtyl7so9_ejv6mn3",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wap_mtyl7so9_dhn1qzy",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wap_mtyl7so9_1lcxvu7",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wap_mtyl7so9_pvtkus5",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wap_mtyl7so9_ax509f7",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    }
+  ],
+  "bossProgress": [
+    {
+      "id": "bp_mtyl5g1i_wl7k216",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 0,
+      "maxHp": 500,
+      "isDefeated": true,
+      "defeatedAt": "2026-09-12T16:14:33.889Z",
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.889Z"
+    },
+    {
+      "id": "bp_mtyl5g1i_bhom0k1",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.846Z"
+    },
+    {
+      "id": "bp_mtyl5g1i_krqrtsn",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.846Z"
+    },
+    {
+      "id": "bp_mtyl5g1i_cf38uf2",
+      "userId": "usr_mtyl5g1e_si1dtiy",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:14:33.846Z",
+      "updatedAt": "2026-09-12T16:14:33.846Z"
+    },
+    {
+      "id": "bp_mtyl7so9_yjvq7su",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 475,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "bp_mtyl7so9_lm9j8kl",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:16:23.529Z"
+    },
+    {
+      "id": "bp_mtyl7so9_863tkjg",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:16:23.529Z",
+      "updatedAt": "2026-09-12T16:16:23.529Z"
+    },
+    {
+      "id": "bp_mtyl7so9_vhmsk6w",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:16:23.530Z",
+      "updatedAt": "2026-09-12T16:16:23.530Z"
     }
   ]
 }

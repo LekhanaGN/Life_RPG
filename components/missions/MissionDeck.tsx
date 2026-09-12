@@ -32,23 +32,53 @@ import { MissionDetailsModal } from "./MissionDetailsModal";
 import { MissionAbandonDialog } from "./MissionAbandonDialog";
 import { MissionToast, ToastMessage } from "./MissionToast";
 
+export interface ProgressionPayload {
+  character: DbCharacter;
+  levelUp?: {
+    occurred: boolean;
+    previousLevel: number;
+    newLevel: number;
+    levelsGained: number;
+  };
+  rewards?: {
+    xp: number;
+    credits: number;
+    attribute: string;
+    attributeLabel: string;
+    attributeIncrease: number;
+  };
+  world?: {
+    corruptionBefore: number;
+    corruptionAfter: number;
+    corruptionReduced: number;
+    integrityPercent: number;
+  };
+  boss?: {
+    key: string;
+    name: string;
+    title: string;
+    damageDealt: number;
+    hpBefore: number;
+    hpAfter: number;
+    maxHp: number;
+    isDefeated: boolean;
+    defeatedAt: Date | null;
+    nextBossKey?: string | null;
+    nextBossName?: string | null;
+  };
+  area?: {
+    areaKey: string;
+    name: string;
+    restorationGained: number;
+    restorationPercent: number;
+    isRestored: boolean;
+    isUnlocked: boolean;
+    newlyUnlockedAreas: string[];
+  };
+}
+
 export interface MissionDeckProps {
-  onProgressionUpdate?: (data: {
-    character: DbCharacter;
-    levelUp?: {
-      occurred: boolean;
-      previousLevel: number;
-      newLevel: number;
-      levelsGained: number;
-    };
-    rewards?: {
-      xp: number;
-      credits: number;
-      attribute: string;
-      attributeLabel: string;
-      attributeIncrease: number;
-    };
-  }) => void;
+  onProgressionUpdate?: (data: ProgressionPayload) => void;
 }
 
 export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
@@ -123,7 +153,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
     addToast("success", "MISSION UPDATED");
   };
 
-  // Handle complete mission
+  // Handle complete mission with multi-stage Phase 5 feedback
   const handleCompleteMission = async (targetMission: DbMission) => {
     soundscape.playHover();
     try {
@@ -143,11 +173,25 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
         return;
       }
 
-      // 1. Success sound & visual feedback
+      // 1. Audio and feedback toast sequence
       soundscape.playRestoration();
 
       const r = data.rewards;
-      const feedbackMsg = `MISSION CLEARED: +${r.xp} XP | +${r.credits} CREDITS | ${r.attributeLabel} +${r.attributeIncrease}`;
+      const w = data.world;
+      const b = data.boss;
+      const a = data.area;
+
+      let feedbackMsg = `MISSION CLEARED: +${r.xp} XP | +${r.credits} CR | ${r.attributeLabel} +${r.attributeIncrease}`;
+      if (w?.corruptionReduced) {
+        feedbackMsg += ` | CORRUPTION -${w.corruptionReduced}%`;
+      }
+      if (b?.damageDealt) {
+        feedbackMsg += ` | ${b.name} -${b.damageDealt} HP`;
+      }
+      if (a?.restorationGained) {
+        feedbackMsg += ` | ${a.name} +${a.restorationGained}%`;
+      }
+
       addToast("success", feedbackMsg);
 
       // 2. Update local mission status
@@ -164,12 +208,15 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
         )
       );
 
-      // 3. Notify parent about progression update
+      // 3. Notify parent with complete progression telemetry
       if (onProgressionUpdate && data.character) {
         onProgressionUpdate({
           character: data.character,
           levelUp: data.levelUp,
           rewards: data.rewards,
+          world: data.world,
+          boss: data.boss,
+          area: data.area,
         });
       }
     } catch (err) {

@@ -5,6 +5,23 @@ import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 import { processProgressionMath, validateMissionCompletionEligibility } from "@/lib/game/progression";
+import {
+  WORLD_AREAS,
+  WorldAreaKey,
+  getCorruptionReduction,
+  getAreaRestorationGain,
+  getAreaForCategory,
+  clampCorruption,
+  clampRestoration,
+} from "@/lib/game/world";
+import {
+  BOSS_DEFINITIONS,
+  BossKey,
+  getBossDamage,
+  getBossDefinition,
+  getNextBossDefinition,
+  processBossDamageCalculation,
+} from "@/lib/game/bosses";
 
 // Global Prisma instance to avoid multiple connections in Next.js hot reload
 const globalForPrisma = globalThis as unknown as {
@@ -92,6 +109,64 @@ export interface DbMissionCompletion {
   creditsEarned: number;
 }
 
+export interface DbWorldProgress {
+  id: string;
+  userId: string;
+  corruption: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DbWorldAreaProgress {
+  id: string;
+  userId: string;
+  areaKey: string;
+  isUnlocked: boolean;
+  restorationPercent: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DbBossProgress {
+  id: string;
+  userId: string;
+  bossKey: string;
+  currentHp: number;
+  maxHp: number;
+  isDefeated: boolean;
+  defeatedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface WorldStateSummary {
+  corruption: number;
+  integrityPercent: number;
+  worldProgress: DbWorldProgress;
+  areas: (DbWorldAreaProgress & {
+    name: string;
+    subtitle: string;
+    description: string;
+    requiredCorruption: number;
+    accentColor: string;
+    category: MissionCategory | null;
+    status: "LOCKED" | "CORRUPTED" | "RECLAIMING" | "RESTORED";
+  })[];
+  activeBoss: DbBossProgress & {
+    name: string;
+    title: string;
+    order: number;
+    description: string;
+    threatTrait: string;
+    threatTraitDesc: string;
+    corruptionSource: string;
+    corruptionSourceDesc: string;
+    accentColor: string;
+    hpPercent: number;
+  };
+  allBosses: DbBossProgress[];
+}
+
 // Fallback file persistence path for zero-dependency local development/testing
 const LOCAL_DATA_DIR = path.join(process.cwd(), ".data");
 const LOCAL_DATA_FILE = path.join(LOCAL_DATA_DIR, "survivors.json");
@@ -101,6 +176,9 @@ interface LocalDataStore {
   characters: DbCharacter[];
   missions: DbMission[];
   missionCompletions: DbMissionCompletion[];
+  worldProgress: DbWorldProgress[];
+  worldAreaProgress: DbWorldAreaProgress[];
+  bossProgress: DbBossProgress[];
 }
 
 function getLocalStore(): LocalDataStore {
@@ -114,6 +192,9 @@ function getLocalStore(): LocalDataStore {
         characters: [],
         missions: [],
         missionCompletions: [],
+        worldProgress: [],
+        worldAreaProgress: [],
+        bossProgress: [],
       };
       fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(initial, null, 2), "utf-8");
       return initial;
@@ -142,10 +223,34 @@ function getLocalStore(): LocalDataStore {
       ...mc,
       completedAt: new Date(mc.completedAt),
     }));
+    parsed.worldProgress = (parsed.worldProgress || []).map((wp: any) => ({
+      ...wp,
+      createdAt: new Date(wp.createdAt),
+      updatedAt: new Date(wp.updatedAt),
+    }));
+    parsed.worldAreaProgress = (parsed.worldAreaProgress || []).map((wap: any) => ({
+      ...wap,
+      createdAt: new Date(wap.createdAt),
+      updatedAt: new Date(wap.updatedAt),
+    }));
+    parsed.bossProgress = (parsed.bossProgress || []).map((bp: any) => ({
+      ...bp,
+      defeatedAt: bp.defeatedAt ? new Date(bp.defeatedAt) : null,
+      createdAt: new Date(bp.createdAt),
+      updatedAt: new Date(bp.updatedAt),
+    }));
     return parsed;
   } catch (err) {
     console.error("[DB Fallback Store Error]:", err);
-    return { users: [], characters: [], missions: [], missionCompletions: [] };
+    return {
+      users: [],
+      characters: [],
+      missions: [],
+      missionCompletions: [],
+      worldProgress: [],
+      worldAreaProgress: [],
+      bossProgress: [],
+    };
   }
 }
 
@@ -624,14 +729,272 @@ export const db = {
       .sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime());
   },
 
+  // ==========================================
+  // PHASE 5: WORLD & BOSS STATE MANAGEMENT
+  // ==========================================
+
   /**
-   * ATOMIC TRANSACTION: Complete Mission & Award Progression
+   * Find or initialize user World Progress, Areas, and Boss Progress
+   */
+  async findOrCreateWorldProgress(userId: string): Promise<{
+    worldProgress: DbWorldProgress;
+    areas: DbWorldAreaProgress[];
+    allBosses: DbBossProgress[];
+    activeBoss: DbBossProgress;
+  }> {
+    // 1. Try Prisma first
+    const pgData = await executePrisma(async () => {
+      let wp = await prisma.worldProgress.findUnique({
+        where: { userId },
+      });
+
+      if (!wp) {
+        wp = await prisma.worldProgress.create({
+          data: {
+            userId,
+            corruption: 100,
+          },
+        });
+      }
+
+      // Ensure all 6 areas exist
+      let userAreas = await prisma.worldAreaProgress.findMany({
+        where: { userId },
+      });
+
+      if (userAreas.length < WORLD_AREAS.length) {
+        for (const areaDef of WORLD_AREAS) {
+          const exists = userAreas.some((a) => a.areaKey === areaDef.key);
+          if (!exists) {
+            const isUnlocked = wp.corruption <= areaDef.requiredCorruption;
+            const newArea = await prisma.worldAreaProgress.create({
+              data: {
+                userId,
+                areaKey: areaDef.key,
+                isUnlocked,
+                restorationPercent: 0,
+              },
+            });
+            userAreas.push(newArea);
+          }
+        }
+      }
+
+      // Ensure all bosses exist
+      let userBosses = await prisma.bossProgress.findMany({
+        where: { userId },
+        orderBy: { createdAt: "asc" },
+      });
+
+      if (userBosses.length < BOSS_DEFINITIONS.length) {
+        for (const bossDef of BOSS_DEFINITIONS) {
+          const exists = userBosses.some((b) => b.bossKey === bossDef.key);
+          if (!exists) {
+            const newBoss = await prisma.bossProgress.create({
+              data: {
+                userId,
+                bossKey: bossDef.key,
+                currentHp: bossDef.maxHp,
+                maxHp: bossDef.maxHp,
+                isDefeated: false,
+              },
+            });
+            userBosses.push(newBoss);
+          }
+        }
+      }
+
+      // Find active boss (first undefeated boss according to order)
+      const sortedBosses = [...userBosses].sort((a, b) => {
+        const orderA = getBossDefinition(a.bossKey).order;
+        const orderB = getBossDefinition(b.bossKey).order;
+        return orderA - orderB;
+      });
+
+      const activeBoss =
+        sortedBosses.find((b) => !b.isDefeated) || sortedBosses[sortedBosses.length - 1];
+
+      return {
+        worldProgress: wp as unknown as DbWorldProgress,
+        areas: userAreas as unknown as DbWorldAreaProgress[],
+        allBosses: sortedBosses as unknown as DbBossProgress[],
+        activeBoss: activeBoss as unknown as DbBossProgress,
+      };
+    });
+
+    if (pgData) return pgData;
+
+    // 2. Fallback local store
+    const store = getLocalStore();
+    let wp = store.worldProgress.find((w) => w.userId === userId);
+    if (!wp) {
+      wp = {
+        id: generateId("wp"),
+        userId,
+        corruption: 100,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      store.worldProgress.push(wp);
+    }
+
+    // Ensure all 6 areas exist in local store
+    let userAreas = store.worldAreaProgress.filter((a) => a.userId === userId);
+    for (const areaDef of WORLD_AREAS) {
+      let area = userAreas.find((a) => a.areaKey === areaDef.key);
+      if (!area) {
+        const isUnlocked = wp.corruption <= areaDef.requiredCorruption;
+        area = {
+          id: generateId("wap"),
+          userId,
+          areaKey: areaDef.key,
+          isUnlocked,
+          restorationPercent: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        store.worldAreaProgress.push(area);
+        userAreas.push(area);
+      }
+    }
+
+    // Ensure all 4 bosses exist in local store
+    let userBosses = store.bossProgress.filter((b) => b.userId === userId);
+    for (const bossDef of BOSS_DEFINITIONS) {
+      let boss = userBosses.find((b) => b.bossKey === bossDef.key);
+      if (!boss) {
+        boss = {
+          id: generateId("bp"),
+          userId,
+          bossKey: bossDef.key,
+          currentHp: bossDef.maxHp,
+          maxHp: bossDef.maxHp,
+          isDefeated: false,
+          defeatedAt: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        store.bossProgress.push(boss);
+        userBosses.push(boss);
+      }
+    }
+
+    saveLocalStore(store);
+
+    const sortedBosses = [...userBosses].sort((a, b) => {
+      const orderA = getBossDefinition(a.bossKey).order;
+      const orderB = getBossDefinition(b.bossKey).order;
+      return orderA - orderB;
+    });
+
+    const activeBoss =
+      sortedBosses.find((b) => !b.isDefeated) || sortedBosses[sortedBosses.length - 1];
+
+    return {
+      worldProgress: wp,
+      areas: userAreas,
+      allBosses: sortedBosses,
+      activeBoss,
+    };
+  },
+
+  /**
+   * Retrieve aggregate World State for UI rendering
+   */
+  async findWorldStateByUserId(userId: string): Promise<WorldStateSummary> {
+    const { worldProgress, areas, activeBoss, allBosses } =
+      await this.findOrCreateWorldProgress(userId);
+
+    const activeBossDef = getBossDefinition(activeBoss.bossKey);
+    const corruption = worldProgress.corruption;
+    const integrityPercent = clampRestoration(100 - corruption);
+
+    const enrichedAreas = WORLD_AREAS.map((def) => {
+      const prog = areas.find((a) => a.areaKey === def.key);
+      const isUnlocked = prog ? prog.isUnlocked : corruption <= def.requiredCorruption;
+      const restorationPercent = prog ? prog.restorationPercent : 0;
+
+      let status: "LOCKED" | "CORRUPTED" | "RECLAIMING" | "RESTORED" = "CORRUPTED";
+      if (!isUnlocked) {
+        status = "LOCKED";
+      } else if (restorationPercent >= 100) {
+        status = "RESTORED";
+      } else if (restorationPercent > 0) {
+        status = "RECLAIMING";
+      } else {
+        status = "CORRUPTED";
+      }
+
+      return {
+        id: prog ? prog.id : `tmp_${def.key}`,
+        userId,
+        areaKey: def.key,
+        name: def.name,
+        subtitle: def.subtitle,
+        description: def.description,
+        requiredCorruption: def.requiredCorruption,
+        accentColor: def.accentColor,
+        category: def.category,
+        isUnlocked,
+        restorationPercent,
+        status,
+        createdAt: prog?.createdAt || new Date(),
+        updatedAt: prog?.updatedAt || new Date(),
+      };
+    });
+
+    const hpPercent =
+      activeBoss.maxHp > 0
+        ? Math.round((activeBoss.currentHp / activeBoss.maxHp) * 100)
+        : 0;
+
+    return {
+      corruption,
+      integrityPercent,
+      worldProgress,
+      areas: enrichedAreas,
+      activeBoss: {
+        ...activeBoss,
+        name: activeBossDef.name,
+        title: activeBossDef.title,
+        order: activeBossDef.order,
+        description: activeBossDef.description,
+        threatTrait: activeBossDef.threatTrait,
+        threatTraitDesc: activeBossDef.threatTraitDesc,
+        corruptionSource: activeBossDef.corruptionSource,
+        corruptionSourceDesc: activeBossDef.corruptionSourceDesc,
+        accentColor: activeBossDef.accentColor,
+        hpPercent,
+      },
+      allBosses,
+    };
+  },
+
+  /**
+   * Retrieve all Bosses and progression for user
+   */
+  async findBossesByUserId(userId: string): Promise<DbBossProgress[]> {
+    const { allBosses } = await this.findOrCreateWorldProgress(userId);
+    return allBosses;
+  },
+
+  /**
+   * Retrieve active Boss for user
+   */
+  async findActiveBossByUserId(userId: string): Promise<DbBossProgress> {
+    const { activeBoss } = await this.findOrCreateWorldProgress(userId);
+    return activeBoss;
+  },
+
+  /**
+   * ATOMIC TRANSACTION: Complete Mission & Award Full Phase 5 Progression
    * 1. Validates ownership & existence
    * 2. Checks duplicate completion rules
-   * 3. Calculates authoritative rewards & level progression
-   * 4. Creates historical MissionCompletion
-   * 5. Updates Character stats & XP
-   * 6. Updates Mission state
+   * 3. Calculates authoritative character XP, credits, attribute boost, and level advancement
+   * 4. Calculates authoritative World Corruption reduction & Area Restoration
+   * 5. Calculates authoritative Boss damage, defeat states, and next boss transitions
+   * 6. Creates historical MissionCompletion record
+   * 7. Atomically updates Character, WorldProgress, WorldAreaProgress, BossProgress, and Mission
    */
   async completeMissionTransaction(
     userId: string,
@@ -648,6 +1011,34 @@ export const db = {
       previousLevel: number;
       newLevel: number;
       levelsGained: number;
+    };
+    world?: {
+      corruptionBefore: number;
+      corruptionAfter: number;
+      corruptionReduced: number;
+      integrityPercent: number;
+    };
+    boss?: {
+      key: string;
+      name: string;
+      title: string;
+      damageDealt: number;
+      hpBefore: number;
+      hpAfter: number;
+      maxHp: number;
+      isDefeated: boolean;
+      defeatedAt: Date | null;
+      nextBossKey?: string | null;
+      nextBossName?: string | null;
+    };
+    area?: {
+      areaKey: string;
+      name: string;
+      restorationGained: number;
+      restorationPercent: number;
+      isRestored: boolean;
+      isUnlocked: boolean;
+      newlyUnlockedAreas: string[];
     };
   }> {
     // 1. Fetch Mission & Character
@@ -682,14 +1073,80 @@ export const db = {
       };
     }
 
-    // 3. Process Authoritative Game Math
+    // 3. Load Current World & Boss State
+    const { worldProgress, areas, activeBoss, allBosses } =
+      await this.findOrCreateWorldProgress(userId);
+
+    // 4. Process Authoritative Game Math
+    // A) Character Progression (XP, Credits, Attributes, Level)
     const { rewards, updatedStats, levelUp } = processProgressionMath(character, mission);
 
-    // 4. Atomic Execution
+    // B) World Corruption Reduction
+    const corruptionReduction = getCorruptionReduction(mission.difficulty);
+    const corruptionBefore = worldProgress.corruption;
+    let corruptionAfter = clampCorruption(corruptionBefore - corruptionReduction);
+
+    // C) World Area Restoration & Unlocking
+    const targetAreaKey = getAreaForCategory(mission.category);
+    const targetAreaDef = WORLD_AREAS.find((a) => a.key === targetAreaKey) || WORLD_AREAS[0];
+    const restorationGain = getAreaRestorationGain(mission.difficulty);
+
+    const currentAreaProg = areas.find((a) => a.areaKey === targetAreaKey);
+    const currentRestoration = currentAreaProg ? currentAreaProg.restorationPercent : 0;
+    const newRestoration = clampRestoration(currentRestoration + restorationGain);
+    const isRestored = newRestoration >= 100;
+
+    // Determine newly unlocked areas across the map
+    const newlyUnlockedAreas: string[] = [];
+    const updatedAreasMap = areas.map((a) => {
+      const def = WORLD_AREAS.find((wa) => wa.key === a.areaKey);
+      const threshold = def ? def.requiredCorruption : 100;
+      const wasUnlocked = a.isUnlocked;
+      const nowUnlocked = corruptionAfter <= threshold;
+
+      if (!wasUnlocked && nowUnlocked) {
+        newlyUnlockedAreas.push(a.areaKey);
+      }
+
+      return {
+        ...a,
+        isUnlocked: wasUnlocked || nowUnlocked,
+        restorationPercent: a.areaKey === targetAreaKey ? newRestoration : a.restorationPercent,
+      };
+    });
+
+    // D) Active Boss Damage & Defeat Resolution
+    const bossDamage = getBossDamage(mission.difficulty);
+    const bossDef = getBossDefinition(activeBoss.bossKey);
+    const damageCalc = processBossDamageCalculation(
+      activeBoss.currentHp,
+      activeBoss.maxHp,
+      bossDamage
+    );
+
+    const isBossDefeatedNow = damageCalc.isDefeated;
+    const defeatedAt = isBossDefeatedNow ? new Date() : activeBoss.defeatedAt;
+    let nextBossKey: string | null = null;
+    let nextBossName: string | null = null;
+
+    if (isBossDefeatedNow) {
+      // Award boss banishment bonus XP & corruption drop
+      updatedStats.xp += bossDef.banishBonusXp;
+      corruptionAfter = clampCorruption(corruptionAfter - bossDef.banishCorruptionDrop);
+
+      const nextBossDef = getNextBossDefinition(activeBoss.bossKey);
+      if (nextBossDef) {
+        nextBossKey = nextBossDef.key;
+        nextBossName = nextBossDef.name;
+      }
+    }
+
     const completedAt = new Date();
 
+    // 5. Execute Atomic Persistence
     const pgResult = await executePrisma(async () => {
       return prisma.$transaction(async (tx) => {
+        // Create MissionCompletion
         const completion = await tx.missionCompletion.create({
           data: {
             missionId: mission.id,
@@ -700,11 +1157,13 @@ export const db = {
           },
         });
 
+        // Update Character
         const updatedChar = await tx.character.update({
           where: { userId },
           data: updatedStats,
         });
 
+        // Update Mission (if ONCE)
         let updatedMsn = mission;
         if (mission.frequency === "ONCE") {
           await tx.mission.update({
@@ -718,10 +1177,45 @@ export const db = {
           };
         }
 
+        // Update WorldProgress
+        const updatedWp = await tx.worldProgress.update({
+          where: { userId },
+          data: { corruption: corruptionAfter },
+        });
+
+        // Update World Area Progresses
+        for (const ua of updatedAreasMap) {
+          await tx.worldAreaProgress.upsert({
+            where: { userId_areaKey: { userId, areaKey: ua.areaKey } },
+            update: {
+              isUnlocked: ua.isUnlocked,
+              restorationPercent: ua.restorationPercent,
+            },
+            create: {
+              userId,
+              areaKey: ua.areaKey,
+              isUnlocked: ua.isUnlocked,
+              restorationPercent: ua.restorationPercent,
+            },
+          });
+        }
+
+        // Update Active Boss Progress
+        const updatedBoss = await tx.bossProgress.update({
+          where: { userId_bossKey: { userId, bossKey: activeBoss.bossKey } },
+          data: {
+            currentHp: damageCalc.hpAfter,
+            isDefeated: activeBoss.isDefeated || isBossDefeatedNow,
+            defeatedAt,
+          },
+        });
+
         return {
           updatedChar: updatedChar as unknown as DbCharacter,
           updatedMsn,
           completion: completion as unknown as DbMissionCompletion,
+          updatedWp: updatedWp as unknown as DbWorldProgress,
+          updatedBoss: updatedBoss as unknown as DbBossProgress,
         };
       });
     });
@@ -742,14 +1236,46 @@ export const db = {
           newLevel: levelUp.newLevel,
           levelsGained: levelUp.levelsGained,
         },
+        world: {
+          corruptionBefore,
+          corruptionAfter,
+          corruptionReduced: corruptionBefore - corruptionAfter,
+          integrityPercent: clampRestoration(100 - corruptionAfter),
+        },
+        boss: {
+          key: activeBoss.bossKey,
+          name: bossDef.name,
+          title: bossDef.title,
+          damageDealt: damageCalc.damageDealt,
+          hpBefore: damageCalc.hpBefore,
+          hpAfter: damageCalc.hpAfter,
+          maxHp: activeBoss.maxHp,
+          isDefeated: isBossDefeatedNow || activeBoss.isDefeated,
+          defeatedAt,
+          nextBossKey,
+          nextBossName,
+        },
+        area: {
+          areaKey: targetAreaKey,
+          name: targetAreaDef.name,
+          restorationGained: restorationGain,
+          restorationPercent: newRestoration,
+          isRestored,
+          isUnlocked: true,
+          newlyUnlockedAreas,
+        },
       };
     }
 
-    // Local Fallback Transaction
+    // Local Fallback Atomic Store Commit
     const store = getLocalStore();
     const localCharIdx = store.characters.findIndex((c) => c.userId === userId);
     const localMsnIdx = store.missions.findIndex(
       (m) => m.id === missionId && m.userId === userId
+    );
+    const localWpIdx = store.worldProgress.findIndex((w) => w.userId === userId);
+    const localBossIdx = store.bossProgress.findIndex(
+      (b) => b.userId === userId && b.bossKey === activeBoss.bossKey
     );
 
     if (localCharIdx === -1 || localMsnIdx === -1) {
@@ -787,7 +1313,30 @@ export const db = {
       updatedMission.isActive = false;
     }
 
-    // Commit all updates together atomically
+    if (localWpIdx >= 0) {
+      store.worldProgress[localWpIdx].corruption = corruptionAfter;
+      store.worldProgress[localWpIdx].updatedAt = new Date();
+    }
+
+    if (localBossIdx >= 0) {
+      store.bossProgress[localBossIdx].currentHp = damageCalc.hpAfter;
+      store.bossProgress[localBossIdx].isDefeated =
+        store.bossProgress[localBossIdx].isDefeated || isBossDefeatedNow;
+      store.bossProgress[localBossIdx].defeatedAt = defeatedAt;
+      store.bossProgress[localBossIdx].updatedAt = new Date();
+    }
+
+    for (const ua of updatedAreasMap) {
+      const idx = store.worldAreaProgress.findIndex(
+        (a) => a.userId === userId && a.areaKey === ua.areaKey
+      );
+      if (idx >= 0) {
+        store.worldAreaProgress[idx].isUnlocked = ua.isUnlocked;
+        store.worldAreaProgress[idx].restorationPercent = ua.restorationPercent;
+        store.worldAreaProgress[idx].updatedAt = new Date();
+      }
+    }
+
     store.missionCompletions.push(completionRecord);
     store.characters[localCharIdx] = updatedChar;
     store.missions[localMsnIdx] = updatedMission;
@@ -803,6 +1352,34 @@ export const db = {
         previousLevel: levelUp.previousLevel,
         newLevel: levelUp.newLevel,
         levelsGained: levelUp.levelsGained,
+      },
+      world: {
+        corruptionBefore,
+        corruptionAfter,
+        corruptionReduced: corruptionBefore - corruptionAfter,
+        integrityPercent: clampRestoration(100 - corruptionAfter),
+      },
+      boss: {
+        key: activeBoss.bossKey,
+        name: bossDef.name,
+        title: bossDef.title,
+        damageDealt: damageCalc.damageDealt,
+        hpBefore: damageCalc.hpBefore,
+        hpAfter: damageCalc.hpAfter,
+        maxHp: activeBoss.maxHp,
+        isDefeated: isBossDefeatedNow || activeBoss.isDefeated,
+        defeatedAt,
+        nextBossKey,
+        nextBossName,
+      },
+      area: {
+        areaKey: targetAreaKey,
+        name: targetAreaDef.name,
+        restorationGained: restorationGain,
+        restorationPercent: newRestoration,
+        isRestored,
+        isUnlocked: true,
+        newlyUnlockedAreas,
       },
     };
   },

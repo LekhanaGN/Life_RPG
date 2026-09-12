@@ -7,64 +7,152 @@ import { useWorldTransition } from "@/components/world/WorldInversionTransition"
 import { CharacterCard } from "@/components/character/CharacterCard";
 import { AttributeBar } from "@/components/character/AttributeBar";
 import { LevelUpOverlay, LevelUpData } from "@/components/character/LevelUpOverlay";
-import { MissionDeck } from "@/components/missions/MissionDeck";
+import { BossDefeatOverlay, BossDefeatData } from "@/components/character/BossDefeatOverlay";
+import { WorldIntegrityMeter } from "@/components/world/WorldIntegrityMeter";
+import { WorldMap } from "@/components/world/WorldMap";
+import { MissionDeck, ProgressionPayload } from "@/components/missions/MissionDeck";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { DbCharacter, DbUser } from "@/lib/db/client";
+import { DbCharacter, DbUser, WorldStateSummary } from "@/lib/db/client";
 import { motion } from "framer-motion";
-import { Skull, AlertTriangle, ShieldCheck, Activity } from "lucide-react";
+import { Skull, AlertTriangle, Activity, Map, Sparkles } from "lucide-react";
 
 export interface RightSideClientProps {
   user: DbUser;
   character: DbCharacter;
+  initialWorldState?: WorldStateSummary;
 }
 
-export function RightSideClient({ user, character: initialCharacter }: RightSideClientProps) {
+export function RightSideClient({
+  user,
+  character: initialCharacter,
+  initialWorldState,
+}: RightSideClientProps) {
   const { triggerTransition, isTransitioning } = useWorldTransition();
   const [character, setCharacter] = useState<DbCharacter>(initialCharacter);
+  const [worldState, setWorldState] = useState<WorldStateSummary | undefined>(initialWorldState);
+
+  // Modals and Highlight states
   const [levelUpData, setLevelUpData] = useState<LevelUpData | null>(null);
+  const [bossDefeatData, setBossDefeatData] = useState<BossDefeatData | null>(null);
   const [highlightedAttribute, setHighlightedAttribute] = useState<string | null>(null);
+  const [highlightedArea, setHighlightedArea] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState<string>("");
 
   const handleEnterOtherSide = () => {
     triggerTransition("/other-side", "right-to-other");
   };
 
-  const handleProgressionUpdate = (data: {
-    character: DbCharacter;
-    levelUp?: {
-      occurred: boolean;
-      previousLevel: number;
-      newLevel: number;
-      levelsGained: number;
-    };
-    rewards?: {
-      xp: number;
-      credits: number;
-      attribute: string;
-      attributeLabel: string;
-      attributeIncrease: number;
-    };
-  }) => {
-    // 1. Update live character state
+  const handleProgressionUpdate = (data: ProgressionPayload) => {
+    // 1. Update Character
     setCharacter(data.character);
 
-    // 2. Announce for screen readers
-    if (data.rewards) {
-      const msg = `Mission completed! Awarded ${data.rewards.xp} XP, ${data.rewards.credits} credits, and ${data.rewards.attributeIncrease} ${data.rewards.attributeLabel}.`;
-      setAnnouncement(msg);
+    // 2. Update World State (Corruption, Areas, Boss)
+    if (worldState && data.world) {
+      const updatedCorruption = data.world.corruptionAfter;
+      const updatedIntegrity = data.world.integrityPercent;
+
+      const updatedAreas = worldState.areas.map((area) => {
+        let isUnlocked = area.isUnlocked;
+        if (updatedCorruption <= area.requiredCorruption) {
+          isUnlocked = true;
+        }
+
+        let restorationPercent = area.restorationPercent;
+        if (data.area && area.areaKey === data.area.areaKey) {
+          restorationPercent = data.area.restorationPercent;
+        }
+
+        let status: "LOCKED" | "CORRUPTED" | "RECLAIMING" | "RESTORED" = "CORRUPTED";
+        if (!isUnlocked) {
+          status = "LOCKED";
+        } else if (restorationPercent >= 100) {
+          status = "RESTORED";
+        } else if (restorationPercent > 0) {
+          status = "RECLAIMING";
+        } else {
+          status = "CORRUPTED";
+        }
+
+        return {
+          ...area,
+          isUnlocked,
+          restorationPercent,
+          status,
+        };
+      });
+
+      let updatedBoss = worldState.activeBoss;
+      if (data.boss) {
+        const hpAfter = data.boss.hpAfter;
+        const maxHp = data.boss.maxHp || updatedBoss.maxHp;
+        const hpPercent = maxHp > 0 ? Math.round((hpAfter / maxHp) * 100) : 0;
+
+        updatedBoss = {
+          ...updatedBoss,
+          currentHp: hpAfter,
+          maxHp,
+          isDefeated: data.boss.isDefeated,
+          defeatedAt: data.boss.defeatedAt,
+          hpPercent,
+        };
+      }
+
+      setWorldState({
+        ...worldState,
+        corruption: updatedCorruption,
+        integrityPercent: updatedIntegrity,
+        areas: updatedAreas,
+        activeBoss: updatedBoss,
+      });
     }
 
-    // 3. Highlight boosted attribute
-    if (data.rewards?.attribute) {
-      setHighlightedAttribute(data.rewards.attribute);
-      setTimeout(() => {
-        setHighlightedAttribute(null);
-      }, 2500);
+    // 3. Screen Reader Announcement
+    const r = data.rewards;
+    const w = data.world;
+    const b = data.boss;
+    const a = data.area;
+
+    let announceMsg = `Mission cleared! +${r?.xp || 0} XP, +${r?.credits || 0} credits, +${
+      r?.attributeIncrease || 0
+    } ${r?.attributeLabel || ""}.`;
+    if (w?.corruptionReduced) {
+      announceMsg += ` Corruption reduced by ${w.corruptionReduced} percent.`;
+    }
+    if (b?.damageDealt) {
+      announceMsg += ` Dealt ${b.damageDealt} damage to ${b.name}.`;
+    }
+    if (a?.restorationGained) {
+      announceMsg += ` Restored ${a.name} by ${a.restorationGained} percent.`;
+    }
+    setAnnouncement(announceMsg);
+
+    // 4. Attribute Pulse
+    if (r?.attribute) {
+      setHighlightedAttribute(r.attribute);
+      setTimeout(() => setHighlightedAttribute(null), 2500);
     }
 
-    // 4. Trigger level up overlay if occurred
+    // 5. Area Pulse
+    if (a?.areaKey) {
+      setHighlightedArea(a.areaKey);
+      setTimeout(() => setHighlightedArea(null), 3000);
+    }
+
+    // 6. Boss Defeat Overlay Trigger
+    if (data.boss?.isDefeated) {
+      setBossDefeatData({
+        bossName: data.boss.name,
+        bossTitle: data.boss.title,
+        nextBossName: data.boss.nextBossName,
+        corruptionDrop: 10,
+        bonusXp: 200,
+      });
+      setAnnouncement((prev) => `${prev} VICTORY! ${data.boss?.name} has been banished!`);
+    }
+
+    // 7. Level Up Overlay Trigger
     if (data.levelUp?.occurred) {
       setLevelUpData({
         previousLevel: data.levelUp.previousLevel,
@@ -76,6 +164,8 @@ export function RightSideClient({ user, character: initialCharacter }: RightSide
       setAnnouncement((prev) => `${prev} LEVEL UP! Advanced to Level ${data.levelUp?.newLevel}!`);
     }
   };
+
+  const currentCorruption = worldState?.corruption ?? 100;
 
   return (
     <div className="relative min-h-screen flex flex-col justify-between overflow-hidden">
@@ -91,10 +181,10 @@ export function RightSideClient({ user, character: initialCharacter }: RightSide
       </div>
 
       {/* Level-Up Cinematic Celebration Modal */}
-      <LevelUpOverlay
-        data={levelUpData}
-        onDismiss={() => setLevelUpData(null)}
-      />
+      <LevelUpOverlay data={levelUpData} onDismiss={() => setLevelUpData(null)} />
+
+      {/* Boss Defeat Cinematic Banishment Modal */}
+      <BossDefeatOverlay data={bossDefeatData} onDismiss={() => setBossDefeatData(null)} />
 
       {/* Main Content Area */}
       <main className="relative z-20 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8 space-y-8">
@@ -144,6 +234,15 @@ export function RightSideClient({ user, character: initialCharacter }: RightSide
           </div>
         </motion.div>
 
+        {/* Phase 5 World Integrity Meter */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <WorldIntegrityMeter corruption={currentCorruption} />
+        </motion.div>
+
         {/* Primary Game Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Character Dossier & Attributes */}
@@ -162,17 +261,13 @@ export function RightSideClient({ user, character: initialCharacter }: RightSide
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-cyan-400" />
-                    <CardTitle className="text-white text-base">
-                      CORE ATTRIBUTES
-                    </CardTitle>
+                    <CardTitle className="text-white text-base">CORE ATTRIBUTES</CardTitle>
                   </div>
                   <span className="text-[10px] font-mono text-cyan-300 uppercase font-semibold">
                     {character.archetype} MATRIX
                   </span>
                 </div>
-                <CardDescription>
-                  REAL-LIFE STATISTICAL RESONANCE
-                </CardDescription>
+                <CardDescription>REAL-LIFE STATISTICAL RESONANCE</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
                 <AttributeBar
@@ -183,7 +278,7 @@ export function RightSideClient({ user, character: initialCharacter }: RightSide
             </Card>
           </motion.div>
 
-          {/* Right Column: Today's Missions & World Status */}
+          {/* Right Column: Mission Deck & World Map */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -193,32 +288,14 @@ export function RightSideClient({ user, character: initialCharacter }: RightSide
             {/* Mission Deck with progression updates */}
             <MissionDeck onProgressionUpdate={handleProgressionUpdate} />
 
-            {/* Dimensional Resonance Card */}
-            <Card variant="default">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <CardTitle className="text-white text-base">
-                      REALM PURITY STATUS
-                    </CardTitle>
-                  </div>
-                  <Badge variant="cyan">SURVIVAL RATIO: 100%</Badge>
-                </div>
-                <CardDescription>
-                  BARRIER INTEGRITY AGAINST THE OTHER SIDE
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3 pt-2">
-                <p className="text-xs font-mono text-slate-300 leading-relaxed">
-                  Every mission completed in the Right Side charges the dimensional barrier, starving the creatures of procrastination and inertia lurking across the threshold.
-                </p>
-                <div className="p-3 rounded-xs bg-slate-900/80 border border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
-                  <span>WORLD RESONANCE: POSITIVE</span>
-                  <span className="text-cyan-400 font-bold">100.0% STABLE</span>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Phase 5 Dimensional Atlas / World Map */}
+            {worldState && (
+              <WorldMap
+                areas={worldState.areas}
+                corruption={worldState.corruption}
+                highlightedArea={highlightedArea}
+              />
+            )}
           </motion.div>
         </div>
       </main>

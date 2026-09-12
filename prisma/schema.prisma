@@ -10,15 +10,18 @@ generator client {
 }
 
 model User {
-  id           String              @id @default(cuid())
-  email        String              @unique
-  passwordHash String
-  username     String
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
-  character    Character?
-  missions     Mission[]
-  completions  MissionCompletion[]
+  id              String              @id @default(cuid())
+  email           String              @unique
+  passwordHash    String
+  username        String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  character       Character?
+  missions        Mission[]
+  completions     MissionCompletion[]
+  worldProgress   WorldProgress?
+  worldAreas      WorldAreaProgress[]
+  bossProgresses  BossProgress[]
 
   @@map("users")
 }
@@ -77,4 +80,47 @@ model Character {
   updatedAt  DateTime @updatedAt
 
   @@map("characters")
+}
+
+model WorldProgress {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  corruption Int      @default(100)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("world_progress")
+}
+
+model WorldAreaProgress {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  areaKey            String
+  isUnlocked         Boolean  @default(false)
+  restorationPercent Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([userId, areaKey])
+  @@index([userId])
+  @@map("world_area_progress")
+}
+
+model BossProgress {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bossKey    String
+  currentHp  Int
+  maxHp      Int
+  isDefeated Boolean   @default(false)
+  defeatedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([userId, bossKey])
+  @@index([userId])
+  @@map("boss_progress")
 }
