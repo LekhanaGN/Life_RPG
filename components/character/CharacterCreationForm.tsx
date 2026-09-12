@@ -114,12 +114,12 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <User className="w-5 h-5 text-cyan-400" />
-                  <CardTitle className="text-white text-lg">SURVIVOR IDENTITY</CardTitle>
+                  <CardTitle className="text-white text-lg">YOUR CHARACTER</CardTitle>
                 </div>
                 <Badge variant="cyan">STEP 01</Badge>
               </div>
               <CardDescription>
-                ENTER YOUR CALLSIGN OR HEROIC MONIKER
+                CHOOSE YOUR CHARACTER NAME
               </CardDescription>
             </CardHeader>
 
@@ -129,7 +129,7 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
                   htmlFor="survivor-name-input"
                   className="block text-xs font-mono uppercase tracking-widest text-cyan-300"
                 >
-                  SURVIVOR NAME
+                  CHARACTER NAME
                 </label>
                 <input
                   id="survivor-name-input"
@@ -143,7 +143,7 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
                   className="w-full px-4 py-3 bg-slate-950/90 border-2 border-cyan-500/50 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/50 rounded-xs text-base sm:text-lg font-cinzel font-bold tracking-widest text-cyan-100 placeholder:text-slate-600 outline-none transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]"
                 />
                 <p className="text-[11px] font-mono text-slate-400">
-                  This identity will be permanently inscribed into the realm records.
+                  This is the name you&apos;ll use across both worlds.
                 </p>
               </div>
             </CardContent>
@@ -156,10 +156,10 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-400">
-                  DOSSIER PREVIEW
+                  CHARACTER PREVIEW
                 </span>
                 <Badge variant="cyan" pulse>
-                  INITIALIZING
+                  READY
                 </Badge>
               </div>
             </CardHeader>
@@ -171,7 +171,7 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
                 </div>
                 <div>
                   <div className="font-cinzel text-xl font-black text-white tracking-widest uppercase">
-                    {name.trim() || "UNNAMED SURVIVOR"}
+                    {name.trim() || "NEW PLAYER"}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="font-orbitron text-xs font-bold text-cyan-300">
@@ -198,13 +198,13 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
           <div>
             <h2 className="font-cinzel text-xl sm:text-2xl font-bold tracking-widest text-white">
-              CHOOSE YOUR PATH
+              CHOOSE YOUR CLASS
             </h2>
             <p className="text-xs font-mono text-slate-400">
-              Your archetype determines your starting attribute allocation.
+              Your class determines your starting stats.
             </p>
           </div>
-          <Badge variant="slate">STEP 02: ARCHETYPE</Badge>
+          <Badge variant="slate">STEP 02: CLASS</Badge>
         </div>
 
         {/* 4 Archetype Cards Grid */}
@@ -266,7 +266,7 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
                 {/* Starting Attributes Preview */}
                 <div className="pt-2 border-t border-slate-800/80 space-y-1.5 w-full">
                   <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider">
-                    STARTING ATTRIBUTES
+                    STARTING STATS
                   </div>
                   <div className="grid grid-cols-2 gap-1 text-xs font-mono">
                     <div className="flex justify-between bg-black/50 px-2 py-1 rounded-xs border border-slate-900">
@@ -300,11 +300,11 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
             <div className="flex items-center justify-center md:justify-start gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
               <span className="font-cinzel text-lg font-bold text-white tracking-wider">
-                READY TO ENTER THE RIGHT SIDE
+                READY TO BEGIN
               </span>
             </div>
             <p className="text-xs font-mono text-slate-400">
-              Survivor matrix for <strong className="text-cyan-300">{name || "Your Survivor"}</strong> [{selectedArchetype}] will be permanently initialized.
+              Character <strong className="text-cyan-300">{name || "Your Character"}</strong> [{selectedArchetype}] is ready to enter the game.
             </p>
           </div>
 
@@ -320,12 +320,12 @@ export function CharacterCreationForm({ defaultUsername }: { defaultUsername?: s
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin text-cyan-200" />
-                FORGING SURVIVOR MATRIX...
+                CREATING CHARACTER...
               </>
             ) : (
               <>
                 <Sparkles className="w-5 h-5 mr-2" />
-                ENTER THE RIGHT SIDE
+                START PLAYING
               </>
             )}
           </Button>

@@ -341,7 +341,7 @@ export function FocusProtocolModal({
               <div className="flex items-center gap-2 mb-1">
                 <VerificationBadge type="FOCUS_SESSION" size="sm" />
                 <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest">
-                  AUTHORITATIVE TELEMETRY
+                  TIMED FOCUS
                 </span>
               </div>
               <h3
@@ -349,10 +349,10 @@ export function FocusProtocolModal({
                 className="text-lg font-orbitron font-bold text-amber-300 uppercase tracking-wide flex items-center gap-2"
               >
                 <Crosshair className="w-5 h-5 text-amber-400" />
-                <span>FOCUS PROTOCOL</span>
+                <span>TIMED FOCUS SESSION</span>
               </h3>
               <p className="text-xs font-mono text-slate-300 truncate max-w-sm mt-0.5">
-                Objective: <span className="text-amber-200">{mission.title}</span>
+                Mission: <span className="text-amber-200">{mission.title}</span>
               </p>
             </div>
             {!session && (
@@ -373,11 +373,10 @@ export function FocusProtocolModal({
               <div className="p-3.5 bg-amber-950/30 border border-amber-500/40 rounded-xs space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono text-amber-300 font-bold uppercase tracking-wider">
                   <Clock className="w-4 h-4 text-amber-400" />
-                  <span>Protocol Duration: {mission.focusDurationMinutes || 25} Minutes</span>
+                  <span>Focus Duration: {mission.focusDurationMinutes || 25} Minutes</span>
                 </div>
                 <p className="text-xs font-mono text-slate-300 leading-relaxed">
-                  This mission requires a monitored focus session. The server will track timing
-                  continuity and active signal integrity.
+                  This mission requires a timed focus session. Keep this tab open and work on your goal until the timer finishes.
                 </p>
               </div>
 
@@ -410,7 +409,7 @@ export function FocusProtocolModal({
                   onClick={onClose}
                   className="px-3 py-1.5 rounded-xs bg-slate-900 border border-slate-700 text-xs font-mono uppercase text-slate-300 hover:text-slate-100"
                 >
-                  RETURN
+                  CANCEL
                 </button>
                 <button
                   type="button"
@@ -421,12 +420,12 @@ export function FocusProtocolModal({
                   {isInitializing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>INITIALIZING...</span>
+                      <span>STARTING...</span>
                     </>
                   ) : (
                     <>
                       <Play className="w-4 h-4 fill-black" />
-                      <span>BEGIN FOCUS SESSION</span>
+                      <span>START FOCUS TIMER</span>
                     </>
                   )}
                 </button>
@@ -448,10 +447,10 @@ export function FocusProtocolModal({
                 />
                 <span className="uppercase text-slate-200 font-semibold tracking-wider">
                   {isPaused
-                    ? "PROTOCOL PAUSED"
+                    ? "TIMER PAUSED"
                     : isTabHidden
-                    ? "SIGNAL WAITING (TAB BACKGROUNDED)"
-                    : "SESSION ACTIVE // SIGNAL STABLE"}
+                    ? "TIMER PAUSED (TAB SWITCHED)"
+                    : "FOCUS SESSION IN PROGRESS"}
                 </span>
               </div>
 
@@ -464,7 +463,7 @@ export function FocusProtocolModal({
                   {formatTime(remainingSeconds)}
                 </div>
                 <div className="text-xs font-mono text-slate-400 mt-1 uppercase tracking-wider">
-                  Elapsed Active: {formatTime(elapsedActive)} / {formatTime(requiredSeconds)}
+                  Time Completed: {formatTime(elapsedActive)} / {formatTime(requiredSeconds)}
                 </div>
               </div>
 
@@ -481,7 +480,7 @@ export function FocusProtocolModal({
               {/* Signal Integrity Telemetry */}
               <div className="p-3 bg-slate-900/80 border border-slate-800 rounded-xs space-y-1.5 max-w-sm mx-auto">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-slate-400 uppercase tracking-wider">SIGNAL INTEGRITY</span>
+                  <span className="text-slate-400 uppercase tracking-wider">FOCUS INTEGRITY</span>
                   <span className="text-amber-400 font-bold font-mono">
                     {integrityDisplay.percentageText}
                   </span>
@@ -493,7 +492,7 @@ export function FocusProtocolModal({
                   {integrityDisplay.blocks}
                 </div>
                 <p className="text-[10px] font-mono text-slate-400">
-                  Authoritative server heartbeat running. Client cannot forge elapsed duration.
+                  The timer is securely verified in the background.
                 </p>
               </div>
 
@@ -512,7 +511,7 @@ export function FocusProtocolModal({
                   disabled={isAborting}
                   className="px-3.5 py-1.5 rounded-xs bg-red-950/40 hover:bg-red-950/80 border border-red-800/60 text-xs font-mono uppercase text-red-300 hover:text-red-100 transition-colors cursor-pointer"
                 >
-                  {isAborting ? "ABORTING..." : "ABORT SESSION"}
+                  {isAborting ? "CANCELING..." : "CANCEL SESSION"}
                 </button>
                 <button
                   type="button"
@@ -542,24 +541,24 @@ export function FocusProtocolModal({
 
               <div className="space-y-1">
                 <h4 className="text-lg font-orbitron font-bold text-amber-300 uppercase tracking-wide">
-                  SESSION VERIFIED
+                  FOCUS SESSION COMPLETED
                 </h4>
                 <p className="text-xs font-mono text-slate-300">
-                  The signal remained stable across the dimensional barrier.
+                  Great work! You stayed focused for the full duration.
                 </p>
               </div>
 
               {/* Final Signal Integrity Score */}
               <div className="p-3.5 bg-slate-900/90 border border-amber-500/60 rounded-xs space-y-1.5 max-w-sm mx-auto">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-slate-400 uppercase">SIGNAL INTEGRITY</span>
+                  <span className="text-slate-400 uppercase">FOCUS INTEGRITY</span>
                   <span className="text-amber-300 font-bold">{signalIntegrity}%</span>
                 </div>
                 <div className="text-sm font-mono text-amber-400 tracking-widest" aria-hidden="true">
                   {integrityDisplay.blocks}
                 </div>
                 <p className="text-[10px] font-mono text-slate-400">
-                  Verification verified by server protocol. Mission is authorized for completion.
+                  Session verified. You can now complete the mission and collect your rewards.
                 </p>
               </div>
 

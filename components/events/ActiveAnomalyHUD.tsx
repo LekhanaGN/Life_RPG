@@ -97,10 +97,10 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
           </div>
           <div>
             <div className="text-xs font-cinzel font-bold tracking-wider text-slate-300">
-              ATMOSPHERIC SCANNER
+              SPECIAL CHALLENGES
             </div>
             <div className="text-[11px] font-mono text-slate-400">
-              No active anomalies detected in this frequency band.
+              No special challenges active right now.
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
             className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono font-medium rounded-xs border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-300 transition-colors"
           >
             <Archive className="w-3.5 h-3.5 text-cyan-400" />
-            <span>ARCHIVE</span>
+            <span>PAST EVENTS</span>
           </button>
         )}
       </div>
@@ -146,7 +146,7 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono tracking-widest text-purple-400 font-bold uppercase">
-                ANOMALY DETECTED
+                SPECIAL CHALLENGE
               </span>
               {event.rewards.rarity !== "COMMON" && (
                 <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-xs border border-amber-500/60 text-amber-300 bg-amber-950/40 uppercase">
@@ -171,7 +171,7 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
             <button
               type="button"
               onClick={onOpenArchive}
-              title="View past contained and faded anomalies"
+              title="View past challenges"
               className="p-1.5 rounded-xs bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition-colors"
             >
               <Archive className="w-3.5 h-3.5" />
@@ -189,18 +189,18 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
       <div className="relative z-10 space-y-2 mt-2">
         <div className="flex items-center justify-between text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400">TARGET:</span>
+            <span className="text-slate-400">HOW TO COMPLETE:</span>
             <Badge
               variant={event.targetAttribute === "ANY" ? "amber" : "purple"}
               className="text-[10px] font-bold"
             >
               {event.targetAttribute === "ANY"
-                ? "ANY DISCIPLINE"
-                : `${event.targetAttribute} MISSIONS`}
+                ? "COMPLETE ANY MISSIONS"
+                : `COMPLETE ${event.targetAttribute} MISSIONS`}
             </Badge>
           </div>
           <div className="font-bold tabular-nums text-purple-300">
-            {event.progress} / {event.requiredProgress} REQUIRED
+            {event.progress} / {event.requiredProgress} COMPLETED
           </div>
         </div>
 
@@ -217,7 +217,7 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
 
       {/* Reward Preview Bar */}
       <div className="relative z-10 mt-3 pt-2.5 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
-        <span className="text-slate-400">CONTAINMENT YIELD:</span>
+        <span className="text-slate-400">REWARDS:</span>
         <div className="flex items-center gap-2">
           <span className="text-amber-400 font-bold bg-amber-950/40 px-2 py-0.5 rounded-xs border border-amber-500/30">
             +{event.rewards.credits} CREDITS
@@ -227,12 +227,12 @@ export function ActiveAnomalyHUD({ event, onOpenArchive }: ActiveAnomalyHUDProps
           </span>
           {event.rewards.corruptionReduction > 0 && (
             <span className="text-emerald-400 font-bold bg-emerald-950/40 px-2 py-0.5 rounded-xs border border-emerald-500/30">
-              -{event.rewards.corruptionReduction}% VOID
+              -{event.rewards.corruptionReduction}% CORRUPTION
             </span>
           )}
           {event.rewards.bossDamage > 0 && (
             <span className="text-red-400 font-bold bg-red-950/40 px-2 py-0.5 rounded-xs border border-red-500/30">
-              +{event.rewards.bossDamage} BOSS DMG
+              +{event.rewards.bossDamage} BOSS DAMAGE
             </span>
           )}
         </div>

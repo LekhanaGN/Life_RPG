@@ -64,14 +64,14 @@ export function MissionAbandonDialog({
               <div className="flex items-center gap-2.5 text-red-400">
                 <AlertTriangle className="w-5 h-5 text-red-500 animate-pulse" />
                 <span className="text-[10px] font-mono tracking-widest uppercase">
-                  DIMENSIONAL BREACH WARNING
+                  DELETE CONFIRMATION
                 </span>
               </div>
               <button
                 type="button"
                 onClick={onClose}
                 className="p-1 rounded-xs text-slate-400 hover:text-white"
-                aria-label="Cancel abandon"
+                aria-label="Cancel delete"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -82,7 +82,7 @@ export function MissionAbandonDialog({
                 id="abandon-dialog-title"
                 className="font-cinzel text-xl font-bold text-white tracking-wider text-red-100"
               >
-                ABANDON MISSION?
+                DELETE MISSION?
               </h3>
 
               <div className="p-3 bg-red-950/30 border border-red-900/50 rounded-xs text-xs font-mono text-red-200">
@@ -90,7 +90,7 @@ export function MissionAbandonDialog({
               </div>
 
               <p className="text-xs font-mono text-slate-300 leading-relaxed">
-                This mission will be removed from your world. The stability of your sanctuary relies on follow-through.
+                This mission will be permanently removed from your active mission list.
               </p>
             </div>
 
@@ -100,7 +100,7 @@ export function MissionAbandonDialog({
                 onClick={onClose}
                 className="w-full sm:w-auto px-5 py-2 rounded-xs border border-slate-700 hover:border-slate-500 bg-transparent text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
-                KEEP MISSION
+                CANCEL
               </button>
 
               <button
@@ -109,7 +109,7 @@ export function MissionAbandonDialog({
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-xs bg-red-950/80 hover:bg-red-600 border-2 border-red-600 hover:border-red-400 text-red-200 hover:text-white font-orbitron font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(220,38,38,0.5)] cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />
-                <span>ABANDON</span>
+                <span>DELETE</span>
               </button>
             </div>
           </motion.div>

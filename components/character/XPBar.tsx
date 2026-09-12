@@ -35,11 +35,11 @@ export function XPBar({
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-cyan-400 fill-cyan-400/20 animate-pulse" />
           <span className="text-xs uppercase tracking-wider text-slate-300 font-bold">
-            EXPERIENCE PROGRESSION
+            XP PROGRESS
           </span>
         </div>
         <div className="text-xs text-cyan-300 font-bold font-orbitron tracking-widest">
-          LVL {String(displayLevel).padStart(2, "0")}
+          LEVEL {String(displayLevel).padStart(2, "0")}
         </div>
       </div>
 

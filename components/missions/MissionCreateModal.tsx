@@ -186,17 +186,17 @@ export function MissionCreateModal({
             <div className="flex items-start justify-between pb-4 border-b border-cyan-500/20 mb-6">
               <div>
                 <span className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase">
-                  DIRECTIVE // SANCTUARY MATRIX
+                  MISSION CREATION
                 </span>
                 <h3
                   id="create-mission-title"
                   className="font-cinzel text-xl sm:text-2xl font-bold text-white tracking-wider flex items-center gap-2 mt-0.5"
                 >
                   <Plus className="w-5 h-5 text-cyan-400" />
-                  ACCEPT NEW MISSION
+                  CREATE A MISSION
                 </h3>
                 <p className="text-xs font-mono text-slate-400 mt-1">
-                  Establish a real-world objective to anchor your reality and resist the spread.
+                  Add something you want to get done in real life.
                 </p>
               </div>
 
@@ -228,7 +228,7 @@ export function MissionCreateModal({
                     htmlFor="mission-title"
                     className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold"
                   >
-                    MISSION CALLSIGN / NAME <span className="text-cyan-400">*</span>
+                    WHAT DO YOU WANT TO DO? <span className="text-cyan-400">*</span>
                   </label>
                   <span className="text-[10px] font-mono text-slate-500">
                     {title.length}/100
@@ -239,7 +239,7 @@ export function MissionCreateModal({
                   type="text"
                   required
                   maxLength={100}
-                  placeholder="e.g. Study Operating Systems for 1 hour"
+                  placeholder="e.g. Study for 1 hour, Go to the gym, Read 20 pages"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className={`w-full px-4 py-2.5 bg-slate-900/90 border rounded-xs text-sm font-sans text-white placeholder:text-slate-500 focus:outline-none transition-colors ${
@@ -260,7 +260,7 @@ export function MissionCreateModal({
                     htmlFor="mission-desc"
                     className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold"
                   >
-                    MISSION DIRECTIVE / DESCRIPTION{" "}
+                    DETAILS{" "}
                     <span className="text-slate-500 text-[10px] lowercase">(optional)</span>
                   </label>
                   <span className="text-[10px] font-mono text-slate-500">
@@ -271,7 +271,7 @@ export function MissionCreateModal({
                   id="mission-desc"
                   rows={3}
                   maxLength={1000}
-                  placeholder="e.g. Finish the process scheduling chapter and solve 10 practice questions."
+                  placeholder="e.g. Finish the chapter and solve 10 practice questions."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className={`w-full px-4 py-2.5 bg-slate-900/90 border rounded-xs text-sm font-sans text-white placeholder:text-slate-500 focus:outline-none transition-colors resize-none ${
@@ -288,7 +288,7 @@ export function MissionCreateModal({
               {/* Category Selector */}
               <div className="space-y-2">
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                  RESONANCE CATEGORY <span className="text-cyan-400">*</span>
+                  STAT CATEGORY <span className="text-cyan-400">*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
                   {(
@@ -329,7 +329,7 @@ export function MissionCreateModal({
                 {/* Difficulty */}
                 <div className="space-y-2">
                   <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                    DIFFICULTY RATING <span className="text-cyan-400">*</span>
+                    DIFFICULTY <span className="text-cyan-400">*</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {(
@@ -364,7 +364,7 @@ export function MissionCreateModal({
                 {/* Frequency */}
                 <div className="space-y-2">
                   <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                    RECURRENCE CADENCE <span className="text-cyan-400">*</span>
+                    FREQUENCY <span className="text-cyan-400">*</span>
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {(
@@ -400,7 +400,7 @@ export function MissionCreateModal({
               {/* Verification Protocol & Signal Integrity */}
               <div className="space-y-2">
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                  SIGNAL INTEGRITY // VERIFICATION METHOD
+                  HOW WILL YOU VERIFY IT?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <button
@@ -413,11 +413,11 @@ export function MissionCreateModal({
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-orbitron font-bold">SELF REPORT</span>
+                      <span className="text-xs font-orbitron font-bold">SELF-REPORT</span>
                       <span className="text-xs text-amber-400 font-mono">★</span>
                     </div>
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      Direct clearance. 50% baseline signal.
+                      Click complete when done.
                     </div>
                   </button>
 
@@ -431,11 +431,11 @@ export function MissionCreateModal({
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-orbitron font-bold">EVIDENCE</span>
+                      <span className="text-xs font-orbitron font-bold">PROOF (PHOTO / NOTE)</span>
                       <span className="text-xs text-amber-400 font-mono">★★</span>
                     </div>
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      Photo or note. 70% integrity signal.
+                      Attach photo or written note.
                     </div>
                   </button>
 
@@ -449,11 +449,11 @@ export function MissionCreateModal({
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-orbitron font-bold">FOCUS PROTOCOL</span>
+                      <span className="text-xs font-orbitron font-bold">TIMED FOCUS</span>
                       <span className="text-xs text-amber-400 font-mono">★★★</span>
                     </div>
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      Timed session. 91% integrity signal.
+                      Complete a focus timer.
                     </div>
                   </button>
                 </div>
@@ -490,7 +490,7 @@ export function MissionCreateModal({
                   htmlFor="mission-due-date"
                   className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold"
                 >
-                  TARGET DUE DATE{" "}
+                  DUE DATE{" "}
                   <span className="text-slate-500 text-[10px] lowercase">(optional)</span>
                 </label>
                 <div className="relative">
@@ -526,12 +526,12 @@ export function MissionCreateModal({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>ENCODING MISSION...</span>
+                      <span>CREATING MISSION...</span>
                     </>
                   ) : (
                     <>
                       <Plus className="w-4 h-4" />
-                      <span>ACCEPT MISSION</span>
+                      <span>CREATE MISSION</span>
                     </>
                   )}
                 </button>

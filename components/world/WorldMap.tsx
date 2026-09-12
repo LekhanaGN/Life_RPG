@@ -85,20 +85,20 @@ export function WorldMap({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-white text-lg font-cinzel font-bold tracking-widest uppercase">
-                DIMENSIONAL ATLAS
+                YOUR WORLDS
               </h3>
               <span className="px-2 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-500/50 text-[10px] font-mono text-cyan-300 font-bold">
                 {areas.filter((a) => a.isUnlocked).length} / {areas.length} UNLOCKED
               </span>
             </div>
             <p className="text-xs font-mono text-slate-400">
-              Six territories reclaimed as you execute real-world missions.
+              Complete more missions to unlock new areas.
             </p>
           </div>
         </div>
 
         <div className="text-xs font-mono text-slate-400 self-start sm:self-center">
-          <span>CURRENT REALM CORRUPTION: </span>
+          <span>WORLD CORRUPTION: </span>
           <span className="text-red-400 font-bold font-orbitron">{corruption}%</span>
         </div>
       </div>
@@ -111,17 +111,17 @@ export function WorldMap({
           const isRestored = area.status === "RESTORED";
           const isReclaiming = area.status === "RECLAIMING";
 
-          let statusBadgeText = "CORRUPTED";
+          let statusBadgeText = "NEEDS MISSIONS";
           let statusBadgeClass = "border-red-900/60 bg-red-950/40 text-red-400";
 
           if (!isUnlocked) {
-            statusBadgeText = `LOCKED (≤ ${area.requiredCorruption}% CORRUPTION)`;
+            statusBadgeText = `LOCKED (REDUCE CORRUPTION TO ${area.requiredCorruption}%)`;
             statusBadgeClass = "border-slate-800 bg-slate-900/60 text-slate-500";
           } else if (isRestored) {
             statusBadgeText = "RESTORED (100%)";
             statusBadgeClass = "border-emerald-500/50 bg-emerald-950/50 text-emerald-300";
           } else if (isReclaiming) {
-            statusBadgeText = `RECLAIMING (${area.restorationPercent}%)`;
+            statusBadgeText = `IN PROGRESS (${area.restorationPercent}%)`;
             statusBadgeClass = "border-cyan-500/50 bg-cyan-950/50 text-cyan-300";
           }
 

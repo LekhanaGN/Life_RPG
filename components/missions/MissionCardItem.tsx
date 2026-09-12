@@ -106,7 +106,7 @@ export function MissionCardItem({
   const getCompletedBadgeText = () => {
     if (mission.frequency === "DAILY") return "COMPLETED TODAY";
     if (mission.frequency === "WEEKLY") return "COMPLETED THIS WEEK";
-    return "MISSION CLEARED";
+    return "COMPLETED";
   };
 
   return (
@@ -216,10 +216,10 @@ export function MissionCardItem({
                 <button
                   onClick={() => onStartFocus(mission)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs font-mono uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(251,191,36,0.4)] hover:shadow-[0_0_20px_rgba(251,191,36,0.7)] cursor-pointer"
-                  aria-label={`Start Focus Protocol for ${mission.title}`}
+                  aria-label={`Start Focus Session for ${mission.title}`}
                 >
                   <Crosshair className="w-3.5 h-3.5 fill-black text-black" />
-                  <span>START PROTOCOL</span>
+                  <span>START FOCUS SESSION</span>
                 </button>
               )}
 
@@ -228,10 +228,10 @@ export function MissionCardItem({
                 <button
                   onClick={() => onSubmitEvidence(mission)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold text-xs font-mono uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(16,185,129,0.4)] hover:shadow-[0_0_20px_rgba(16,185,129,0.7)] cursor-pointer"
-                  aria-label={`Submit evidence for ${mission.title}`}
+                  aria-label={`Submit proof for ${mission.title}`}
                 >
                   <FileText className="w-3.5 h-3.5 text-black" />
-                  <span>SUBMIT EVIDENCE</span>
+                  <span>SUBMIT PROOF</span>
                 </button>
               )}
 
@@ -250,7 +250,7 @@ export function MissionCardItem({
                     {isResolving ? (
                       <>
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>RESOLVING...</span>
+                        <span>COMPLETING...</span>
                       </>
                     ) : (
                       <>
@@ -266,7 +266,7 @@ export function MissionCardItem({
           {isCompleted && (
             <div className="px-3 py-1 rounded-xs bg-emerald-950/40 border border-emerald-600/40 text-[11px] font-mono text-emerald-300 flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>CLEARED</span>
+              <span>COMPLETED</span>
             </div>
           )}
 
@@ -274,7 +274,7 @@ export function MissionCardItem({
           <button
             onClick={() => onView(mission)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xs bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-cyan-300 transition-colors cursor-pointer"
-            aria-label={`View dossier for ${mission.title}`}
+            aria-label={`View details for ${mission.title}`}
           >
             <Eye className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">VIEW</span>
@@ -296,10 +296,10 @@ export function MissionCardItem({
           <button
             onClick={() => onAbandon(mission)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xs bg-red-950/30 hover:bg-red-950/80 border border-red-800/50 hover:border-red-600 text-xs font-mono uppercase tracking-wider text-red-300 hover:text-red-100 transition-colors cursor-pointer"
-            aria-label={`Abandon ${mission.title}`}
+            aria-label={`Delete ${mission.title}`}
           >
             <Trash2 className="w-3.5 h-3.5 text-red-400" />
-            <span className="hidden sm:inline">ABANDON</span>
+            <span className="hidden sm:inline">DELETE</span>
           </button>
         </div>
       </div>

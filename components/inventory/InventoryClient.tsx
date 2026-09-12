@@ -164,17 +164,17 @@ export function InventoryClient({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-500/50 text-[10px] font-mono text-cyan-300 font-bold uppercase tracking-wider">
-                SURVIVOR VAULT & GEAR LOCKER
+                YOUR INVENTORY
               </span>
               <span className="text-xs font-mono text-cyan-400/80 uppercase tracking-widest">
-                ITEMS STORED: {inventory.reduce((acc, i) => acc + i.quantity, 0)}
+                TOTAL ITEMS: {inventory.reduce((acc, i) => acc + i.quantity, 0)}
               </span>
             </div>
             <h1 className="font-cinzel text-3xl sm:text-5xl lg:text-6xl font-black tracking-[0.12em] text-white neon-glow-cyan uppercase">
               INVENTORY
             </h1>
             <p className="font-cinzel text-lg sm:text-xl text-cyan-200/90 italic tracking-wider mt-1">
-              &ldquo;Everything you&apos;ve recovered from the Other Side.&rdquo;
+              &ldquo;Manage your equipped gear and unlocked rewards.&rdquo;
             </p>
           </div>
 
@@ -184,7 +184,7 @@ export function InventoryClient({
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xs bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-cinzel font-black text-xs tracking-widest uppercase transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] cursor-pointer"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>VISIT THE ARCADE</span>
+              <span>OPEN SHOP</span>
             </Link>
 
             <div className="px-3 py-2 rounded-xs bg-slate-950 border border-slate-700 text-xs font-mono flex items-center gap-2 text-amber-300">
@@ -200,7 +200,7 @@ export function InventoryClient({
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-cyan-400" />
               <h2 className="font-cinzel text-sm sm:text-base font-bold text-white tracking-widest uppercase">
-                ACTIVE SURVIVOR LOADOUT
+                EQUIPPED GEAR
               </h2>
             </div>
             <span className="text-[11px] font-mono text-cyan-300">
@@ -253,7 +253,7 @@ export function InventoryClient({
                       <div className="py-4 text-center space-y-1">
                         <div className="text-slate-600 font-mono text-[10px]">EMPTY SLOT</div>
                         <div className="text-[9px] font-mono text-slate-500">
-                          Equip from vault
+                          Equip an item below
                         </div>
                       </div>
                     )}
@@ -301,16 +301,16 @@ export function InventoryClient({
             <div className="p-12 text-center space-y-3 rounded-xs border border-slate-800 bg-slate-950/60">
               <Layers className="w-10 h-10 text-slate-600 mx-auto" />
               <div className="font-cinzel text-base text-slate-300 font-bold tracking-wider">
-                NO ITEMS RECOVERED IN THIS CATEGORY
+                NO ITEMS IN THIS CATEGORY
               </div>
               <p className="text-xs font-mono text-slate-400 max-w-md mx-auto">
-                Complete real-world missions to earn Credits and visit The Arcade to acquire relics and equipment.
+                Complete missions to earn credits and buy items in the shop.
               </p>
               <Link
                 href="/arcade"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xs bg-cyan-950 border border-cyan-500 text-cyan-300 hover:bg-cyan-500 hover:text-black text-xs font-cinzel font-bold tracking-wider uppercase transition-colors"
               >
-                <span>ENTER THE ARCADE</span>
+                <span>OPEN REWARD SHOP</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -393,7 +393,7 @@ export function InventoryClient({
                             disabled={isProcessing}
                             className="w-full py-2 rounded-xs border border-red-800 bg-red-950/40 hover:bg-red-900 text-red-300 text-xs font-mono font-bold transition-colors cursor-pointer"
                           >
-                            {isProcessing ? "UNEQUIPPING..." : "UNEQUIP FROM GEAR"}
+                            {isProcessing ? "UNEQUIPPING..." : "UNEQUIP"}
                           </button>
                         ) : (
                           <button
@@ -401,7 +401,7 @@ export function InventoryClient({
                             disabled={isProcessing}
                             className="w-full py-2 rounded-xs border border-cyan-500 bg-cyan-950/60 hover:bg-cyan-500 hover:text-black text-cyan-300 text-xs font-mono font-bold transition-colors cursor-pointer"
                           >
-                            {isProcessing ? "EQUIPPING..." : `EQUIP TO ${item.slot} SLOT`}
+                            {isProcessing ? "EQUIPPING..." : `EQUIP TO ${item.slot}`}
                           </button>
                         )}
                       </div>
@@ -417,8 +417,8 @@ export function InventoryClient({
       {/* Footer */}
       <footer className="relative z-20 py-4 px-6 border-t border-cyan-950/40 bg-black/40 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-400 gap-2">
-          <div>SURVIVOR LOCKER // PERSONAL ARCHIVE // SURVIVOR: {character.name}</div>
-          <div className="text-cyan-400/80">EQUIPPED RELICS RESONATE ACROSS BOTH DIMENSIONS</div>
+          <div>THE OTHER SIDE // Turn real-life goals into missions.</div>
+          <div className="text-cyan-400/80">© 2026 THE OTHER SIDE</div>
         </div>
       </footer>
     </div>

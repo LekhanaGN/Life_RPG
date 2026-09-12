@@ -84,7 +84,7 @@ export function BossDefeatOverlay({ data, onDismiss }: BossDefeatOverlayProps) {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-xs font-mono font-bold uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>DIMENSIONAL THREAT BANISHED</span>
+              <span>BOSS DEFEATED</span>
             </div>
 
             <h2
@@ -95,7 +95,7 @@ export function BossDefeatOverlay({ data, onDismiss }: BossDefeatOverlayProps) {
             </h2>
 
             <p id="boss-defeat-desc" className="text-xs font-mono text-emerald-300/80 italic">
-              {data.bossTitle} has been purged from the parallel reality.
+              {data.bossTitle} was defeated.
             </p>
           </div>
 
@@ -103,25 +103,25 @@ export function BossDefeatOverlay({ data, onDismiss }: BossDefeatOverlayProps) {
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="p-3 rounded-xs bg-slate-900/80 border border-emerald-500/40 text-left">
               <div className="text-[10px] font-mono text-slate-400 uppercase">
-                CORRUPTION COLLAPSE
+                CORRUPTION REDUCED
               </div>
               <div className="text-base sm:text-lg font-orbitron font-extrabold text-emerald-400 mt-0.5">
                 -{data.corruptionDrop || 10}% CORRUPTION
               </div>
               <p className="text-[10px] font-mono text-slate-400 mt-1">
-                Dimensional pressure relieved.
+                World corruption pushed back.
               </p>
             </div>
 
             <div className="p-3 rounded-xs bg-slate-900/80 border border-cyan-500/40 text-left">
               <div className="text-[10px] font-mono text-slate-400 uppercase">
-                BANISHMENT ENERGY
+                VICTORY BONUS
               </div>
               <div className="text-base sm:text-lg font-orbitron font-extrabold text-cyan-300 mt-0.5">
                 +{data.bonusXp || 200} BONUS XP
               </div>
               <p className="text-[10px] font-mono text-slate-400 mt-1">
-                Transmuted from dark void essence.
+                Bonus XP added to your character.
               </p>
             </div>
           </div>
@@ -137,13 +137,13 @@ export function BossDefeatOverlay({ data, onDismiss }: BossDefeatOverlayProps) {
               <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5 animate-bounce" />
               <div>
                 <div className="text-[10px] font-mono text-red-400 font-bold uppercase tracking-wider">
-                  NEW ENTITY AWAKENED IN THE OTHER SIDE
+                  NEXT BOSS HAS APPEARED
                 </div>
                 <div className="text-sm font-cinzel font-bold text-red-200 mt-0.5">
                   {data.nextBossName}
                 </div>
                 <p className="text-[11px] font-mono text-red-300/80 mt-0.5">
-                  A stronger anomaly has filled the dimensional vacuum. Execute missions to challenge it.
+                  A new challenge is waiting in The Other Side. Complete missions to defeat it.
                 </p>
               </div>
             </motion.div>
@@ -155,7 +155,7 @@ export function BossDefeatOverlay({ data, onDismiss }: BossDefeatOverlayProps) {
               onClick={onDismiss}
               className="w-full py-3 rounded-xs bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-black font-cinzel font-black text-sm tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(16,185,129,0.5)] hover:shadow-[0_0_30px_rgba(16,185,129,0.8)] cursor-pointer"
             >
-              CONTINUE WORLD RESTORATION [ENTER / ESC]
+              CONTINUE [ENTER / ESC]
             </button>
           </div>
         </motion.div>

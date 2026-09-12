@@ -69,10 +69,10 @@ export default function LoginPage() {
               </div>
               <div>
                 <CardTitle className="text-white text-xl tracking-widest font-cinzel neon-glow-cyan">
-                  SURVIVOR ACCESS
+                  LOG IN
                 </CardTitle>
                 <CardDescription className="text-cyan-300/80 font-mono text-[11px] tracking-widest">
-                  DIMENSIONAL CLEARANCE GATEWAY
+                  ENTER THE OTHER SIDE
                 </CardDescription>
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function LoginPage() {
             {/* Status Broadcast */}
             <div className="flex items-center gap-2 px-3 py-2 bg-cyan-950/40 border border-cyan-900/50 rounded-xs text-[11px] font-mono text-cyan-300">
               <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse shrink-0" />
-              <span>CLEARANCE PROTOCOL ONLINE // TRANSMIT PASSCODE</span>
+              <span>Enter your email and password to continue.</span>
             </div>
 
             {/* Error Banner */}
@@ -103,7 +103,7 @@ export default function LoginPage() {
                   htmlFor="login-email"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  TRANSMISSION FREQUENCY (EMAIL)
+                  EMAIL ADDRESS
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -115,7 +115,7 @@ export default function LoginPage() {
                     type="email"
                     required
                     autoComplete="email"
-                    placeholder="survivor@dimension.net"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
@@ -130,7 +130,7 @@ export default function LoginPage() {
                   htmlFor="login-password"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  CLEARANCE PASSCODE
+                  PASSWORD
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -165,12 +165,12 @@ export default function LoginPage() {
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin text-cyan-200" />
-                      AUTHENTICATING TRANSMISSION...
+                      LOGGING IN...
                     </>
                   ) : (
                     <>
                       <ShieldCheck className="w-4 h-4 mr-2" />
-                      ENTER THE RIGHT SIDE
+                      LOG IN
                     </>
                   )}
                 </Button>
@@ -186,7 +186,7 @@ export default function LoginPage() {
                   className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold uppercase tracking-wider underline underline-offset-4"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  Create Survivor
+                  Sign Up
                 </Link>
               </div>
 
@@ -195,7 +195,7 @@ export default function LoginPage() {
                 className="inline-flex items-center justify-center gap-1 text-slate-400 hover:text-slate-300 py-1 transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>RETURN TO GATEWAY</span>
+                <span>BACK TO HOME</span>
               </Link>
             </div>
           </CardContent>

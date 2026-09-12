@@ -128,7 +128,7 @@ export function LandingClient({
           className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 mb-6 rounded-full border border-red-900/60 bg-red-950/40 text-red-400 text-xs font-mono tracking-[0.25em] uppercase shadow-[0_0_15px_rgba(239,68,68,0.25)] backdrop-blur-xs"
         >
           <Radio className="w-3.5 h-3.5 animate-pulse text-red-500" />
-          <span>DIMENSIONAL ANOMALY DETECTED</span>
+          <span>REAL-LIFE RPG // TWO WORLDS</span>
         </motion.div>
 
         {/* Cinematic Main Title with Hollow Stroke Overlay */}
@@ -158,33 +158,35 @@ export function LandingClient({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, delay: 0.7 }}
-          className="font-cinzel text-lg sm:text-2xl md:text-3xl text-red-200/95 italic tracking-widest mb-8 drop-shadow-[0_0_14px_rgba(255,100,100,0.4)]"
+          className="font-cinzel text-lg sm:text-2xl md:text-3xl text-red-200/95 italic tracking-widest mb-6 drop-shadow-[0_0_14px_rgba(255,100,100,0.4)]"
         >
           &ldquo;Your real life has two worlds.&rdquo;
         </motion.blockquote>
 
-        {/* Narrative Description Blocks */}
+        {/* Clear, Immediate Explanation */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.9 }}
-          className="max-w-xl mx-auto space-y-3 font-body text-base sm:text-lg md:text-xl text-slate-300 font-medium tracking-wide mb-10"
+          className="max-w-2xl mx-auto space-y-4 font-body text-base sm:text-lg md:text-xl text-slate-300 font-medium tracking-wide mb-10"
         >
-          <p className="leading-relaxed">
-            <span className="text-cyan-400 font-bold tracking-wider">
-              The Right Side
-            </span>{" "}
-            is where you grow.
+          <p className="text-white font-semibold leading-relaxed">
+            Turn your real-life goals into missions.
           </p>
-          <p className="leading-relaxed">
-            <span className="text-red-500 font-bold tracking-wider">
-              The Other Side
-            </span>{" "}
-            is where everything holding you back comes alive.
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300">
+            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Study</span>
+            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Work Out</span>
+            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Read</span>
+            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Build</span>
+            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Practice</span>
+            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Focus</span>
+          </div>
+          <p className="text-sm sm:text-base text-slate-300 font-mono pt-1">
+            Complete missions → earn XP → level up → unlock rewards.
           </p>
         </motion.div>
 
-        {/* Main CTA: INVERT THE WORLDS */}
+        {/* Main CTA: INVERT THE WORLDS / ENTER */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -200,28 +202,28 @@ export function LandingClient({
             disabled={isTransitioning}
             onClick={handleInvertClick}
             className="relative px-8 sm:px-12 py-4 text-base sm:text-lg tracking-[0.25em] font-extrabold text-white border-2 border-red-500 shadow-[0_0_25px_rgba(239,68,68,0.7)] hover:shadow-[0_0_50px_rgba(239,68,68,1)] cursor-pointer"
-            aria-label="Invert the worlds and initiate portal transition"
+            aria-label="Invert the worlds and explore"
           >
             <Sparkles className="w-5 h-5 mr-2 text-red-300 group-hover:rotate-45 transition-transform" />
             INVERT THE WORLDS
           </Button>
         </motion.div>
 
-        {/* Subtle Action to Scroll Down */}
+        {/* Action to Scroll Down */}
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.4 }}
           onClick={handleExploreScroll}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xs border border-slate-800 bg-slate-950/60 hover:bg-slate-900/80 text-slate-400 hover:text-cyan-300 text-xs font-mono tracking-widest transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
-          aria-label="Scroll down to explore the protocol"
+          aria-label="Scroll down to see how it works"
         >
-          <span>EXPLORE THE PROTOCOL</span>
+          <span>HOW IT WORKS</span>
           <ChevronDown className="w-3.5 h-3.5 animate-bounce text-cyan-400" />
         </motion.button>
 
-        <p className="mt-4 text-[11px] font-mono tracking-widest text-slate-400 uppercase">
-          [SCROLL DOWN OR PRESS ENTER TO INITIALIZE TRANSMISSION]
+        <p className="mt-4 text-[11px] font-mono tracking-widest text-slate-500 uppercase">
+          [SCROLL DOWN TO LEARN MORE]
         </p>
       </section>
 
@@ -229,7 +231,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-red-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 2. SECTION 1 — THE PROBLEM ("THE OLD SYSTEM WAS NEVER BUILT TO FEEL ALIVE")*/}
+      {/* 2. SECTION 1 — THE PROBLEM & SOLUTION                                     */}
       {/* ========================================================================= */}
       <section
         id="protocol-problem"
@@ -244,37 +246,37 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <span>01 // DIAGNOSTIC AUDIT</span>
+            <span>01 // WHY WE BUILT THIS</span>
           </div>
 
           <h2 className="font-cinzel text-3xl sm:text-5xl md:text-6xl font-bold tracking-wider text-white uppercase max-w-3xl mx-auto leading-tight">
-            THE OLD SYSTEM WAS NEVER BUILT TO FEEL ALIVE.
+            REAL-LIFE PROGRESS FEELS SLOW. GAMES MAKE IT FAST.
           </h2>
 
           <div className="max-w-2xl mx-auto space-y-4 text-base sm:text-xl font-body text-slate-300 font-medium leading-relaxed">
             <p className="text-slate-400 italic">
-              Real-world progress is slow.
+              Real-world progress takes time to see:
             </p>
             <p>
               You study for weeks before you feel smarter.
               <br />
-              You train for months before you see the change.
+              You work out for months before you see results.
               <br />
-              You work for hours before the result becomes visible.
+              You work for hours before anything shows.
             </p>
             <p className="text-cyan-300 font-semibold tracking-wide pt-2">
-              Games solved this problem long ago.
+              Games solved this with instant feedback, levels, and stats.
             </p>
           </div>
 
-          {/* High-Contrast Game Solutions Grid */}
+          {/* Game Solutions Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-3xl mx-auto pt-6">
             {[
-              { label: "INSTANT FEEDBACK", sub: "Live visual response" },
-              { label: "CLEAR PROGRESS", sub: "Numerical XP growth" },
-              { label: "REAL REWARDS", sub: "Items & loadouts" },
-              { label: "CONSEQUENCES", sub: "Corruption escalates" },
-              { label: "REASON TO RETURN", sub: "Territories to save" },
+              { label: "INSTANT REWARDS", sub: "See progress right away" },
+              { label: "XP & LEVELS", sub: "Watch your character grow" },
+              { label: "REAL REWARDS", sub: "Spend credits on items" },
+              { label: "CONSEQUENCES", sub: "Slacking feeds The Other Side" },
+              { label: "DAILY STREAKS", sub: "Reasons to return every day" },
             ].map((item, idx) => (
               <div
                 key={idx}
@@ -293,7 +295,7 @@ export function LandingClient({
 
           <div className="pt-8">
             <div className="inline-block px-6 py-3 rounded-xs border border-red-500/40 bg-gradient-to-r from-red-950/40 via-purple-950/30 to-cyan-950/40 text-sm sm:text-base font-orbitron tracking-widest text-slate-100 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
-              &ldquo;THE OTHER SIDE BRINGS THAT LOOP INTO REAL LIFE.&rdquo;
+              &ldquo;THE OTHER SIDE TURNS YOUR DAILY GOALS INTO A GAME.&rdquo;
             </div>
           </div>
         </motion.div>
@@ -318,13 +320,13 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span>02 // THE DUAL DIMENSIONS</span>
+            <span>02 // TWO WORLDS</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
             YOUR REAL LIFE HAS TWO WORLDS.
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-slate-400 tracking-widest">
-            ONE SANCTUARY OF GROWTH. ONE MIRROR OF ENTROPY.
+            WHERE PROGRESS HAPPENS VS WHERE PROCRASTINATION GROWS.
           </p>
         </motion.div>
 
@@ -345,42 +347,40 @@ export function LandingClient({
                   <span>THE RIGHT SIDE</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-xs bg-cyan-950 border border-cyan-500 text-cyan-300 text-[10px] font-mono tracking-widest uppercase">
-                  SANCTUARY
+                  PROGRESS
                 </span>
               </div>
 
               <blockquote className="font-cinzel text-lg sm:text-xl text-cyan-200 italic mb-6">
-                &ldquo;Where progress becomes visible.&rdquo;
+                &ldquo;Where progress happens.&rdquo;
               </blockquote>
 
               <p className="text-slate-300 text-sm sm:text-base font-body leading-relaxed mb-6">
-                Log real-world study, workouts, reading, and deep work. Watch your
-                survivor level up, earn spendable arcade credits, and strengthen core
-                attributes.
+                Complete real-life missions and build your character.
               </p>
 
               <div className="space-y-2.5 font-mono text-xs">
                 {[
-                  { label: "+ XP GAINS", val: "Tiered progression & non-linear leveling" },
-                  { label: "+ ATTRIBUTES", val: "Mind, Body, Focus, Spirit, Connection" },
-                  { label: "+ LEVELS", val: "Survivor rank badges & perks" },
-                  { label: "+ ◈ CREDITS", val: "Earned currency for the underground Arcade" },
-                  { label: "+ MISSIONS", val: "Daily, Weekly, and Epic survival tasks" },
+                  { label: "+ EARN XP", val: "Get rewarded for finishing real tasks" },
+                  { label: "+ LEVEL UP", val: "Unlock new perks and higher ranks" },
+                  { label: "+ BUILD YOUR STATS", val: "Mind, Body, Focus, Spirit, Connection" },
+                  { label: "+ KEEP YOUR STREAK", val: "Stay consistent every day" },
+                  { label: "+ EARN CREDITS", val: "Spend in the reward shop" },
                 ].map((row, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2 rounded-xs bg-cyan-950/30 border border-cyan-900/50 text-cyan-100"
+                    className="flex items-center justify-between p-2.5 rounded-xs bg-cyan-950/30 border border-cyan-900/50 text-cyan-100"
                   >
                     <span className="font-bold text-cyan-400">{row.label}</span>
-                    <span className="text-slate-400 text-[11px]">{row.val}</span>
+                    <span className="text-slate-300 text-[11px]">{row.val}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="mt-8 pt-4 border-t border-cyan-900/50 flex items-center justify-between text-xs font-mono text-cyan-400/80">
-              <span>REALM STABILITY: OPTIMAL</span>
-              <span>DIMENSION PRIME</span>
+              <span>WORLD STATUS: SAFE</span>
+              <span>THE RIGHT SIDE</span>
             </div>
           </motion.div>
 
@@ -399,41 +399,40 @@ export function LandingClient({
                   <span>THE OTHER SIDE</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-xs bg-red-950 border border-red-500 text-red-300 text-[10px] font-mono tracking-widest uppercase">
-                  CORRUPTED
+                  PROCRASTINATION
                 </span>
               </div>
 
               <blockquote className="font-cinzel text-lg sm:text-xl text-red-200 italic mb-6">
-                &ldquo;Where everything holding you back comes alive.&rdquo;
+                &ldquo;Where procrastination grows.&rdquo;
               </blockquote>
 
               <p className="text-slate-300 text-sm sm:text-base font-body leading-relaxed mb-6">
-                Procrastination, distraction, doubt, and burnout manifest as live
-                boss entities, world anomalies, and creeping sector corruption.
+                Ignore your goals and The Other Side gets stronger.
               </p>
 
               <div className="space-y-2.5 font-mono text-xs">
                 {[
-                  { label: "WORLD CORRUPTION", val: "Global entropy index (100% → 0%)" },
-                  { label: "BOSS ENTITIES", val: "The Procrastinator, The Distraction..." },
-                  { label: "ANOMALIES", val: "Signal surges & timed reality breaches" },
-                  { label: "WORLD EVENTS", val: "Active temporal challenges with bonus XP" },
-                  { label: "REALITY DISTORTION", val: "Reclaimed zones unlock new gear" },
+                  { label: "WORLD CORRUPTION", val: "Grows when you put things off" },
+                  { label: "SPECIAL BOSSES", val: "Challenges created by procrastination" },
+                  { label: "SPECIAL CHALLENGES", val: "Limited-time events with bonus XP" },
+                  { label: "NEW AREAS", val: "Complete missions to unlock them" },
+                  { label: "LOST STREAKS", val: "Keep going to stay ahead" },
                 ].map((row, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2 rounded-xs bg-red-950/30 border border-red-900/50 text-red-100"
+                    className="flex items-center justify-between p-2.5 rounded-xs bg-red-950/30 border border-red-900/50 text-red-100"
                   >
                     <span className="font-bold text-red-400">{row.label}</span>
-                    <span className="text-slate-400 text-[11px]">{row.val}</span>
+                    <span className="text-slate-300 text-[11px]">{row.val}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="mt-8 pt-4 border-t border-red-900/50 flex items-center justify-between text-xs font-mono text-red-400/80">
-              <span>ALERT: SECTOR UNDER ATTACK</span>
-              <span>PARALLEL SECTOR</span>
+              <span>ALERT: THE OTHER SIDE IS GROWING</span>
+              <span>PARALLEL WORLD</span>
             </div>
           </motion.div>
         </div>
@@ -458,13 +457,13 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-            <span>03 // EXECUTION PROTOCOL</span>
+            <span>03 // HOW IT WORKS</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
-            TURN REAL LIFE INTO GAMEPLAY.
+            HOW IT WORKS
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-slate-400 tracking-widest">
-            A CLOSED LOOP FROM REAL ACTION TO COSMIC RESTORATION.
+            FOUR SIMPLE STEPS TO LEVEL UP IN REAL LIFE.
           </p>
         </motion.div>
 
@@ -473,33 +472,33 @@ export function LandingClient({
           {[
             {
               step: "01",
-              title: "CHOOSE A MISSION",
-              desc: "Study. Train. Read. Focus. Build.",
-              sub: "Select category, difficulty, & optional verification.",
+              title: "CREATE A MISSION",
+              desc: "Add something you want to get done.",
+              sub: "Study, workout, reading, coding, or focus.",
               icon: Target,
               accent: "border-cyan-500/50 text-cyan-400",
             },
             {
               step: "02",
               title: "COMPLETE IT",
-              desc: "Real-world actions become game progress.",
-              sub: "Submit work or run a focused biometric timer.",
+              desc: "Finish the task in real life.",
+              sub: "Check it off or use the focus timer.",
               icon: CheckCircle2,
               accent: "border-amber-500/50 text-amber-400",
             },
             {
               step: "03",
-              title: "GROW",
-              desc: "Earn XP, Credits, and Attributes.",
-              sub: "Watch your survivor level up and scale powers.",
+              title: "EARN XP",
+              desc: "Get XP, credits, and stat progress.",
+              sub: "Watch your survivor level up.",
               icon: Zap,
               accent: "border-purple-500/50 text-purple-400",
             },
             {
               step: "04",
-              title: "CHANGE THE WORLD",
-              desc: "Your progress weakens the Other Side.",
-              sub: "Damage active bosses & purge corruption.",
+              title: "LEVEL UP",
+              desc: "Build your character & unlock rewards.",
+              sub: "Push back corruption and defeat bosses.",
               icon: Skull,
               accent: "border-red-500/50 text-red-400",
             },
@@ -542,15 +541,13 @@ export function LandingClient({
 
         {/* Visual Flow Banner */}
         <div className="mt-8 p-4 rounded-xs border border-slate-800 bg-black/60 flex flex-wrap items-center justify-center gap-2 sm:gap-4 font-mono text-xs sm:text-sm text-slate-300">
-          <span className="text-cyan-400 font-bold">MISSION</span>
+          <span className="text-cyan-400 font-bold">01 CREATE MISSION</span>
           <ArrowRight className="w-4 h-4 text-slate-600" />
-          <span className="text-amber-400 font-bold">XP &amp; ATTRIBUTES</span>
+          <span className="text-amber-400 font-bold">02 COMPLETE IT</span>
           <ArrowRight className="w-4 h-4 text-slate-600" />
-          <span className="text-purple-400 font-bold">CHARACTER</span>
+          <span className="text-purple-400 font-bold">03 EARN XP &amp; STATS</span>
           <ArrowRight className="w-4 h-4 text-slate-600" />
-          <span className="text-red-400 font-bold">WORLD RESTORATION</span>
-          <ArrowRight className="w-4 h-4 text-slate-600" />
-          <span className="text-white font-bold">PROGRESSION</span>
+          <span className="text-emerald-400 font-bold">04 LEVEL UP &amp; UNLOCK REWARDS</span>
         </div>
       </section>
 
@@ -558,7 +555,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 5. SECTION 4 — REAL LIFE BECOMES STATS (RPG STAT CARDS)                   */}
+      {/* 5. SECTION 4 — YOUR STATS (RPG STAT CARDS)                                */}
       {/* ========================================================================= */}
       <section
         id="stats"
@@ -573,13 +570,13 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <span>04 // ATTRIBUTE ALCHEMY</span>
+            <span>04 // YOUR STATS</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
-            EVERYTHING YOU DO BUILDS SOMETHING.
+            YOUR STATS
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-slate-400 tracking-widest">
-            REAL HABITS DIRECTLY CONVERT INTO 5 CORE SURVIVOR ATTRIBUTES.
+            HOW YOUR REAL-LIFE ACTIVITIES ARE IMPROVING YOU.
           </p>
         </motion.div>
 
@@ -590,46 +587,46 @@ export function LandingClient({
               category: "MIND",
               icon: Brain,
               action: "STUDY 60 MIN",
-              example: "ALGORITHMS & CODING",
-              rewards: ["+70 XP", "+3 MIND", "+15 ◈"],
+              example: "LEARNING, STUDYING, READING",
+              rewards: ["+70 XP", "+3 MIND", "+15 CREDITS"],
               color: "border-blue-500/60 bg-blue-950/20 text-blue-300",
-              badge: "INTELLECT",
+              badge: "LEARNING",
             },
             {
               category: "BODY",
               icon: Dumbbell,
-              action: "HEAVY GYM WORKOUT",
-              example: "STRENGTH & CARDIO",
-              rewards: ["+85 XP", "+4 BODY", "+20 ◈"],
+              action: "GYM WORKOUT",
+              example: "EXERCISE & PHYSICAL HEALTH",
+              rewards: ["+85 XP", "+4 BODY", "+20 CREDITS"],
               color: "border-emerald-500/60 bg-emerald-950/20 text-emerald-300",
-              badge: "STRENGTH",
+              badge: "HEALTH",
             },
             {
               category: "FOCUS",
               icon: Flame,
               action: "DEEP WORK SPRINT",
-              example: "45 MIN UNINTERRUPTED",
-              rewards: ["+60 XP", "+3 FOCUS", "+15 ◈"],
+              example: "DEEP WORK & CONCENTRATION",
+              rewards: ["+60 XP", "+3 FOCUS", "+15 CREDITS"],
               color: "border-amber-500/60 bg-amber-950/20 text-amber-300",
-              badge: "CONCENTRATION",
+              badge: "FOCUS",
             },
             {
               category: "SPIRIT",
               icon: BookOpen,
-              action: "30 PAGES READING",
-              example: "NON-FICTION / PHILOSOPHY",
-              rewards: ["+40 XP", "+2 SPIRIT", "+10 ◈"],
+              action: "READ 30 PAGES",
+              example: "MINDFULNESS & PERSONAL GROWTH",
+              rewards: ["+40 XP", "+2 SPIRIT", "+10 CREDITS"],
               color: "border-purple-500/60 bg-purple-950/20 text-purple-300",
-              badge: "RESILIENCE",
+              badge: "GROWTH",
             },
             {
               category: "CONNECTION",
               icon: Users,
-              action: "TEAM SYNERGY",
-              example: "COMMUNITY MENTORSHIP",
-              rewards: ["+50 XP", "+3 CONNECTION", "+12 ◈"],
+              action: "CALL A FRIEND",
+              example: "FRIENDS, FAMILY & RELATIONSHIPS",
+              rewards: ["+50 XP", "+3 CONNECTION", "+12 CREDITS"],
               color: "border-rose-500/60 bg-rose-950/20 text-rose-300",
-              badge: "EMPATHY",
+              badge: "COMMUNITY",
             },
           ].map((card, idx) => {
             const Icon = card.icon;
@@ -672,7 +669,7 @@ export function LandingClient({
                       className="flex items-center justify-between text-slate-200"
                     >
                       <span className="font-bold text-cyan-300">{r}</span>
-                      <span className="text-[10px] text-slate-400">AUTHORITATIVE</span>
+                      <span className="text-[10px] text-slate-400">REWARD</span>
                     </div>
                   ))}
                 </div>
@@ -686,7 +683,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-red-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 6. SECTION 5 — THE WORLD REACTS (LIVE DEMO PROGRESS BARS)                 */}
+      {/* 6. SECTION 5 — WORLD CHANGES (LIVE DEMO PROGRESS BARS)                    */}
       {/* ========================================================================= */}
       <section
         id="world-reacts"
@@ -701,13 +698,13 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span>05 // DYNAMIC WORLD ENGINE</span>
+            <span>05 // WORLD CHANGES</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
-            YOUR PROGRESS DOESN&apos;T STAY ON THE SCREEN.
+            YOUR PROGRESS CHANGES THE WORLD.
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-slate-400 tracking-widest">
-            EVERY COMPLETED MISSION MUTATES THE PARALLEL DIMENSION.
+            EVERY MISSION YOU FINISH WEAKENS THE OTHER SIDE.
           </p>
         </motion.div>
 
@@ -716,7 +713,7 @@ export function LandingClient({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-red-950 pb-4 mb-6">
             <div className="flex items-center gap-2 text-xs font-mono text-red-400">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-              <span>LIVE SYSTEM SIMULATION // DEMO TELEMETRY</span>
+              <span>LIVE PROGRESS PREVIEW</span>
             </div>
             <button
               onClick={() => {
@@ -725,7 +722,7 @@ export function LandingClient({
               }}
               className="px-3 py-1 rounded-xs border border-cyan-500/60 bg-cyan-950/40 hover:bg-cyan-950 text-cyan-300 text-xs font-mono tracking-wider transition-all cursor-pointer"
             >
-              {demoProgressActive ? "RESET SIMULATION" : "SIMULATE MISSION COMPLETION"}
+              {demoProgressActive ? "RESET PREVIEW" : "SIMULATE MISSION COMPLETION"}
             </button>
           </div>
 
@@ -733,7 +730,7 @@ export function LandingClient({
             {/* 1. Global Corruption */}
             <div className="p-4 rounded-xs border border-red-950 bg-black/60">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono text-slate-400">CORRUPTION INDEX</span>
+                <span className="text-xs font-mono text-slate-400">WORLD CORRUPTION</span>
                 <span className="text-xs font-orbitron font-bold text-red-400">
                   {demoProgressActive ? "58% (-6%)" : "64%"}
                 </span>
@@ -747,7 +744,7 @@ export function LandingClient({
                 />
               </div>
               <div className="mt-2 text-[10px] font-mono text-slate-400">
-                {demoProgressActive ? "CORRUPTION RECEPTORS COLLAPSING" : "STEADY SECTOR DECAY"}
+                {demoProgressActive ? "Corruption pushed back by your progress!" : "Pushed back as you complete tasks"}
               </div>
             </div>
 
@@ -768,7 +765,7 @@ export function LandingClient({
                 />
               </div>
               <div className="mt-2 text-[10px] font-mono text-slate-400">
-                {demoProgressActive ? "CRITICAL STRIKE: -45 HP" : "ANOMALY SHIELD ACTIVE"}
+                {demoProgressActive ? "Dealt -45 Damage to the boss!" : "Damaged whenever you complete tasks"}
               </div>
             </div>
 
@@ -789,7 +786,7 @@ export function LandingClient({
                 />
               </div>
               <div className="mt-2 text-[10px] font-mono text-slate-400">
-                {demoProgressActive ? "RESTORATION RADIUS EXPANDING" : "TERRITORY UNLOCKED"}
+                {demoProgressActive ? "Area unlocked and restored!" : "Unlocked by improving Mind"}
               </div>
             </div>
           </div>
@@ -800,7 +797,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 7. SECTION 6 — SIGNAL INTEGRITY & TASK VALIDATION                         */}
+      {/* 7. SECTION 6 — PROOF & FOCUS TIMERS                                       */}
       {/* ========================================================================= */}
       <section
         id="signal-integrity"
@@ -815,13 +812,13 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <span>06 // VERIFICATION PROTOCOL</span>
+            <span>06 // PROOF &amp; FOCUS</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
             A CHECKBOX IS EASY TO CHEAT.
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-cyan-300 tracking-widest">
-            SOME MISSIONS ASK FOR MORE.
+            MORE WAYS TO PROVE YOUR PROGRESS.
           </p>
         </motion.div>
 
@@ -834,26 +831,25 @@ export function LandingClient({
           >
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono text-cyan-400 font-bold">CARD 01 // EVIDENCE</span>
+                <span className="text-xs font-mono text-cyan-400 font-bold">OPTION 01 // WRITTEN PROOF</span>
                 <FileCheck className="w-5 h-5 text-cyan-400" />
               </div>
               <h3 className="font-orbitron font-bold text-lg text-white mb-2">
-                SUPPORTING EVIDENCE LOGS
+                WRITTEN PROOF OR NOTES
               </h3>
               <p className="text-sm font-body text-slate-300 mb-6 leading-relaxed">
-                Submit textual proofs, document links, or summary artifacts for high-stakes
-                Epic missions to validate authentic real-world execution.
+                Add a quick note, photo, or link to verify big tasks and earn bonus XP.
               </p>
             </div>
 
             <div className="p-4 rounded-xs border border-cyan-900/40 bg-cyan-950/20 font-mono text-xs space-y-2">
               <div className="flex items-center justify-between text-cyan-200">
-                <span>EVIDENCE RECEIVED</span>
+                <span>PROOF ATTACHED</span>
                 <span className="text-cyan-400 font-bold">VERIFIED</span>
               </div>
               <div className="flex items-center justify-between text-slate-400 text-[11px]">
-                <span>SIGNAL INTEGRITY</span>
-                <span className="text-white font-bold">70%</span>
+                <span>BONUS REWARDS</span>
+                <span className="text-white font-bold">+20% BONUS XP</span>
               </div>
             </div>
           </div>
@@ -865,26 +861,25 @@ export function LandingClient({
           >
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono text-purple-400 font-bold">CARD 02 // FOCUS PROTOCOL</span>
+                <span className="text-xs font-mono text-purple-400 font-bold">OPTION 02 // FOCUS TIMER</span>
                 <Timer className="w-5 h-5 text-purple-400" />
               </div>
               <h3 className="font-orbitron font-bold text-lg text-white mb-2">
                 TIMED FOCUS SESSIONS
               </h3>
               <p className="text-sm font-body text-slate-300 mb-6 leading-relaxed">
-                Lock into real-time server-authoritative focus timers with heartbeat signals
-                to ensure uninterrupted productivity before completing key tasks.
+                Use a distraction-free countdown timer to stay focused on deep work and earn maximum XP.
               </p>
             </div>
 
             <div className="p-4 rounded-xs border border-purple-900/40 bg-purple-950/20 font-mono text-xs space-y-2">
               <div className="flex items-center justify-between text-purple-200">
-                <span>SESSION ACTIVE</span>
-                <span className="text-purple-400 font-bold">32:41</span>
+                <span>TIMER ACTIVE</span>
+                <span className="text-purple-400 font-bold">25:00</span>
               </div>
               <div className="flex items-center justify-between text-slate-400 text-[11px]">
-                <span>SIGNAL INTEGRITY</span>
-                <span className="text-white font-bold">91%</span>
+                <span>VERIFICATION</span>
+                <span className="text-white font-bold">MAXIMUM REWARDS</span>
               </div>
             </div>
           </div>
@@ -894,7 +889,7 @@ export function LandingClient({
         <div className="p-6 rounded-xs border border-slate-800 bg-slate-900/40 text-center max-w-2xl mx-auto space-y-3">
           <div className="flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
             <Shield className="w-4 h-4 text-cyan-400" />
-            <span>ZERO INVASIVE TELEMETRY GUARANTEE</span>
+            <span>100% PRIVATE GUARANTEE</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs text-slate-300">
             <div className="p-2 rounded-xs bg-black/40">NO CAMERA</div>
@@ -903,7 +898,7 @@ export function LandingClient({
             <div className="p-2 rounded-xs bg-black/40">NO KEYLOGGER</div>
           </div>
           <p className="text-xs font-mono text-slate-400">
-            The protocol uses lightweight session signals to validate focused activity without compromising user privacy.
+            We only track your session timer. Your work and data are completely private.
           </p>
         </div>
       </section>
@@ -912,7 +907,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 8. SECTION 7 — THE SURVIVAL LOOP (STREAKS & MILESTONES)                   */}
+      {/* 8. SECTION 7 — STREAKS & DAILY PROGRESS                                   */}
       {/* ========================================================================= */}
       <section
         id="survival"
@@ -927,24 +922,24 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-            <span>07 // SURVIVAL PROTOCOL</span>
+            <span>07 // YOUR STREAK</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
-            SHOW UP. KEEP THE SIGNAL ALIVE.
+            KEEP YOUR STREAK GOING.
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-slate-400 tracking-widest">
-            CONSISTENCY WEAKENS THE VOID AND UNLOCKS MILESTONE POWER BUFFS.
+            COMPLETE A MISSION EVERY DAY TO KEEP YOUR STREAK.
           </p>
         </motion.div>
 
         {/* Streak Milestone Timeline */}
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 mb-10">
           {[
-            { day: "DAY 01", label: "SIGNAL FOUND", status: "COMPLETE" },
-            { day: "DAY 03", label: "SIGNAL RETURNS", status: "COMPLETE" },
-            { day: "DAY 07", label: "SIGNAL STABLE", status: "ACTIVE" },
-            { day: "DAY 14", label: "OTHER SIDE WEAKENS", status: "UPCOMING" },
-            { day: "DAY 30", label: "THE GATE HOLDS", status: "LOCKED" },
+            { day: "DAY 01", label: "FIRST MISSION", status: "COMPLETE" },
+            { day: "DAY 03", label: "BUILDING HABIT", status: "COMPLETE" },
+            { day: "DAY 07", label: "ONE WEEK STREAK", status: "ACTIVE" },
+            { day: "DAY 14", label: "TWO WEEKS", status: "UPCOMING" },
+            { day: "DAY 30", label: "ONE MONTH MASTER", status: "LOCKED" },
           ].map((item, idx) => (
             <div
               key={idx}
@@ -974,7 +969,7 @@ export function LandingClient({
           </div>
           <div className="px-4 py-2 rounded-xs border border-slate-700 bg-slate-900/60 text-slate-300 flex items-center gap-2">
             <Award className="w-4 h-4 text-cyan-400" />
-            <span>NEXT MILESTONE: 14 DAYS (◈ +100 CREDITS)</span>
+            <span>NEXT REWARD: 14 DAYS (◈ +100 CREDITS)</span>
           </div>
         </div>
       </section>
@@ -983,7 +978,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-red-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 9. SECTION 8 — THE OTHER SIDE IS WATCHING (WORLD EVENTS & ANOMALIES)      */}
+      {/* 9. SECTION 8 — SPECIAL CHALLENGES & BOSSES                                */}
       {/* ========================================================================= */}
       <section
         id="events"
@@ -998,13 +993,13 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-red-950/80 border border-red-700 text-red-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span>08 // DIMENSIONAL INSTABILITY</span>
+            <span>08 // SPECIAL CHALLENGES</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-red-400 uppercase">
-            THE WORLD RESPONDS.
+            SPECIAL CHALLENGES &amp; BOSSES.
           </h2>
           <p className="mt-3 font-mono text-xs sm:text-sm text-slate-400 tracking-widest max-w-xl mx-auto">
-            ANOMALIES APPEAR. EVENTS UNFOLD. BOSSES EMERGE. THE BOUNDARY CHANGES.
+            BIGGER CHALLENGES WITH EXTRA XP AND CREDIT REWARDS.
           </p>
         </motion.div>
 
@@ -1013,23 +1008,22 @@ export function LandingClient({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 text-xs font-mono text-red-400">
               <AlertTriangle className="w-4 h-4 text-red-500 animate-pulse" />
-              <span>ACTIVE ANOMALY DETECTED</span>
+              <span>SPECIAL CHALLENGE DETECTED</span>
             </div>
             <h3 className="font-orbitron font-black text-xl sm:text-2xl text-white tracking-wider">
-              SIGNAL SURGE // PROTOCOL BREACH
+              HIGH FOCUS SPRINT // BONUS REWARD
             </h3>
             <p className="text-sm font-body text-slate-300 max-w-lg">
-              Complete 3 high-focus missions before the containment window collapses to
-              earn bonus credits and banish the anomaly.
+              Complete 3 high-focus missions before time expires to earn bonus credits and extra XP.
             </p>
           </div>
 
           <div className="space-y-2 text-right font-mono text-xs">
             <div className="p-2.5 rounded-xs bg-black/60 border border-red-900 text-red-300">
-              OBJECTIVES: <span className="font-bold text-white">2 / 3 COMPLETED</span>
+              GOAL: <span className="font-bold text-white">2 / 3 MISSIONS DONE</span>
             </div>
             <div className="p-2.5 rounded-xs bg-black/60 border border-red-900 text-amber-300">
-              WINDOW: <span className="font-bold text-white">02:41:18 REMAINING</span>
+              TIME LEFT: <span className="font-bold text-white">02:41:18</span>
             </div>
           </div>
         </div>
@@ -1039,7 +1033,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 10. SECTION 9 — THE ARCADE (REWARDS & ECONOMY)                            */}
+      {/* 10. SECTION 9 — THE REWARD SHOP                                           */}
       {/* ========================================================================= */}
       <section
         id="arcade"
@@ -1054,11 +1048,14 @@ export function LandingClient({
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xs bg-slate-900/80 border border-slate-700 text-slate-400 text-xs font-mono uppercase tracking-widest mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-            <span>09 // UNDERGROUND ECONOMY</span>
+            <span>09 // REWARD SHOP</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-white uppercase">
-            PROGRESS SHOULD GIVE YOU SOMETHING BACK.
+            REWARD SHOP
           </h2>
+          <p className="mt-2 font-mono text-xs sm:text-sm text-slate-400 tracking-widest">
+            SPEND YOUR EARNED CREDITS ON REWARDS AND BOOSTS.
+          </p>
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-xs bg-amber-950/60 border border-amber-500/60 text-amber-300 font-mono text-sm font-bold shadow-[0_0_15px_rgba(245,158,11,0.2)]">
             <Coins className="w-4 h-4 text-amber-400" />
             <span>◈ 420 CREDITS AVAILABLE</span>
@@ -1073,7 +1070,7 @@ export function LandingClient({
               cost: "50 CREDITS",
               rarity: "COMMON",
               type: "CONSUMABLE",
-              desc: "+2 FOCUS TEMPORARY BOOST",
+              desc: "+2 FOCUS FOR YOUR NEXT SESSION",
               border: "border-slate-700 bg-slate-900/60",
             },
             {
@@ -1081,7 +1078,7 @@ export function LandingClient({
               cost: "150 CREDITS",
               rarity: "RARE",
               type: "RELIC",
-              desc: "+4 SPIRIT LOADOUT GEAR",
+              desc: "+4 SPIRIT GEAR LOADOUT",
               border: "border-cyan-600/60 bg-cyan-950/30",
             },
             {
@@ -1089,7 +1086,7 @@ export function LandingClient({
               cost: "200 CREDITS",
               rarity: "EPIC",
               type: "MIND GEAR",
-              desc: "+6 MIND LOADOUT GEAR",
+              desc: "+6 MIND GEAR LOADOUT",
               border: "border-purple-600/60 bg-purple-950/30",
             },
           ].map((item, idx) => (
@@ -1119,7 +1116,7 @@ export function LandingClient({
               </div>
 
               <div className="mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-                <span>CATALOG PREVIEW</span>
+                <span>SHOP PREVIEW</span>
                 <Gamepad2 className="w-4 h-4 text-amber-400" />
               </div>
             </div>
@@ -1131,7 +1128,7 @@ export function LandingClient({
             href={isAuthenticated ? "/arcade" : "/auth/login"}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xs border-2 border-amber-500 bg-amber-950/40 hover:bg-amber-900/60 text-amber-200 font-orbitron font-bold text-sm tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all cursor-pointer"
           >
-            <span>EXPLORE THE ARCADE</span>
+            <span>OPEN THE REWARD SHOP</span>
             <ArrowRight className="w-4 h-4 text-amber-400" />
           </Link>
         </div>
@@ -1141,7 +1138,7 @@ export function LandingClient({
       <div className="w-full h-px bg-gradient-to-r from-transparent via-red-600/40 to-transparent relative z-20" />
 
       {/* ========================================================================= */}
-      {/* 11. SECTION 10 — FINAL CINEMATIC CALL TO ACTION                           */}
+      {/* 11. SECTION 10 — FINAL CALL TO ACTION                                     */}
       {/* ========================================================================= */}
       <section
         id="enter"
@@ -1170,7 +1167,7 @@ export function LandingClient({
               onClick={handlePrimaryCtaClick}
               className="w-full sm:w-auto px-8 py-4 font-orbitron font-extrabold text-sm sm:text-base tracking-[0.2em] uppercase border-2 border-red-500 text-white shadow-[0_0_25px_rgba(239,68,68,0.7)] hover:shadow-[0_0_50px_rgba(239,68,68,1)] cursor-pointer"
             >
-              {isAuthenticated ? "ENTER THE RIGHT SIDE" : "CREATE YOUR SURVIVOR"}
+              {isAuthenticated ? "ENTER THE RIGHT SIDE" : "START YOUR ADVENTURE"}
             </Button>
 
             <Button
@@ -1194,10 +1191,10 @@ export function LandingClient({
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-slate-400">
           <div className="space-y-1 text-center md:text-left">
             <div className="font-cinzel font-bold text-slate-200 tracking-wider">
-              THE OTHER SIDE // LIFE RPG PROTOCOL
+              THE OTHER SIDE
             </div>
             <div className="text-slate-400">
-              &ldquo;TURN REAL LIFE INTO GAMEPLAY.&rdquo;
+              Turn real-life goals into missions.
             </div>
           </div>
 
@@ -1212,7 +1209,7 @@ export function LandingClient({
               href={isAuthenticated ? "/arcade" : "/auth/signup"}
               className="hover:text-amber-300 transition-colors"
             >
-              {isAuthenticated ? "THE ARCADE" : "ENLIST"}
+              {isAuthenticated ? "REWARD SHOP" : "SIGN UP"}
             </Link>
             <button
               onClick={() => {
@@ -1225,9 +1222,7 @@ export function LandingClient({
           </div>
 
           <div className="text-[11px] text-slate-400 text-center md:text-right">
-            <span>EXPERIMENTAL PRODUCTIVITY GAME ENGINE</span>
-            <br />
-            <span>&copy; {new Date().getFullYear()} ALL WORLDS PRESERVED.</span>
+            <span>&copy; {new Date().getFullYear()} THE OTHER SIDE. ALL WORLDS PRESERVED.</span>
           </div>
         </div>
       </footer>

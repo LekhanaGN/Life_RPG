@@ -142,7 +142,7 @@ export function WorldNavigation({
               )}
             >
               <Compass className="w-3.5 h-3.5 text-cyan-400" />
-              <span>SANCTUARY</span>
+              <span>MISSIONS</span>
             </Link>
 
             <Link
@@ -155,7 +155,7 @@ export function WorldNavigation({
               )}
             >
               <Gamepad2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>THE ARCADE</span>
+              <span>SHOP</span>
             </Link>
 
             <Link
@@ -181,7 +181,7 @@ export function WorldNavigation({
               <Link
                 href="/arcade"
                 className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xs bg-slate-900/90 hover:bg-amber-950/60 border border-amber-500/50 hover:border-amber-400 text-xs font-mono text-amber-300 font-bold transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.5)] cursor-pointer"
-                title="Visit The Arcade to spend Credits"
+                title="Visit Shop to spend Credits"
               >
                 <Coins className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                 <span>◈ {character.credits.toLocaleString()} CREDITS</span>
@@ -203,12 +203,12 @@ export function WorldNavigation({
                 onClick={handleLogout}
                 disabled={loggingOut}
                 className="p-1.5 sm:px-2.5 sm:py-1 rounded-xs border border-red-900/60 bg-red-950/30 hover:bg-red-900/60 text-red-400 hover:text-red-200 transition-colors text-xs font-mono flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 cursor-pointer"
-                title="Log out and destroy session"
+                title="Log out"
                 aria-label="Log out"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">
-                  {loggingOut ? "EXITING..." : "LOG OUT"}
+                  {loggingOut ? "LOGGING OUT..." : "LOG OUT"}
                 </span>
               </button>
             </div>
@@ -219,13 +219,13 @@ export function WorldNavigation({
                   href="/auth/login"
                   className="px-2.5 py-1 rounded-xs border border-cyan-500/50 bg-cyan-950/40 hover:bg-cyan-500/20 text-cyan-300 text-xs font-mono tracking-wider transition-colors"
                 >
-                  LOGIN
+                  LOG IN
                 </Link>
                 <Link
                   href="/auth/signup"
                   className="px-2.5 py-1 rounded-xs border border-red-500/50 bg-red-950/40 hover:bg-red-500/20 text-red-300 text-xs font-mono tracking-wider transition-colors hidden xs:inline-block"
                 >
-                  ENLIST
+                  SIGN UP
                 </Link>
               </div>
             )

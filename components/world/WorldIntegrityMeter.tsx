@@ -17,20 +17,20 @@ export function WorldIntegrityMeter({
   const integrityPercent = Math.min(100, Math.max(0, 100 - safeCorruption));
 
   // Determine threat severity level
-  let statusText = "SECURE";
+  let statusText = "SAFE";
   let statusColor = "text-emerald-400";
   let badgeBorder = "border-emerald-500/50 bg-emerald-950/40 text-emerald-300";
 
   if (safeCorruption > 75) {
-    statusText = "CRITICAL CORRUPTION";
+    statusText = "HIGH CORRUPTION";
     statusColor = "text-red-400";
     badgeBorder = "border-red-500/50 bg-red-950/40 text-red-300";
   } else if (safeCorruption > 45) {
-    statusText = "DIMENSIONAL INSTABILITY";
+    statusText = "CORRUPTION GROWING";
     statusColor = "text-amber-400";
     badgeBorder = "border-amber-500/50 bg-amber-950/40 text-amber-300";
   } else if (safeCorruption > 20) {
-    statusText = "RESTORATION IN PROGRESS";
+    statusText = "MAKING PROGRESS";
     statusColor = "text-cyan-400";
     badgeBorder = "border-cyan-500/50 bg-cyan-950/40 text-cyan-300";
   }
@@ -60,7 +60,7 @@ export function WorldIntegrityMeter({
           <div>
             <div className="flex items-center gap-2">
               <span className="font-cinzel text-xs font-bold tracking-widest text-white uppercase">
-                DIMENSIONAL INTEGRITY
+                WORLD STATUS
               </span>
               <span
                 className={`px-2 py-0.5 rounded-xs text-[10px] font-mono font-bold uppercase border ${badgeBorder}`}
@@ -69,7 +69,7 @@ export function WorldIntegrityMeter({
               </span>
             </div>
             <p className="text-[11px] font-mono text-slate-400">
-              Sanctuary barrier resonance holding back The Other Side.
+              The more missions you complete, the safer this world becomes.
             </p>
           </div>
         </div>
@@ -77,7 +77,7 @@ export function WorldIntegrityMeter({
         {/* Telemetry Metric Values */}
         <div className="flex items-center gap-4 text-xs font-mono self-start sm:self-center">
           <div className="text-right">
-            <div className="text-[10px] text-slate-400 uppercase">SANCTUARY PURITY</div>
+            <div className="text-[10px] text-slate-400 uppercase">SAFETY</div>
             <div className="text-sm font-orbitron font-extrabold text-cyan-300">
               {integrityPercent}%
             </div>
@@ -127,15 +127,15 @@ export function WorldIntegrityMeter({
         <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-0.5">
           <span className="flex items-center gap-1">
             <ShieldCheck className="w-3 h-3 text-cyan-400" />
-            <span>0% (TOTAL CORRUPTION)</span>
+            <span>0% (CORRUPTED)</span>
           </span>
           <span className="text-cyan-300 font-semibold">
             {safeCorruption === 0
-              ? "WORLD FULLY RESTORED"
-              : `CLEAR MISSIONS TO WEAKEN THE OTHER SIDE (-2% TO -10%)`}
+              ? "WORLD SAFE & RESTORED"
+              : `COMPLETE MISSIONS TO PUSH BACK CORRUPTION`}
           </span>
           <span className="flex items-center gap-1">
-            <span>100% (FULL SANCTUARY)</span>
+            <span>100% (SAFE)</span>
             <AlertTriangle className="w-3 h-3 text-red-400" />
           </span>
         </div>

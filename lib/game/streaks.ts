@@ -185,7 +185,7 @@ export function getSignalStrength(streak: number, todayActive: boolean): SignalS
       status: "SIGNAL UNCONFIRMED",
       strengthPercent: 10,
       tier: "DORMANT",
-      description: "THE SIGNAL IS WAITING. Complete today's mission to anchor the sanctuary.",
+      description: "Complete a mission today to start your streak.",
       accentColor: "#ef4444", // Red
     };
   }
@@ -195,7 +195,7 @@ export function getSignalStrength(streak: number, todayActive: boolean): SignalS
       status: "UNBREAKABLE HARMONY",
       strengthPercent: 100,
       tier: "MAXIMUM",
-      description: "THE GATE HOLDS FIRM. Unbroken resonance shields the entire perimeter.",
+      description: "30+ day streak! Your daily consistency keeps the world safe.",
       accentColor: "#10b981", // Emerald
     };
   }
@@ -205,7 +205,7 @@ export function getSignalStrength(streak: number, todayActive: boolean): SignalS
       status: "SIGNAL FORTIFIED",
       strengthPercent: 85,
       tier: "FORTIFIED",
-      description: "THE OTHER SIDE IS LOSING CONTROL. Coherent signal reaches deep sectors.",
+      description: "14+ day streak! The Other Side is losing ground.",
       accentColor: "#06b6d4", // Cyan
     };
   }
@@ -215,7 +215,7 @@ export function getSignalStrength(streak: number, todayActive: boolean): SignalS
       status: "SIGNAL STABLE",
       strengthPercent: 70,
       tier: "STABLE",
-      description: "THE SIGNAL IS STABLE. Weekly resonance threshold secured.",
+      description: "7-day streak! You are maintaining strong daily habits.",
       accentColor: "#38bdf8", // Sky blue
     };
   }
@@ -225,7 +225,7 @@ export function getSignalStrength(streak: number, todayActive: boolean): SignalS
       status: "SIGNAL RETURNING",
       strengthPercent: 45,
       tier: "RECOVERING",
-      description: "THE SIGNAL RETURNS. Frequencies are locking onto the sanctuary beacon.",
+      description: "3-day streak! Great momentum.",
       accentColor: "#f59e0b", // Amber
     };
   }
@@ -234,7 +234,7 @@ export function getSignalStrength(streak: number, todayActive: boolean): SignalS
     status: "SIGNAL WEAK",
     strengthPercent: 25,
     tier: "WEAK",
-    description: "THE SIGNAL IS WEAK. Maintain continuous daily focus to clear static.",
+    description: "Complete a mission every day to keep your streak.",
     accentColor: "#eab308", // Yellow
   };
 }

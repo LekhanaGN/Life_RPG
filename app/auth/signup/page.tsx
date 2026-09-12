@@ -82,10 +82,10 @@ export default function SignupPage() {
               </div>
               <div>
                 <CardTitle className="text-white text-xl tracking-widest font-cinzel neon-glow-red">
-                  ENLIST SURVIVOR
+                  CREATE ACCOUNT
                 </CardTitle>
                 <CardDescription className="text-red-300/80 font-mono text-[11px] tracking-widest">
-                  DIMENSIONAL REGISTRATION PROTOCOL
+                  START YOUR JOURNEY IN THE OTHER SIDE
                 </CardDescription>
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function SignupPage() {
             {/* Supernatural Alert Banner */}
             <div className="flex items-center gap-2 px-3 py-2 bg-red-950/40 border border-red-900/50 rounded-xs text-[11px] font-mono text-red-300">
               <Radio className="w-3.5 h-3.5 text-red-400 animate-pulse shrink-0" />
-              <span>TRANSMISSION SECURE // CHOOSE YOUR CALLSIGN</span>
+              <span>Create your player account to begin.</span>
             </div>
 
             {/* Error Message */}
@@ -116,7 +116,7 @@ export default function SignupPage() {
                   htmlFor="signup-username"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  SURVIVOR CALLSIGN
+                  USERNAME
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -143,7 +143,7 @@ export default function SignupPage() {
                   htmlFor="signup-email"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  TRANSMISSION FREQUENCY (EMAIL)
+                  EMAIL ADDRESS
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -155,7 +155,7 @@ export default function SignupPage() {
                     type="email"
                     required
                     autoComplete="email"
-                    placeholder="survivor@dimension.net"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
@@ -170,7 +170,7 @@ export default function SignupPage() {
                   htmlFor="signup-password"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  CLEARANCE PASSCODE (MIN. 6 CHARS)
+                  PASSWORD (MIN. 6 CHARACTERS)
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -197,7 +197,7 @@ export default function SignupPage() {
                   htmlFor="signup-confirm-password"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  CONFIRM PASSCODE
+                  CONFIRM PASSWORD
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -232,12 +232,12 @@ export default function SignupPage() {
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin text-red-200" />
-                      ENLISTING SURVIVOR...
+                      CREATING ACCOUNT...
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 mr-2" />
-                      BEGIN JOURNEY
+                      SIGN UP
                     </>
                   )}
                 </Button>
@@ -247,7 +247,7 @@ export default function SignupPage() {
             {/* Links & Alternate Navigation */}
             <div className="pt-3 border-t border-slate-800/80 flex flex-col gap-2 text-center text-xs font-mono">
               <p className="text-slate-400">
-                Already hold a clearance code?{" "}
+                Already have an account?{" "}
                 <Link
                   href="/auth/login"
                   className="text-cyan-400 hover:text-cyan-300 font-bold underline underline-offset-4"
@@ -261,7 +261,7 @@ export default function SignupPage() {
                 className="inline-flex items-center justify-center gap-1 text-slate-400 hover:text-slate-300 py-1 transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>RETURN TO GATEWAY</span>
+                <span>BACK TO HOME</span>
               </Link>
             </div>
           </CardContent>

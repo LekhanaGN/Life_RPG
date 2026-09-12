@@ -26,7 +26,7 @@ export interface VerificationMeta {
 export const VERIFICATION_CONFIG: Record<VerificationType, VerificationMeta> = {
   SELF_REPORT: {
     type: "SELF_REPORT",
-    name: "SELF CONFIRMED",
+    name: "SELF-REPORT",
     shortName: "Self Report",
     stars: 1,
     ratingStars: "★",
@@ -37,14 +37,14 @@ export const VERIFICATION_CONFIG: Record<VerificationType, VerificationMeta> = {
     badgeBorder: "border-slate-700/60",
     badgeText: "text-slate-300",
     glowClass: "",
-    description: "Survivor reports completion directly. Standard telemetry signal.",
+    description: "Click complete when you finish the task.",
     terminalStatus: "SELF CONFIRMED",
-    feedbackQuote: "The survivor logged completion through manual confirmation.",
+    feedbackQuote: "Task logged through self-confirmation.",
   },
   EVIDENCE: {
     type: "EVIDENCE",
-    name: "EVIDENCE REQUIRED",
-    shortName: "Evidence",
+    name: "PROOF REQUIRED",
+    shortName: "Proof",
     stars: 2,
     ratingStars: "★★",
     baseIntegrity: 70,
@@ -54,14 +54,14 @@ export const VERIFICATION_CONFIG: Record<VerificationType, VerificationMeta> = {
     badgeBorder: "border-emerald-600/50",
     badgeText: "text-emerald-300",
     glowClass: "shadow-[0_0_10px_rgba(16,185,129,0.2)]",
-    description: "Requires supporting image upload or field note before mission clearance.",
-    terminalStatus: "EVIDENCE RECEIVED",
-    feedbackQuote: "The signal has something tangible to work with.",
+    description: "Attach a photo or note to verify your work.",
+    terminalStatus: "PROOF SUBMITTED",
+    feedbackQuote: "Proof attached to verify your progress.",
   },
   FOCUS_SESSION: {
     type: "FOCUS_SESSION",
-    name: "FOCUS VERIFIED",
-    shortName: "Focus Protocol",
+    name: "TIMED FOCUS",
+    shortName: "Focus Timer",
     stars: 3,
     ratingStars: "★★★",
     baseIntegrity: 91,
@@ -71,9 +71,9 @@ export const VERIFICATION_CONFIG: Record<VerificationType, VerificationMeta> = {
     badgeBorder: "border-amber-500/50",
     badgeText: "text-amber-300",
     glowClass: "shadow-[0_0_14px_rgba(251,191,36,0.3)]",
-    description: "Timed protocol requiring server-monitored focus and valid active duration.",
-    terminalStatus: "SESSION VERIFIED",
-    feedbackQuote: "The signal remained stable across the dimensional barrier.",
+    description: "Complete a timed focus session to finish this mission.",
+    terminalStatus: "FOCUS COMPLETED",
+    feedbackQuote: "You maintained continuous focus throughout the session.",
   },
 };
 
@@ -129,9 +129,9 @@ export function formatSignalIntegrityDisplay(score: number): {
  * Displayed before and during focus sessions.
  */
 export const FOCUS_PRIVACY_DISCLOSURE = {
-  title: "SIGNAL INTEGRITY PROTOCOL — PRIVACY GUARANTEE",
+  title: "FOCUS TIMER — PRIVACY GUARANTEE",
   statement:
-    "The signal monitors session duration and lightweight browser activity signals only.",
+    "The timer only tracks your elapsed focus duration in your browser.",
   prohibitions: [
     "No audio or microphone recording",
     "No camera or facial surveillance",
@@ -139,5 +139,5 @@ export const FOCUS_PRIVACY_DISCLOSURE = {
     "No keystroke monitoring or input logging",
     "No hidden background telemetry",
   ],
-  purpose: "Designed purely as a real-world anti-cheat signal, not human surveillance.",
+  purpose: "Designed purely to help you focus on your task with complete privacy.",
 };

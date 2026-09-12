@@ -327,17 +327,17 @@ export function RightSideClient({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="cyan" pulse>
-                STABLE REALM
+                WORLD STATUS: SAFE
               </Badge>
               <span className="text-xs font-mono text-cyan-400/80 uppercase tracking-widest">
-                ZONE 01: SANCTUARY // RESIDENT: {character.name.toUpperCase()}
+                SANCTUARY // PLAYER: {character.name.toUpperCase()}
               </span>
             </div>
             <h1 className="font-cinzel text-3xl sm:text-5xl lg:text-6xl font-black tracking-[0.12em] text-white neon-glow-cyan uppercase">
               THE RIGHT SIDE
             </h1>
             <p className="font-cinzel text-lg sm:text-xl text-cyan-200/90 italic tracking-wider mt-1">
-              &ldquo;Build your world.&rdquo;
+              &ldquo;Where progress happens.&rdquo;
             </p>
           </div>
 
@@ -345,7 +345,7 @@ export function RightSideClient({
           <div className="flex flex-col items-start md:items-end gap-2">
             <div className="flex items-center gap-2 text-xs font-mono text-red-400">
               <AlertTriangle className="w-4 h-4 animate-bounce text-red-500" />
-              <span>DIMENSIONAL RIFT DETECTED</span>
+              <span>THE OTHER SIDE IS CALLING</span>
             </div>
             <Button
               id="enter-other-side-btn"
@@ -416,13 +416,13 @@ export function RightSideClient({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-cyan-400" />
-                    <CardTitle className="text-white text-base">CORE ATTRIBUTES</CardTitle>
+                    <CardTitle className="text-white text-base">YOUR STATS</CardTitle>
                   </div>
                   <span className="text-[10px] font-mono text-cyan-300 uppercase font-semibold">
-                    {character.archetype} MATRIX
+                    {character.archetype} STATS
                   </span>
                 </div>
-                <CardDescription>REAL-LIFE STATISTICAL RESONANCE</CardDescription>
+                <CardDescription>How your real-life activities are improving you.</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
                 <AttributeBar
@@ -458,8 +458,8 @@ export function RightSideClient({
       {/* World Status Footer */}
       <footer className="relative z-20 py-4 px-6 border-t border-cyan-950/40 bg-black/40 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-400 gap-2">
-          <div>THE RIGHT SIDE // ZONE 01 [SANCTUARY] // SURVIVOR: {character.name}</div>
-          <div className="text-cyan-400/80">CROSS DIMENSIONS VIA PORTAL GATEWAY</div>
+          <div>THE OTHER SIDE // Turn real-life goals into missions.</div>
+          <div className="text-cyan-400/80">© 2026 THE OTHER SIDE</div>
         </div>
       </footer>
 

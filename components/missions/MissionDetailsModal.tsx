@@ -129,7 +129,7 @@ export function MissionDetailsModal({
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase">
-                      TACTICAL DOSSIER // {mission.category}
+                      MISSION DETAILS // {mission.category}
                     </span>
                     <span
                       className={`px-2 py-0.2 rounded-xs text-[9px] font-mono uppercase tracking-widest font-semibold border ${
@@ -154,7 +154,7 @@ export function MissionDetailsModal({
                 type="button"
                 onClick={onClose}
                 className="p-1.5 rounded-xs text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent hover:border-slate-700 transition-colors cursor-pointer"
-                aria-label="Close dossier"
+                aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -164,12 +164,12 @@ export function MissionDetailsModal({
             <div className="space-y-2 mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-cyan-400" />
-                MISSION DIRECTIVE
+                MISSION DESCRIPTION
               </span>
               <div className="p-4 rounded-xs bg-slate-900/70 border border-slate-800 text-sm font-sans text-slate-200 leading-relaxed">
                 {mission.description || (
                   <span className="italic text-slate-500">
-                    No additional operational parameters documented.
+                    No additional details provided.
                   </span>
                 )}
               </div>
@@ -180,7 +180,7 @@ export function MissionDetailsModal({
               {/* Category */}
               <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                  CATEGORY & ATTRIBUTE
+                  STAT CATEGORY
                 </div>
                 <div className="text-sm font-orbitron font-bold text-white flex items-center gap-1.5">
                   <span className={categoryMeta.textColor}>{categoryMeta.label}</span>
@@ -196,7 +196,7 @@ export function MissionDetailsModal({
               {/* Difficulty */}
               <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                  DIFFICULTY & THREAT LEVEL
+                  DIFFICULTY
                 </div>
                 <div className="text-sm font-orbitron font-bold text-white">
                   {difficultyMeta.label}
@@ -210,7 +210,7 @@ export function MissionDetailsModal({
               <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1">
                   <Repeat className="w-3 h-3 text-cyan-400" />
-                  CADENCE
+                  FREQUENCY
                 </div>
                 <div className="text-sm font-orbitron font-bold text-white">
                   {frequencyMeta.label}
@@ -224,21 +224,21 @@ export function MissionDetailsModal({
               <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-cyan-400" />
-                  TARGET TIMELINE
+                  DUE DATE
                 </div>
                 <div className="text-sm font-orbitron font-bold text-cyan-300">
                   {dueFormatted}
                 </div>
                 <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  Initiated: {createdFormatted}
+                  Created: {createdFormatted}
                 </div>
               </div>
 
               {/* Verification Protocol */}
               <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1.5 sm:col-span-2">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                  SIGNAL INTEGRITY & VERIFICATION METHOD
+                  VERIFICATION METHOD
                 </div>
                 <div className="flex items-center gap-3">
                   <VerificationBadge type={mission.verificationType || "SELF_REPORT"} size="md" />
@@ -250,10 +250,10 @@ export function MissionDetailsModal({
                 </div>
                 <div className="text-[11px] font-mono text-slate-400">
                   {mission.verificationType === "FOCUS_SESSION"
-                    ? "Requires server-verified active focus duration before completion clearance."
+                    ? "Requires completing a timed focus session to verify."
                     : mission.verificationType === "EVIDENCE"
-                    ? "Requires supporting image upload or observation note before completion clearance."
-                    : "Self-confirmed completion. Standard telemetry signal."}
+                    ? "Requires attaching a photo or written note to verify."
+                    : "Self-confirmed completion."}
                 </div>
               </div>
             </div>
@@ -273,7 +273,7 @@ export function MissionDetailsModal({
                 className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xs bg-red-950/30 hover:bg-red-950/80 border border-red-800/50 hover:border-red-600 text-xs font-mono uppercase tracking-wider text-red-300 hover:text-red-100 transition-colors cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>ABANDON MISSION</span>
+                <span>DELETE MISSION</span>
               </button>
 
               <div className="flex items-center gap-2 w-full sm:w-auto">

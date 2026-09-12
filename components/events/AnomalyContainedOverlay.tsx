@@ -85,7 +85,7 @@ export function AnomalyContainedOverlay({
           </div>
 
           <div className="relative z-10 text-[11px] font-mono tracking-widest text-purple-400 font-bold uppercase mb-1">
-            ANOMALY CONTAINED
+            CHALLENGE COMPLETED
           </div>
 
           <h2 className="relative z-10 text-2xl font-cinzel font-black tracking-widest text-white uppercase mb-2">
@@ -93,7 +93,7 @@ export function AnomalyContainedOverlay({
           </h2>
 
           <p className="relative z-10 text-xs font-mono text-slate-300 mb-5 italic">
-            &ldquo;The boundary has stabilized. The Other Side retreats.&rdquo;
+            &ldquo;The Other Side has been pushed back.&rdquo;
           </p>
 
           {/* Reward Grants */}
@@ -108,12 +108,12 @@ export function AnomalyContainedOverlay({
             </div>
             {(data.corruptionReduced || 0) > 0 && (
               <div className="col-span-2 flex items-center justify-center gap-2 p-1.5 rounded-xs bg-emerald-950/30 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
-                <span>VOID PURGED: -{data.corruptionReduced}%</span>
+                <span>CORRUPTION REDUCED: -{data.corruptionReduced}%</span>
               </div>
             )}
             {(data.bossDamageDealt || 0) > 0 && (
               <div className="col-span-2 flex items-center justify-center gap-2 p-1.5 rounded-xs bg-red-950/30 border border-red-500/30 text-red-400 text-[11px] font-bold">
-                <span>DIRECT BOSS STRIKE: +{data.bossDamageDealt} DMG</span>
+                <span>BOSS DAMAGE DEALT: +{data.bossDamageDealt}</span>
               </div>
             )}
           </div>
@@ -123,7 +123,7 @@ export function AnomalyContainedOverlay({
             <div className="relative z-10 mb-5 p-3 rounded-xs bg-slate-900/90 border border-cyan-500/40 text-left">
               <div className="flex items-center gap-1.5 text-[10px] font-mono text-cyan-400 font-bold uppercase mb-1">
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>LORE DISCOVERED // {data.loreUnlocked.title}</span>
+                <span>STORY UNLOCKED // {data.loreUnlocked.title}</span>
               </div>
               <p className="text-xs font-serif italic text-slate-300 leading-relaxed">
                 &ldquo;{data.loreUnlocked.content}&rdquo;
@@ -140,7 +140,7 @@ export function AnomalyContainedOverlay({
               className="w-full font-cinzel tracking-widest uppercase font-bold text-purple-200 border-purple-500 bg-purple-950/80 hover:bg-purple-900 shadow-[0_0_20px_rgba(168,85,247,0.5)]"
             >
               <Check className="w-4 h-4 mr-2" />
-              CONFIRM CONTAINMENT
+              CLAIM REWARDS
             </Button>
           </div>
         </motion.div>

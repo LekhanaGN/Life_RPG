@@ -39,7 +39,7 @@ export function AttributeBar({
     {
       id: "mind",
       name: "MIND",
-      description: "Knowledge, clarity & study",
+      description: "Learning, studying, reading",
       value: resolvedStats.mind,
       maxValue: 25,
       icon: Brain,
@@ -49,7 +49,7 @@ export function AttributeBar({
     {
       id: "body",
       name: "BODY",
-      description: "Physical stamina & vitality",
+      description: "Exercise and physical health",
       value: resolvedStats.body,
       maxValue: 25,
       icon: Dumbbell,
@@ -59,7 +59,7 @@ export function AttributeBar({
     {
       id: "focus",
       name: "FOCUS",
-      description: "Deep work & cognitive flow",
+      description: "Deep work and concentration",
       value: resolvedStats.focus,
       maxValue: 25,
       icon: Target,
@@ -69,7 +69,7 @@ export function AttributeBar({
     {
       id: "spirit",
       name: "SPIRIT",
-      description: "Inner resilience & purpose",
+      description: "Mindfulness and personal growth",
       value: resolvedStats.spirit,
       maxValue: 25,
       icon: Sparkles,
@@ -79,7 +79,7 @@ export function AttributeBar({
     {
       id: "connection",
       name: "CONNECTION",
-      description: "Relationships & bonds",
+      description: "Friends, family, and relationships",
       value: resolvedStats.connection,
       maxValue: 25,
       icon: HeartHandshake,
@@ -142,12 +142,12 @@ export function AttributeBar({
                   </span>
                   {isHighlighted && (
                     <span className="text-[10px] font-mono text-cyan-300 font-bold tracking-widest animate-pulse">
-                      [BOOSTED]
+                      [+PROGRESS]
                     </span>
                   )}
                   {corrupted && (
                     <span className="text-[10px] font-mono text-red-500 font-semibold tracking-tighter">
-                      [DRAINED]
+                      [NEEDS WORK]
                     </span>
                   )}
                 </div>

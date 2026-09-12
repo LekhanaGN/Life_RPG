@@ -104,19 +104,19 @@ export function OtherSideClient({
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <Badge variant="crimson" pulse>
-                CORRUPTED REALM
+                THE OTHER SIDE
               </Badge>
               {focusSession ? (
                 <Badge variant="cyan" pulse>
-                  ANCHOR: {focusSession.signalIntegrity}% STABLE
+                  FOCUS SESSION ACTIVE
                 </Badge>
               ) : (
                 <Badge variant="amber">
-                  SIGNAL DISTORTED
+                  NOT STARTED TODAY
                 </Badge>
               )}
               <span className="text-xs font-mono text-red-500 uppercase tracking-widest animate-pulse">
-                ZONE 99: THE VOID MATRIX // TARGET: {character.name.toUpperCase()} [
+                THE OTHER SIDE // PLAYER: {character.name.toUpperCase()} [
                 {character.archetype}]
               </span>
             </div>
@@ -124,7 +124,7 @@ export function OtherSideClient({
               THE OTHER SIDE
             </h1>
             <p className="font-cinzel text-lg sm:text-xl text-red-300/90 italic tracking-wider mt-1">
-              &ldquo;Something is spreading.&rdquo;
+              &ldquo;Where procrastination grows.&rdquo;
             </p>
           </div>
 
@@ -132,7 +132,7 @@ export function OtherSideClient({
           <div className="flex flex-col items-start md:items-end gap-2">
             <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
               <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span>STABILITY ANCHOR DETECTED</span>
+              <span>THE RIGHT SIDE IS READY</span>
             </div>
             <Button
               id="return-right-side-btn"
@@ -165,7 +165,7 @@ export function OtherSideClient({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <AlertOctagon className="w-5 h-5 text-red-500 animate-pulse" />
-                    <CardTitle className="text-red-300">CORRUPTION DETECTED</CardTitle>
+                    <CardTitle className="text-red-300">WORLD CORRUPTION</CardTitle>
                   </div>
                   <Badge variant="crimson" pulse>
                     {corruption > 75
@@ -176,7 +176,7 @@ export function OtherSideClient({
                   </Badge>
                 </div>
                 <CardDescription className="text-red-400/80">
-                  DIMENSIONAL CONTAMINATION COEFFICIENT
+                  The Other Side grows stronger when you stop making progress.
                 </CardDescription>
               </CardHeader>
 
@@ -191,7 +191,7 @@ export function OtherSideClient({
                 />
 
                 <div className="p-3 rounded-xs bg-red-950/40 border border-red-900/60 text-xs font-mono text-red-200/90 leading-relaxed">
-                  The Other Side feeds on postponed decisions, broken promises, and unspent creative energy.
+                  The Other Side feeds on postponed decisions, bad habits, and lost streaks.
                   Completing real-life missions reduces corruption by 2% to 10% per victory.
                 </div>
 
@@ -201,7 +201,7 @@ export function OtherSideClient({
                     <div className="flex items-center justify-between text-xs font-mono">
                       <span className="text-red-400 font-bold uppercase flex items-center gap-1.5">
                         <Radio className="w-3.5 h-3.5 text-red-400 animate-pulse" />
-                        SURVIVAL SIGNAL INTERCEPT
+                        YOUR STREAK STATUS
                       </span>
                       <span className="font-orbitron font-extrabold text-red-200">
                         {streak.currentStreak > 0
@@ -211,7 +211,7 @@ export function OtherSideClient({
                     </div>
 
                     <div className="flex items-center justify-between text-xs font-mono pt-1.5 border-t border-red-900/50">
-                      <span className="text-slate-400">OTHER SIDE STATUS:</span>
+                      <span className="text-slate-400">WORLD REACTION:</span>
                       <span
                         className={`font-bold uppercase ${
                           streak.streakBroken
@@ -224,25 +224,25 @@ export function OtherSideClient({
                         }`}
                       >
                         {streak.streakBroken
-                          ? "SIGNAL RESTORED TO THEM"
+                          ? "CORRUPTION SPREADING"
                           : streak.currentStreak >= 30
-                          ? "BOSS MATRIX FAILING"
+                          ? "BOSS WEAKENING RAPIDLY"
                           : streak.currentStreak >= 14
                           ? "CORRUPTION RECEDING"
                           : streak.currentStreak >= 7
                           ? "CRACKS EXPANDING"
                           : streak.currentStreak >= 3
-                          ? "SUBTLE INSTABILITY"
-                          : "SIGNAL DORMANT"}
+                          ? "MOMENTUM BUILDING"
+                          : "NO STREAK YET"}
                       </span>
                     </div>
 
                     <p className="text-[10px] font-mono text-red-300/70 italic pt-0.5">
                       {streak.streakBroken
-                        ? "The sanctuary beacon failed. Shadow entities are advancing into your breach."
+                        ? "Your streak was broken. Complete missions to rebuild your streak."
                         : streak.currentStreak >= 7
-                        ? "Your sustained presence burns through the void matrix like white phosphorus."
-                        : "Daily action in the Right Side stabilizes your anchor against the void."}
+                        ? "Your daily progress is weakening The Other Side."
+                        : "Complete a mission every day to keep your streak going."}
                     </p>
                   </div>
                 )}
@@ -260,7 +260,7 @@ export function OtherSideClient({
                     <div className="flex items-center justify-between text-xs font-mono">
                       <span className="font-bold uppercase flex items-center gap-1.5" style={{ color: activeEvent.visualEffect.ambientColor }}>
                         <Zap className="w-3.5 h-3.5 animate-pulse" />
-                        ANOMALOUS INTERFERENCE
+                        ACTIVE SPECIAL CHALLENGE
                       </span>
                       <span className="font-orbitron font-extrabold" style={{ color: activeEvent.visualEffect.ambientColor }}>
                         {activeEvent.key.replace(/_/g, " ")}
@@ -272,16 +272,16 @@ export function OtherSideClient({
                     </p>
 
                     <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-red-900/40">
-                      <span className="text-slate-400">ATMOSPHERIC REACTION:</span>
+                      <span className="text-slate-400">CHALLENGE EFFECT:</span>
                       <span className="font-bold uppercase" style={{ color: activeEvent.visualEffect.ambientColor }}>
                         {activeEvent.visualEffect.distortionStyle.toUpperCase()}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] font-mono">
-                      <span className="text-slate-400">CONTAINMENT REQUIREMENT:</span>
+                      <span className="text-slate-400">HOW TO COMPLETE:</span>
                       <span className="text-white font-mono font-bold">
-                        {activeEvent.progress} / {activeEvent.requiredProgress} CLEARANCES
+                        {activeEvent.progress} / {activeEvent.requiredProgress} MISSIONS COMPLETED
                       </span>
                     </div>
                   </div>
@@ -306,7 +306,7 @@ export function OtherSideClient({
                           focusSession ? "text-cyan-400 animate-pulse" : "text-amber-500"
                         }`}
                       />
-                      SIGNAL INTEGRITY TELEMETRY
+                      FOCUS SESSION STATUS
                     </span>
                     <span
                       className={`font-orbitron font-extrabold px-1.5 py-0.5 rounded-xs text-[10px] ${
@@ -315,20 +315,20 @@ export function OtherSideClient({
                           : "bg-red-950 text-red-400 border border-red-800/40"
                       }`}
                     >
-                      {focusSession ? "SIGNAL STABLE" : "SIGNAL DISTORTED"}
+                      {focusSession ? "FOCUS ACTIVE" : "NO ACTIVE SESSION"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-red-900/30">
-                    <span className="text-slate-400">TRANSMISSION ANCHOR:</span>
+                    <span className="text-slate-400">FOCUS VERIFICATION:</span>
                     <span
                       className={`font-bold uppercase ${
                         focusSession ? "text-cyan-300" : "text-red-400/80"
                       }`}
                     >
                       {focusSession
-                        ? `${focusSession.signalIntegrity}% VERIFIED INTEGRITY`
-                        : "NO ACTIVE FOCUS PROTOCOL"}
+                        ? `${focusSession.signalIntegrity}% VERIFIED`
+                        : "START A FOCUS TIMER"}
                     </span>
                   </div>
 
@@ -345,15 +345,15 @@ export function OtherSideClient({
                         value={focusSession.accumulatedActiveSeconds}
                         max={focusSession.requiredDurationSeconds}
                         variant="cyan"
-                        label="FOCUS ACCUMULATION"
+                        label="FOCUS TIME COMPLETED"
                       />
                       <p className="text-[10px] font-mono text-cyan-300/70 italic pt-0.5">
-                        Target locked in cognitive focus channel. Dimensional interference reduced.
+                        Deep focus session in progress. Keep working on your task!
                       </p>
                     </div>
                   ) : (
                     <p className="text-[10px] font-mono text-slate-400/70 italic pt-0.5">
-                      Standard transmission mode. Engage Focus Protocols or submit verified Evidence to strengthen dimensional resistance.
+                      Use Timed Focus Sessions or submit Written Proof to complete verified missions.
                     </p>
                   )}
                 </div>
@@ -367,13 +367,13 @@ export function OtherSideClient({
                   <div className="flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-red-400" />
                     <CardTitle className="text-white text-base">
-                      DRAINED ATTRIBUTES
+                      WEAKENED STATS
                     </CardTitle>
                   </div>
-                  <Badge variant="crimson">DEBUFF ACTIVE</Badge>
+                  <Badge variant="crimson">ACTION NEEDED</Badge>
                 </div>
                 <CardDescription className="text-slate-400">
-                  CORRUPTION RESISTANCE PENALTIES FOR {character.name.toUpperCase()}
+                  Stats affected while The Other Side is active for {character.name.toUpperCase()}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
@@ -404,18 +404,18 @@ export function OtherSideClient({
                             {activeBoss.name}
                           </CardTitle>
                           <Badge variant="crimson">
-                            {activeBoss.isDefeated ? "BANISHED" : "ACTIVE ENTITY"}
+                            {activeBoss.isDefeated ? "DEFEATED" : "ACTIVE BOSS"}
                           </Badge>
                         </div>
                         <CardDescription className="text-red-400/70">
-                          {activeBoss.title} {"//"} TIER 0{activeBoss.order}
+                          {activeBoss.title} {"//"} BOSS TIER {activeBoss.order}
                         </CardDescription>
                       </div>
                     </div>
 
                     <div className="px-3 py-1.5 rounded-xs bg-red-950/60 border border-red-700/80 text-left sm:text-right">
                       <div className="text-[10px] font-mono text-red-400 font-bold uppercase">
-                        VITALITY MATRIX
+                        BOSS HEALTH
                       </div>
                       <div className="text-xs sm:text-sm font-orbitron font-extrabold text-red-200">
                         {activeBoss.currentHp} / {activeBoss.maxHp} HP ({activeBoss.hpPercent}%)
@@ -428,7 +428,7 @@ export function OtherSideClient({
                   {/* Dynamic Boss HP Bar */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs font-mono">
-                      <span className="text-red-300 font-bold">ENTITY INTEGRITY</span>
+                      <span className="text-red-300 font-bold">BOSS HP</span>
                       <span className="text-red-400 font-orbitron">{activeBoss.hpPercent}%</span>
                     </div>
                     <div className="h-4 w-full bg-slate-950 rounded-xs border border-red-900/80 p-0.5 overflow-hidden">
@@ -445,7 +445,7 @@ export function OtherSideClient({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="p-3 bg-black/60 border border-red-900/60 rounded-xs">
                       <div className="text-[10px] font-mono uppercase text-slate-400">
-                        THREAT TRAIT
+                        SPECIAL TRAIT
                       </div>
                       <div className="font-orbitron text-sm font-bold text-red-400 mt-0.5">
                         {activeBoss.threatTrait}
@@ -457,7 +457,7 @@ export function OtherSideClient({
 
                     <div className="p-3 bg-black/60 border border-red-900/60 rounded-xs">
                       <div className="text-[10px] font-mono uppercase text-slate-400">
-                        CORRUPTION SOURCE
+                        CORRUPTION CAUSE
                       </div>
                       <div className="font-orbitron text-sm font-bold text-purple-400 mt-0.5">
                         {activeBoss.corruptionSource}
@@ -472,12 +472,12 @@ export function OtherSideClient({
                   <div className="p-4 bg-red-950/30 border border-red-900/50 rounded-xs space-y-2">
                     <div className="flex items-center gap-2 text-xs font-mono font-bold text-red-300">
                       <Flame className="w-4 h-4 text-red-500" />
-                      <span>BANISHMENT PROTOCOL ACTIVE</span>
+                      <span>HOW TO DEFEAT THIS BOSS</span>
                     </div>
                     <p className="text-xs font-mono text-slate-300 leading-relaxed">
-                      Every completed mission in The Right Side channels strike energy directly against{" "}
+                      Every completed mission in The Right Side deals direct damage to{" "}
                       <span className="text-white font-bold">{activeBoss.name}</span> (-10 to -80 HP).
-                      When HP reaches 0, the entity will be banished and the next anomaly will awaken.
+                      When HP reaches 0, the boss is defeated and rewards are unlocked.
                     </p>
                   </div>
                 </CardContent>
@@ -491,13 +491,13 @@ export function OtherSideClient({
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-red-400" />
                     <CardTitle className="text-red-300 text-base">
-                      CORRUPTED REALM SECTORS
+                      CORRUPTED AREAS
                     </CardTitle>
                   </div>
-                  <Badge variant="crimson">{areas.length} SECTORS</Badge>
+                  <Badge variant="crimson">{areas.length} AREAS</Badge>
                 </div>
                 <CardDescription className="text-red-400/80">
-                  DIMENSIONAL CONTAMINATION OVERVIEW
+                  Areas affected by corruption
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
@@ -539,8 +539,8 @@ export function OtherSideClient({
       {/* World Status Footer */}
       <footer className="relative z-20 py-4 px-6 border-t border-red-950/60 bg-black/50 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-400 gap-2">
-          <div>THE OTHER SIDE // CORRUPTED SECTOR 99 // TARGET: {character.name}</div>
-          <div className="text-red-500/90">WARNING: HIGH CONCENTRATION OF RESISTANCE</div>
+          <div>THE OTHER SIDE // Turn real-life goals into missions.</div>
+          <div className="text-red-500/90">© 2026 THE OTHER SIDE</div>
         </div>
       </footer>
     </div>

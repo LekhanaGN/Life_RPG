@@ -78,14 +78,14 @@ export function SurvivalDashboard({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-white text-base sm:text-lg font-cinzel font-bold tracking-widest uppercase">
-                SURVIVAL PROTOCOL
+                YOUR PROGRESS &amp; STREAK
               </h3>
               <span className="text-[10px] font-mono text-cyan-400/80 uppercase font-semibold hidden xs:inline">
-                FREQ // 104.7 MHZ
+                DAILY TRACKER
               </span>
             </div>
             <p className="text-xs font-mono text-slate-400">
-              Dimensional signal beacon resonance tracker.
+              Complete a mission every day to keep your streak.
             </p>
           </div>
         </div>
@@ -95,12 +95,12 @@ export function SurvivalDashboard({
           {todayActive ? (
             <Badge variant="cyan" pulse className="px-3 py-1 text-xs font-mono font-bold">
               <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-cyan-300" />
-              SIGNAL STABLE [SECURED]
+              TODAY&apos;S MISSION DONE [ALL GOOD]
             </Badge>
           ) : (
             <Badge variant="slate" className="px-3 py-1 text-xs font-mono border-amber-500/60 text-amber-300 bg-amber-950/40">
               <AlertTriangle className="w-3.5 h-3.5 mr-1 text-amber-400 animate-pulse" />
-              SIGNAL UNCONFIRMED
+              NOT STARTED TODAY
             </Badge>
           )}
         </div>
@@ -118,7 +118,7 @@ export function SurvivalDashboard({
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-400 animate-bounce" />
                 <span className="font-cinzel text-xs sm:text-sm font-bold tracking-wider text-amber-300 uppercase">
-                  COMEBACK PROTOCOL ACTIVE
+                  COMEBACK CHALLENGE ACTIVE
                 </span>
                 <span className="px-2 py-0.5 rounded-xs bg-amber-900/60 border border-amber-500/40 text-[10px] font-mono text-amber-200">
                   <Clock className="w-3 h-3 inline mr-1" />
@@ -126,7 +126,7 @@ export function SurvivalDashboard({
                 </span>
               </div>
               <p className="text-xs font-mono text-slate-300 mt-1">
-                &ldquo;The signal flickered, but the line can be restored.&rdquo; Complete {comebackChallenge.missionsRequired} missions to stabilize.
+                Complete {comebackChallenge.missionsRequired} missions to restore your lost streak and earn bonus rewards.
               </p>
             </div>
 
@@ -151,7 +151,7 @@ export function SurvivalDashboard({
                 {comebackChallenge.missionsCompleted}/{comebackChallenge.missionsRequired}
               </span>
               <span className="text-[10px] font-mono text-emerald-400 uppercase bg-emerald-950/40 px-2 py-0.5 rounded-xs border border-emerald-500/40">
-                +{comebackChallenge.rewardCredits} CR // -{comebackChallenge.corruptionReduction}% VOID
+                +{comebackChallenge.rewardCredits} CREDITS // -{comebackChallenge.corruptionReduction}% CORRUPTION
               </span>
             </div>
           </div>
@@ -163,7 +163,7 @@ export function SurvivalDashboard({
         <div className="relative z-10 mt-3 p-3 rounded-xs border border-red-500/40 bg-red-950/20 flex items-center justify-between gap-3 text-xs font-mono text-red-300">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-            <span>SIGNAL LOST // Streak disrupted. Complete a mission today or initiate Comeback Protocol to recover.</span>
+            <span>STREAK BROKEN // Complete a mission today or start a Comeback Challenge to recover your streak.</span>
           </div>
         </div>
       )}
@@ -185,15 +185,15 @@ export function SurvivalDashboard({
             </span>
           </div>
           <div className="text-[10px] font-mono text-slate-400 flex items-center justify-between">
-            <span>STATUS:</span>
-            <span className="font-bold text-cyan-300">{todayActive ? "SECURED ✓" : "PENDING"}</span>
+            <span>TODAY:</span>
+            <span className="font-bold text-cyan-300">{todayActive ? "COMPLETED ✓" : "NOT YET"}</span>
           </div>
         </div>
 
         {/* Longest Record */}
         <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-            <span>LONGEST STREAK</span>
+            <span>BEST STREAK</span>
             <Award className="w-4 h-4 text-amber-400" />
           </div>
           <div className="my-2 flex items-baseline gap-2">
@@ -213,7 +213,7 @@ export function SurvivalDashboard({
         {/* Total Active Days */}
         <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-            <span>TOTAL ACTIVE</span>
+            <span>TOTAL ACTIVE DAYS</span>
             <Calendar className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="my-2 flex items-baseline gap-2">
@@ -223,8 +223,8 @@ export function SurvivalDashboard({
             <span className="text-xs font-cinzel text-slate-300 font-bold uppercase">DAYS</span>
           </div>
           <div className="text-[10px] font-mono text-slate-400 flex items-center justify-between">
-            <span>SURVIVED:</span>
-            <span className="text-cyan-400 font-mono font-bold">RIGHT SIDE</span>
+            <span>PROGRESS:</span>
+            <span className="text-cyan-400 font-mono font-bold">LIFETIME</span>
           </div>
         </div>
       </div>
@@ -233,8 +233,8 @@ export function SurvivalDashboard({
       <div className="relative z-10 mt-4 p-4 rounded-xs bg-slate-900/40 border border-slate-800/80 space-y-2">
         <div className="flex items-center justify-between text-xs font-mono">
           <div className="flex items-center gap-2">
-            <span className="text-slate-400">SIGNAL STRENGTH:</span>
-            <span className="font-bold text-white uppercase">{signal.status}</span>
+            <span className="text-slate-400">TODAY&apos;S PROGRESS:</span>
+            <span className="font-bold text-white uppercase">{todayActive ? "ALL GOOD" : "PENDING"}</span>
           </div>
           <span className="font-orbitron font-bold text-cyan-400">
             {signal.strengthPercent}%
@@ -259,7 +259,9 @@ export function SurvivalDashboard({
         </div>
 
         <p className="text-[11px] font-mono text-slate-300 italic pt-1">
-          &ldquo;{signal.description}&rdquo;
+          {todayActive
+            ? "You completed a mission today. Your progress and streak are secured!"
+            : "Complete a mission today to keep your progress moving."}
         </p>
       </div>
 
@@ -269,7 +271,7 @@ export function SurvivalDashboard({
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-cyan-400 shrink-0" />
             <div className="text-xs font-mono">
-              <span className="text-slate-400">NEXT MILESTONE: </span>
+              <span className="text-slate-400">NEXT REWARD: </span>
               <span className="text-white font-cinzel font-bold">{nextMilestone.name}</span>
               <span className="text-cyan-400 ml-1">({nextMilestone.days} DAYS)</span>
             </div>

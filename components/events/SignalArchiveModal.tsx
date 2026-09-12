@@ -89,10 +89,10 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
               </div>
               <div>
                 <h3 className="text-base font-cinzel font-bold tracking-widest text-white uppercase">
-                  SIGNAL ARCHIVE
+                  EVENT & STORY ARCHIVE
                 </h3>
                 <p className="text-[11px] font-mono text-slate-400">
-                  Recovered telemetry logs and recorded anomalies.
+                  View past challenges and unlocked stories.
                 </p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
               }`}
             >
               <History className="w-3.5 h-3.5" />
-              <span>PAST ANOMALIES ({history.length})</span>
+              <span>PAST CHALLENGES ({history.length})</span>
             </button>
             <button
               type="button"
@@ -130,7 +130,7 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>DISCOVERED LORE ({loreArchive.length})</span>
+              <span>UNLOCKED STORIES ({loreArchive.length})</span>
             </button>
           </div>
 
@@ -138,12 +138,12 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
             {loading ? (
               <div className="py-12 text-center text-xs font-mono text-slate-500 animate-pulse">
-                ACCESSING SIGNAL STORAGE UNITS...
+                LOADING ARCHIVE...
               </div>
             ) : activeTab === "ANOMALIES" ? (
               history.length === 0 ? (
                 <div className="py-12 text-center text-xs font-mono text-slate-500">
-                  NO HISTORICAL ANOMALIES LOGGED YET.
+                  NO PAST CHALLENGES YET.
                 </div>
               ) : (
                 history.map((item) => (
@@ -164,17 +164,17 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
                         </Badge>
                       </div>
                       <div className="text-[11px] text-slate-400">
-                        Progress: {item.progress} / {item.requiredProgress} {"//"} Target Achieved
+                        Progress: {item.progress} / {item.requiredProgress} completed
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 text-[11px] text-slate-400 shrink-0">
                       {item.status === "COMPLETED" ? (
                         <span className="text-emerald-400 font-bold">
-                          +{item.rewardCredits} CR {"//"} +{item.rewardXp} XP
+                          +{item.rewardCredits} CR // +{item.rewardXp} XP
                         </span>
                       ) : (
-                        <span className="text-slate-500">SIGNAL FADED</span>
+                        <span className="text-slate-500">EXPIRED</span>
                       )}
                       <span className="text-slate-500 text-[10px]">
                         {new Date(item.createdAt).toLocaleDateString()}
@@ -185,9 +185,9 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
               )
             ) : loreArchive.length === 0 ? (
               <div className="py-12 text-center text-xs font-mono text-slate-500">
-                NO WORLD LORE HAS BEEN RECOVERED YET.
+                NO STORIES UNLOCKED YET.
                 <br />
-                Contain rare anomalies to intercept transmissions.
+                Complete special challenges to unlock stories.
               </div>
             ) : (
               loreArchive.map((lore) => (
@@ -207,7 +207,7 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
                     &ldquo;{lore.content}&rdquo;
                   </p>
                   <div className="text-[10px] font-mono text-slate-500">
-                    DECRYPTED: {new Date(lore.unlockedAt).toLocaleDateString()}
+                    UNLOCKED: {new Date(lore.unlockedAt).toLocaleDateString()}
                   </div>
                 </div>
               ))
@@ -216,13 +216,13 @@ export function SignalArchiveModal({ isOpen, onClose }: SignalArchiveModalProps)
 
           {/* Footer */}
           <div className="p-3 border-t border-white/10 bg-slate-900/60 flex items-center justify-between text-[11px] font-mono text-slate-400">
-            <span>FREQUENCY: 104.7 MHZ // ARCHIVE ONLINE</span>
+            <span>ARCHIVE ONLINE</span>
             <button
               type="button"
               onClick={onClose}
               className="px-3 py-1 rounded-xs bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
             >
-              DISMISS
+              CLOSE
             </button>
           </div>
         </motion.div>

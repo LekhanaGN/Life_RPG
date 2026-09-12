@@ -210,17 +210,17 @@ export function MissionEditModal({
             <div className="flex items-start justify-between pb-4 border-b border-amber-500/20 mb-6">
               <div>
                 <span className="text-[10px] font-mono text-amber-400 tracking-widest uppercase">
-                  MODIFICATION // SANCTUARY MATRIX
+                  EDIT MISSION
                 </span>
                 <h3
                   id="edit-mission-title"
                   className="font-cinzel text-xl sm:text-2xl font-bold text-white tracking-wider flex items-center gap-2 mt-0.5"
                 >
                   <Save className="w-5 h-5 text-amber-400" />
-                  RECONFIGURE MISSION
+                  EDIT MISSION
                 </h3>
                 <p className="text-xs font-mono text-slate-400 mt-1">
-                  Adjust mission parameters and active status.
+                  Update your mission details and settings.
                 </p>
               </div>
 
@@ -252,7 +252,7 @@ export function MissionEditModal({
                     htmlFor="edit-mission-title-input"
                     className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold"
                   >
-                    MISSION CALLSIGN / NAME <span className="text-amber-400">*</span>
+                    WHAT DO YOU WANT TO DO? <span className="text-amber-400">*</span>
                   </label>
                   <span className="text-[10px] font-mono text-slate-500">
                     {title.length}/100
@@ -283,7 +283,7 @@ export function MissionEditModal({
                     htmlFor="edit-mission-desc"
                     className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold"
                   >
-                    MISSION DIRECTIVE / DESCRIPTION
+                    DETAILS
                   </label>
                   <span className="text-[10px] font-mono text-slate-500">
                     {description.length}/1000
@@ -309,7 +309,7 @@ export function MissionEditModal({
               {/* Category Selector */}
               <div className="space-y-2">
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                  RESONANCE CATEGORY <span className="text-amber-400">*</span>
+                  STAT CATEGORY <span className="text-amber-400">*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
                   {(
@@ -350,7 +350,7 @@ export function MissionEditModal({
                 {/* Difficulty */}
                 <div className="space-y-2">
                   <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                    DIFFICULTY RATING <span className="text-amber-400">*</span>
+                    DIFFICULTY <span className="text-amber-400">*</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {(
@@ -385,7 +385,7 @@ export function MissionEditModal({
                 {/* Frequency */}
                 <div className="space-y-2">
                   <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                    RECURRENCE CADENCE <span className="text-amber-400">*</span>
+                    FREQUENCY <span className="text-amber-400">*</span>
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {(
@@ -421,7 +421,7 @@ export function MissionEditModal({
               {/* Verification Protocol & Signal Integrity */}
               <div className="space-y-2">
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                  SIGNAL INTEGRITY // VERIFICATION METHOD
+                  HOW WILL YOU VERIFY IT?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <button
@@ -434,11 +434,11 @@ export function MissionEditModal({
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-orbitron font-bold">SELF REPORT</span>
+                      <span className="text-xs font-orbitron font-bold">SELF-REPORT</span>
                       <span className="text-xs text-amber-400 font-mono">★</span>
                     </div>
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      Direct clearance. 50% baseline signal.
+                      Click complete when done.
                     </div>
                   </button>
 
@@ -452,11 +452,11 @@ export function MissionEditModal({
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-orbitron font-bold">EVIDENCE</span>
+                      <span className="text-xs font-orbitron font-bold">PROOF (PHOTO / NOTE)</span>
                       <span className="text-xs text-amber-400 font-mono">★★</span>
                     </div>
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      Photo or note. 70% integrity signal.
+                      Attach photo or written note.
                     </div>
                   </button>
 
@@ -470,11 +470,11 @@ export function MissionEditModal({
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-orbitron font-bold">FOCUS PROTOCOL</span>
+                      <span className="text-xs font-orbitron font-bold">TIMED FOCUS</span>
                       <span className="text-xs text-amber-400 font-mono">★★★</span>
                     </div>
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      Timed session. 91% integrity signal.
+                      Complete a focus timer.
                     </div>
                   </button>
                 </div>

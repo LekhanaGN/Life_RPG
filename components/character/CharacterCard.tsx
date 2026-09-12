@@ -37,7 +37,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 </Badge>
               </div>
               <CardDescription className="font-mono text-cyan-300/80 text-xs tracking-wider">
-                ARCHETYPE: {archetype}
+                CLASS: {archetype}
               </CardDescription>
             </div>
           </div>
@@ -67,7 +67,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
             </div>
             <div>
               <div className="text-[10px] font-mono uppercase text-slate-400">
-                SURVIVAL STREAK
+                CURRENT STREAK
               </div>
               <div className="font-orbitron text-base font-bold text-amber-300">
                 0 DAYS
@@ -81,7 +81,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
             </div>
             <div>
               <div className="text-[10px] font-mono uppercase text-slate-400">
-                CREDITS
+                YOUR CREDITS
               </div>
               <div className="font-orbitron text-base font-bold text-cyan-300">
                 {credits}
@@ -95,7 +95,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
             </div>
             <div>
               <div className="text-[10px] font-mono uppercase text-slate-400">
-                SHIELD INTEGRITY
+                WORLD INTEGRITY
               </div>
               <div className="font-orbitron text-base font-bold text-emerald-300">
                 100%

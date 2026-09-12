@@ -80,7 +80,7 @@ export function LevelUpOverlay({ data, onDismiss }: LevelUpOverlayProps) {
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border border-cyan-500/50 bg-cyan-950/40 text-[10px] font-mono text-cyan-300 uppercase tracking-widest">
               <Zap className="w-3 h-3 text-cyan-400 fill-cyan-400" />
-              <span>DIMENSIONAL RESONANCE AMPLIFIED</span>
+              <span>LEVEL UP REWARD</span>
             </div>
 
             <h2
@@ -91,7 +91,7 @@ export function LevelUpOverlay({ data, onDismiss }: LevelUpOverlayProps) {
             </h2>
             <p className="font-mono text-xs text-slate-300 tracking-wider">
               {data.characterName ? `${data.characterName} has ` : "You have "}
-              advanced in the dimensional hierarchy.
+              reached a new level. Keep completing missions to unlock more rewards.
             </p>
           </div>
 
@@ -110,7 +110,7 @@ export function LevelUpOverlay({ data, onDismiss }: LevelUpOverlayProps) {
 
             <div className="text-center">
               <div className="text-[10px] font-mono uppercase text-cyan-400 font-bold">
-                NEW RANK
+                NEW LEVEL
               </div>
               <div className="font-orbitron text-3xl sm:text-4xl font-extrabold text-cyan-200 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]">
                 LVL {String(data.newLevel).padStart(2, "0")}
@@ -121,7 +121,7 @@ export function LevelUpOverlay({ data, onDismiss }: LevelUpOverlayProps) {
           {/* Rewards Highlights */}
           <div className="p-3 bg-cyan-950/30 border border-cyan-800/40 rounded-xs text-xs font-mono text-cyan-200/90 flex items-center justify-center gap-2">
             <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span>REALM BARRIER PURITY REINFORCED // MATRIX ADVANCEMENT COMPLETE</span>
+            <span>BONUS CREDITS EARNED • REWARDS UNLOCKED</span>
           </div>
 
           {/* Dismiss Action */}
@@ -134,7 +134,7 @@ export function LevelUpOverlay({ data, onDismiss }: LevelUpOverlayProps) {
               onClick={onDismiss}
               className="w-full tracking-[0.2em] font-extrabold text-white uppercase border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.6)] hover:shadow-[0_0_35px_rgba(6,182,212,0.9)]"
             >
-              CONTINUE SURVIVAL
+              CONTINUE
             </Button>
           </div>
         </motion.div>

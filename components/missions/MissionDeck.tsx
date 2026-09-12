@@ -408,17 +408,17 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
               {survivalSecuredToday ? (
                 <span className="px-2.5 py-0.5 rounded-xs bg-cyan-950/80 border border-cyan-400/80 text-[10px] font-mono text-cyan-200 font-bold shadow-[0_0_10px_rgba(6,182,212,0.4)] flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3 text-cyan-300" />
-                  TODAY&apos;S SURVIVAL: SECURED ✓
+                  TODAY&apos;S MISSION: DONE ✓
                 </span>
               ) : (
                 <span className="px-2.5 py-0.5 rounded-xs bg-amber-950/60 border border-amber-500/60 text-[10px] font-mono text-amber-300 font-bold flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3 text-amber-400 animate-pulse" />
-                  TODAY&apos;S SURVIVAL: NOT SECURED
+                  NOT STARTED TODAY
                 </span>
               )}
             </div>
             <p className="text-xs font-mono text-slate-400">
-              Execute daily objectives to train attributes and gain XP.
+              Complete daily tasks to gain XP, level up, and improve your stats.
             </p>
           </div>
         </div>
@@ -512,17 +512,17 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
           <div className="p-8 text-center space-y-3 rounded-xs border border-red-900/50 bg-red-950/20">
             <AlertTriangle className="w-8 h-8 text-red-500 mx-auto animate-bounce" />
             <div className="font-cinzel text-base text-red-300 font-bold tracking-wider">
-              TRANSMISSION INTERRUPTED
+              FAILED TO LOAD MISSIONS
             </div>
             <p className="text-xs font-mono text-slate-400 max-w-sm mx-auto">
-              Failed to retrieve mission dossier from the dimensional archive.
+              Could not load your missions. Please check your connection.
             </p>
             <button
               onClick={fetchMissions}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300 transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>RETRY TRANSMISSION</span>
+              <span>TRY AGAIN</span>
             </button>
           </div>
         ) : displayedMissions.length === 0 ? (
@@ -530,13 +530,13 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
             <Layers className="w-8 h-8 text-slate-600 mx-auto" />
             <div className="font-cinzel text-base text-slate-300 font-bold tracking-wider">
               {activeSection === "ACTIVE"
-                ? "NO ACTIVE MISSIONS IN THIS SECTOR"
+                ? "NO ACTIVE MISSIONS"
                 : "NO COMPLETED MISSIONS YET"}
             </div>
             <p className="text-xs font-mono text-slate-400 max-w-sm mx-auto">
               {activeSection === "ACTIVE"
-                ? "Forge a new objective to begin your daily real-world growth."
-                : "Complete active missions to log your historical achievements."}
+                ? "Create a new mission to start making progress."
+                : "Complete active missions to see them here."}
             </p>
             {activeSection === "ACTIVE" && (
               <button
@@ -544,7 +544,7 @@ export function MissionDeck({ onProgressionUpdate }: MissionDeckProps) {
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xs bg-cyan-950/60 border border-cyan-500/60 text-cyan-300 hover:text-white hover:bg-cyan-500 text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>CREATE FIRST MISSION</span>
+                <span>CREATE A MISSION</span>
               </button>
             )}
           </div>

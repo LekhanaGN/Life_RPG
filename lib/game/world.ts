@@ -31,8 +31,8 @@ export const WORLD_AREAS: WorldAreaDefinition[] = [
   {
     key: "THE_GATE",
     name: "THE GATE",
-    subtitle: "Sanctuary Breach Point",
-    description: "The dimensional anchor connecting your physical domain to the parallel realm.",
+    subtitle: "Start Here",
+    description: "Your starting area. Complete missions to unlock more worlds.",
     category: null,
     requiredCorruption: 100, // Always unlocked
     accentColor: "cyan",
@@ -46,8 +46,8 @@ export const WORLD_AREAS: WorldAreaDefinition[] = [
   {
     key: "KNOWLEDGE_FOREST",
     name: "KNOWLEDGE FOREST",
-    subtitle: "Arboretum of Pure Cognition",
-    description: "Vast neural groves blooming with intellectual clarity and deep focus.",
+    subtitle: "Mind Realm",
+    description: "Unlock by completing Mind missions (studying, reading, learning).",
     category: "MIND",
     requiredCorruption: 85,
     accentColor: "blue",
@@ -61,8 +61,8 @@ export const WORLD_AREAS: WorldAreaDefinition[] = [
   {
     key: "FOCUS_LAB",
     name: "FOCUS LAB",
-    subtitle: "Chamber of Singularity",
-    description: "High-energy precision research sector shielded from external noise and distractions.",
+    subtitle: "Focus Realm",
+    description: "Unlock by completing Focus missions (deep work, concentration, projects).",
     category: "FOCUS",
     requiredCorruption: 70,
     accentColor: "amber",
@@ -76,8 +76,8 @@ export const WORLD_AREAS: WorldAreaDefinition[] = [
   {
     key: "IRON_PEAK",
     name: "IRON PEAK",
-    subtitle: "Citadel of Physical Vitality",
-    description: "Towering obsidian monolith forged through athletic discipline and somatic endurance.",
+    subtitle: "Body Realm",
+    description: "Unlock by completing Body missions (exercise, gym, workouts, sports).",
     category: "BODY",
     requiredCorruption: 55,
     accentColor: "emerald",
@@ -91,8 +91,8 @@ export const WORLD_AREAS: WorldAreaDefinition[] = [
   {
     key: "STILLWATER",
     name: "STILLWATER",
-    subtitle: "Reflective Basin",
-    description: "Tranquil mirror lake dissolving psychological tension, anxiety, and doubt.",
+    subtitle: "Spirit Realm",
+    description: "Unlock by completing Spirit missions (meditation, journaling, mindfulness).",
     category: "SPIRIT",
     requiredCorruption: 40,
     accentColor: "purple",
@@ -106,8 +106,8 @@ export const WORLD_AREAS: WorldAreaDefinition[] = [
   {
     key: "THE_CITADEL",
     name: "THE CITADEL",
-    subtitle: "Spire of Human Resonance",
-    description: "Grand communal beacon strengthening trust, empathy, and unbreakable bonds.",
+    subtitle: "Connection Realm",
+    description: "Unlock by completing Connection missions (friends, family, networking).",
     category: "CONNECTION",
     requiredCorruption: 20,
     accentColor: "rose",

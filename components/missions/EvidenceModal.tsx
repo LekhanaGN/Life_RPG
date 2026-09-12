@@ -164,17 +164,17 @@ export function EvidenceModal({
               <div className="flex items-center gap-2 mb-1">
                 <VerificationBadge type="EVIDENCE" size="sm" />
                 <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">
-                  SIGNAL INTEGRITY PROTOCOL
+                  PROOF OF WORK
                 </span>
               </div>
               <h3
                 id="evidence-modal-title"
                 className="text-lg font-orbitron font-bold text-slate-100 uppercase tracking-wide"
               >
-                SUBMIT EVIDENCE
+                SUBMIT PROOF
               </h3>
               <p className="text-xs font-mono text-slate-400 truncate max-w-sm">
-                Objective: <span className="text-slate-200">{mission.title}</span>
+                Mission: <span className="text-slate-200">{mission.title}</span>
               </p>
             </div>
             <button
@@ -192,7 +192,7 @@ export function EvidenceModal({
               {/* Image Upload Area */}
               <div>
                 <label className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                  Photographic Evidence (JPEG, PNG, WEBP $\le 5$MB)
+                  Photo Proof (Optional, JPEG, PNG, WEBP up to 5MB)
                 </label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
@@ -217,7 +217,7 @@ export function EvidenceModal({
                         {file?.name} ({(file!.size / 1024).toFixed(1)} KB)
                       </p>
                       <p className="text-[10px] font-mono text-slate-400">
-                        Click to change photograph
+                        Click to change photo
                       </p>
                     </div>
                   ) : (
@@ -227,7 +227,7 @@ export function EvidenceModal({
                         <Camera className="w-6 h-6" />
                       </div>
                       <p className="text-xs font-mono text-slate-300">
-                        Drop photo here, or click to choose from camera/files
+                        Upload a photo or take a picture
                       </p>
                       <p className="text-[10px] font-mono text-slate-500">
                         Camera capture supported on mobile devices
@@ -243,14 +243,14 @@ export function EvidenceModal({
                   htmlFor="evidence-description"
                   className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-1"
                 >
-                  Field Observation Note (Optional)
+                  Written Note (Optional)
                 </label>
                 <textarea
                   id="evidence-description"
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Record relevant details regarding task execution..."
+                  placeholder="Add any notes about what you completed..."
                   className="w-full bg-slate-900/80 border border-slate-700 rounded-xs p-2.5 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
                   maxLength={1000}
                 />
@@ -285,12 +285,12 @@ export function EvidenceModal({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>TRANSMITTING...</span>
+                      <span>UPLOADING...</span>
                     </>
                   ) : (
                     <>
                       <ShieldCheck className="w-4 h-4" />
-                      <span>SUBMIT EVIDENCE</span>
+                      <span>SUBMIT PROOF</span>
                     </>
                   )}
                 </button>
@@ -305,24 +305,24 @@ export function EvidenceModal({
 
               <div className="space-y-1">
                 <h4 className="text-base font-orbitron font-bold text-emerald-300 uppercase tracking-wide">
-                  EVIDENCE RECEIVED
+                  PROOF SUBMITTED
                 </h4>
                 <p className="text-xs font-mono text-slate-300">
-                  The signal has something tangible to work with.
+                  Your proof of work has been recorded.
                 </p>
               </div>
 
               {/* Signal Integrity Gauge */}
               <div className="p-3 bg-slate-900/80 border border-emerald-600/40 rounded-xs space-y-1.5 max-w-sm mx-auto">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-slate-400 uppercase">SIGNAL INTEGRITY</span>
-                  <span className="text-emerald-400 font-bold">70%</span>
+                  <span className="text-slate-400 uppercase">PROOF INTEGRITY</span>
+                  <span className="text-emerald-400 font-bold">100%</span>
                 </div>
                 <div className="text-sm font-mono text-emerald-400 tracking-widest" aria-hidden="true">
-                  ███████░░░
+                  ██████████
                 </div>
                 <p className="text-[10px] font-mono text-slate-400">
-                  Verification signal detected. Mission is now authorized for completion.
+                  Proof saved. You can now complete your mission.
                 </p>
               </div>
 
