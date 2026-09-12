@@ -6,10 +6,7 @@ import {
   X,
   Archive,
   BookOpen,
-  CheckCircle2,
-  AlertTriangle,
   History,
-  ShieldAlert,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { DbUserLoreUnlock } from "@/lib/db/client";

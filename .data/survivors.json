@@ -707,6 +707,24 @@
       "timezone": "UTC",
       "createdAt": "2026-09-12T22:17:45.961Z",
       "updatedAt": "2026-09-12T22:17:45.961Z"
+    },
+    {
+      "id": "usr_mtyzvlwj_tyagpdi",
+      "email": "24ug1bycs784@bmsit.in",
+      "passwordHash": "$2b$10$OBrw9y2zwDGT7jpQCJoCmOKhMUhZt48VNmSnSf0nqxU8Ca7qJ4iH.",
+      "username": "dia",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T23:06:49.138Z",
+      "updatedAt": "2026-09-12T23:06:49.139Z"
+    },
+    {
+      "id": "usr_mtz02lgn_8wcgkqt",
+      "email": "dfdvfv@gmail.com",
+      "passwordHash": "$2b$10$ubN/85t3Pj5nBOFcO7S3WORI6IQlsf56ADlOQ4nvwHu8enLJb0Wka",
+      "username": "arian",
+      "timezone": "UTC",
+      "createdAt": "2026-09-12T23:12:15.143Z",
+      "updatedAt": "2026-09-12T23:12:15.143Z"
     }
   ],
   "characters": [
@@ -733,15 +751,16 @@
       "name": "lekana",
       "archetype": "EXPLORER",
       "level": 2,
-      "xp": 255,
-      "credits": 80,
+      "xp": 375,
+      "credits": 90,
       "mind": 15,
       "body": 15,
-      "focus": 10,
+      "focus": 15,
       "spirit": 11,
       "connection": 10,
       "createdAt": "2026-09-12T13:55:19.479Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:02:33.631Z",
+      "currentXp": 375
     },
     {
       "id": "chr_mtyivu1q_bor0836",
@@ -2010,6 +2029,22 @@
       "connection": 10,
       "createdAt": "2026-09-12T22:17:45.992Z",
       "updatedAt": "2026-09-12T22:17:45.992Z"
+    },
+    {
+      "id": "chr_mtyzzm8j_287czik",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "name": "dia",
+      "archetype": "SCHOLAR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 16,
+      "body": 8,
+      "focus": 12,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T23:09:56.181Z",
+      "updatedAt": "2026-09-12T23:09:56.181Z"
     }
   ],
   "missions": [
@@ -5454,6 +5489,24 @@
       "updatedAt": "2026-09-12T22:17:48.725Z",
       "lastCompletedAt": "2026-09-12T22:17:48.681Z",
       "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtyz3job_j9autuo",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "title": "solve gate questions",
+      "description": "atleast 50 questions",
+      "category": "FOCUS",
+      "difficulty": "EPIC",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "verificationType": "SELF_REPORT",
+      "focusDurationMinutes": null,
+      "createdAt": "2026-09-12T22:44:59.867Z",
+      "updatedAt": "2026-09-12T23:01:32.282Z",
+      "lastCompletedAt": "2026-09-12T23:01:32.066Z",
+      "isCompletedToday": true
     }
   ],
   "missionCompletions": [
@@ -6896,6 +6949,14 @@
       "xpEarned": 20,
       "creditsEarned": 10,
       "completedAt": "2026-09-12T22:17:48.681Z"
+    },
+    {
+      "id": "cmp_mtyzotfe_bbt8ess",
+      "missionId": "msn_mtyz3job_j9autuo",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T23:01:32.066Z"
     }
   ],
   "worldProgress": [
@@ -6951,9 +7012,9 @@
     {
       "id": "wp_mtynets7_5m4yaj4",
       "userId": "usr_mtyg5kvb_pata3wy",
-      "corruption": 78,
+      "corruption": 68,
       "createdAt": "2026-09-12T17:17:50.791Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wp_mtynudxm_tmjuw89",
@@ -7227,6 +7288,13 @@
       "corruption": 86,
       "createdAt": "2026-09-12T22:17:46.835Z",
       "updatedAt": "2026-09-12T22:17:48.725Z"
+    },
+    {
+      "id": "wp_mtyzzxx2_47bh43q",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "corruption": 100,
+      "createdAt": "2026-09-12T23:10:11.318Z",
+      "updatedAt": "2026-09-12T23:10:11.320Z"
     }
   ],
   "worldAreaProgress": [
@@ -7615,7 +7683,7 @@
       "isUnlocked": true,
       "restorationPercent": 0,
       "createdAt": "2026-09-12T17:17:50.801Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wap_mtynetsh_cr1xwna",
@@ -7624,16 +7692,16 @@
       "isUnlocked": true,
       "restorationPercent": 10,
       "createdAt": "2026-09-12T17:17:50.801Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wap_mtynetsh_91k8i9e",
       "userId": "usr_mtyg5kvb_pata3wy",
       "areaKey": "FOCUS_LAB",
-      "isUnlocked": false,
-      "restorationPercent": 0,
+      "isUnlocked": true,
+      "restorationPercent": 10,
       "createdAt": "2026-09-12T17:17:50.801Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wap_mtynetsh_n3sr0gd",
@@ -7642,7 +7710,7 @@
       "isUnlocked": false,
       "restorationPercent": 10,
       "createdAt": "2026-09-12T17:17:50.801Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wap_mtynetsh_7nsm3nm",
@@ -7651,7 +7719,7 @@
       "isUnlocked": false,
       "restorationPercent": 2,
       "createdAt": "2026-09-12T17:17:50.801Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wap_mtynetsh_e17q9xd",
@@ -7660,7 +7728,7 @@
       "isUnlocked": false,
       "restorationPercent": 0,
       "createdAt": "2026-09-12T17:17:50.801Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "wap_mtynudxn_2zqdicq",
@@ -9767,6 +9835,60 @@
       "restorationPercent": 0,
       "createdAt": "2026-09-12T22:17:46.836Z",
       "updatedAt": "2026-09-12T22:17:48.725Z"
+    },
+    {
+      "id": "wap_mtyzzxxj_alg88wj",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T23:10:11.335Z",
+      "updatedAt": "2026-09-12T23:10:11.335Z"
+    },
+    {
+      "id": "wap_mtyzzxxj_sgauz1l",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T23:10:11.335Z",
+      "updatedAt": "2026-09-12T23:10:11.335Z"
+    },
+    {
+      "id": "wap_mtyzzxxj_fq8ho3t",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T23:10:11.335Z",
+      "updatedAt": "2026-09-12T23:10:11.335Z"
+    },
+    {
+      "id": "wap_mtyzzxxj_lj357q1",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T23:10:11.335Z",
+      "updatedAt": "2026-09-12T23:10:11.335Z"
+    },
+    {
+      "id": "wap_mtyzzxxj_2oss2nz",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T23:10:11.335Z",
+      "updatedAt": "2026-09-12T23:10:11.335Z"
+    },
+    {
+      "id": "wap_mtyzzxxj_xyalk4c",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T23:10:11.335Z",
+      "updatedAt": "2026-09-12T23:10:11.335Z"
     }
   ],
   "bossProgress": [
@@ -10082,12 +10204,12 @@
       "id": "bp_mtynetsh_uorjkty",
       "userId": "usr_mtyg5kvb_pata3wy",
       "bossKey": "THE_PROCRASTINATOR",
-      "currentHp": 350,
+      "currentHp": 270,
       "maxHp": 500,
       "isDefeated": false,
       "defeatedAt": null,
       "createdAt": "2026-09-12T17:17:50.802Z",
-      "updatedAt": "2026-09-12T17:59:02.200Z"
+      "updatedAt": "2026-09-12T23:01:32.282Z"
     },
     {
       "id": "bp_mtynetsi_dv5q7fk",
@@ -11837,6 +11959,50 @@
       "defeatedAt": null,
       "createdAt": "2026-09-12T22:17:46.836Z",
       "updatedAt": "2026-09-12T22:17:46.836Z"
+    },
+    {
+      "id": "bp_mtyzzxxs_a0o14kr",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T23:10:11.345Z",
+      "updatedAt": "2026-09-12T23:10:11.345Z"
+    },
+    {
+      "id": "bp_mtyzzxxt_0f8sfa3",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T23:10:11.345Z",
+      "updatedAt": "2026-09-12T23:10:11.345Z"
+    },
+    {
+      "id": "bp_mtyzzxxt_2b55ecd",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T23:10:11.345Z",
+      "updatedAt": "2026-09-12T23:10:11.345Z"
+    },
+    {
+      "id": "bp_mtyzzxxt_c696v4w",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T23:10:11.345Z",
+      "updatedAt": "2026-09-12T23:10:11.345Z"
     }
   ],
   "items": [
@@ -12095,10 +12261,10 @@
       "id": "inv_mtynhwu1_a19jjuy",
       "userId": "usr_mtyg5kvb_pata3wy",
       "itemId": "itm_focus_tonic",
-      "quantity": 1,
+      "quantity": 2,
       "isEquipped": false,
       "acquiredAt": "2026-09-12T17:20:14.497Z",
-      "updatedAt": "2026-09-12T17:20:14.497Z",
+      "updatedAt": "2026-09-12T23:02:33.631Z",
       "item": {
         "id": "itm_focus_tonic",
         "key": "FOCUS_TONIC",
@@ -14473,6 +14639,24 @@
       "itemId": null,
       "description": "Reward for clearing mission: Legacy Recon Patrol",
       "createdAt": "2026-09-12T22:17:48.681Z"
+    },
+    {
+      "id": "etx_mtyzotfe_g9nmdch",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: solve gate questions",
+      "createdAt": "2026-09-12T23:01:32.066Z"
+    },
+    {
+      "id": "etx_mtyzq4vb_a6zpbsa",
+      "userId": "usr_mtyg5kvb_pata3wy",
+      "type": "PURCHASE",
+      "amount": -50,
+      "itemId": "itm_focus_tonic",
+      "description": "Acquired FOCUS TONIC from The Arcade",
+      "createdAt": "2026-09-12T23:02:33.631Z"
     }
   ],
   "milestones": [
@@ -14595,9 +14779,9 @@
       "currentStreak": 1,
       "longestStreak": 1,
       "totalActiveDays": 1,
-      "lastActiveDate": "2026-09-12T17:59:02.111Z",
+      "lastActiveDate": "2026-09-12T23:01:32.066Z",
       "createdAt": "2026-09-12T17:59:02.111Z",
-      "updatedAt": "2026-09-12T17:59:02.111Z"
+      "updatedAt": "2026-09-12T23:01:32.066Z"
     },
     {
       "id": "str_mtypp5cs_09jaii7",
@@ -14913,9 +15097,9 @@
       "id": "act_mtyovsqh_tp7p7em",
       "userId": "usr_mtyg5kvb_pata3wy",
       "date": "2026-09-12",
-      "missionsCompleted": 1,
-      "xpEarned": 20,
-      "creditsEarned": 10,
+      "missionsCompleted": 2,
+      "xpEarned": 140,
+      "creditsEarned": 70,
       "createdAt": "2026-09-12T17:59:02.111Z"
     },
     {
@@ -15984,7 +16168,7 @@
       "userId": "usr_mtyg5kvb_pata3wy",
       "worldEventId": "we_breach_warning",
       "status": "ACTIVE",
-      "progress": 0,
+      "progress": 1,
       "requiredProgress": 4,
       "completed": false,
       "rewardClaimed": false,
@@ -15992,7 +16176,7 @@
       "expiresAt": "2026-09-13T12:50:43.936Z",
       "completedAt": null,
       "createdAt": "2026-09-12T18:50:43.936Z",
-      "updatedAt": "2026-09-12T18:50:43.936Z",
+      "updatedAt": "2026-09-12T23:01:32.066Z",
       "worldEvent": {
         "id": "we_breach_warning",
         "key": "BREACH_WARNING",
@@ -16635,6 +16819,39 @@
         "bossDamageBonus": 0,
         "rarity": "COMMON",
         "loreId": "LOG_07",
+        "createdAt": "2026-09-12T18:21:51.276Z",
+        "updatedAt": "2026-09-12T18:21:51.276Z"
+      }
+    },
+    {
+      "id": "uwe_mtyzzyf4_3b3gvwt",
+      "userId": "usr_mtyzvlwj_tyagpdi",
+      "worldEventId": "we_breach_warning",
+      "status": "ACTIVE",
+      "progress": 0,
+      "requiredProgress": 4,
+      "completed": false,
+      "rewardClaimed": false,
+      "startsAt": "2026-09-12T23:10:11.769Z",
+      "expiresAt": "2026-09-13T17:10:11.769Z",
+      "completedAt": null,
+      "createdAt": "2026-09-12T23:10:11.769Z",
+      "updatedAt": "2026-09-12T23:10:11.769Z",
+      "worldEvent": {
+        "id": "we_breach_warning",
+        "key": "BREACH_WARNING",
+        "title": "BREACH WARNING",
+        "description": "Massive dimensional strain detected across multiple sectors. Execute immediate containment protocols across any discipline.",
+        "loreSnippet": "The boundary is weakening. All hands to stations.",
+        "targetAttribute": "ANY",
+        "targetArea": "THE_GATE",
+        "requiredCompletions": 4,
+        "rewardCredits": 120,
+        "rewardXp": 80,
+        "corruptionChange": -8,
+        "bossDamageBonus": 25,
+        "rarity": "RARE",
+        "loreId": "LOG_31",
         "createdAt": "2026-09-12T18:21:51.276Z",
         "updatedAt": "2026-09-12T18:21:51.276Z"
       }
