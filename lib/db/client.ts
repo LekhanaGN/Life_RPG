@@ -22,6 +22,15 @@ import {
   getNextBossDefinition,
   processBossDamageCalculation,
 } from "@/lib/game/bosses";
+import {
+  STARTER_CATALOG,
+  ItemCategory,
+  ItemRarity,
+  EquipmentSlot,
+  isEquippable,
+  RARITY_CONFIG,
+} from "@/lib/game/items";
+import { validatePurchaseEligibility } from "@/lib/game/shop";
 
 // Global Prisma instance to avoid multiple connections in Next.js hot reload
 const globalForPrisma = globalThis as unknown as {
@@ -139,6 +148,45 @@ export interface DbBossProgress {
   updatedAt: Date;
 }
 
+export interface DbItem {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  category: ItemCategory;
+  rarity: ItemRarity;
+  price: number;
+  icon: string;
+  effectType: string;
+  effectValue: number;
+  slot: EquipmentSlot | null;
+  requiredCorruption: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DbInventoryItem {
+  id: string;
+  userId: string;
+  itemId: string;
+  quantity: number;
+  isEquipped: boolean;
+  acquiredAt: Date;
+  updatedAt: Date;
+  item?: DbItem;
+}
+
+export interface DbEconomyTransaction {
+  id: string;
+  userId: string;
+  type: "MISSION_REWARD" | "PURCHASE" | "REFUND";
+  amount: number;
+  itemId: string | null;
+  description: string | null;
+  createdAt: Date;
+}
+
 export interface WorldStateSummary {
   corruption: number;
   integrityPercent: number;
@@ -167,6 +215,12 @@ export interface WorldStateSummary {
   allBosses: DbBossProgress[];
 }
 
+export interface ShopItemView extends DbItem {
+  isUnlocked: boolean;
+  canAfford: boolean;
+  ownedQuantity: number;
+}
+
 // Fallback file persistence path for zero-dependency local development/testing
 const LOCAL_DATA_DIR = path.join(process.cwd(), ".data");
 const LOCAL_DATA_FILE = path.join(LOCAL_DATA_DIR, "survivors.json");
@@ -179,6 +233,13 @@ interface LocalDataStore {
   worldProgress: DbWorldProgress[];
   worldAreaProgress: DbWorldAreaProgress[];
   bossProgress: DbBossProgress[];
+  items: DbItem[];
+  inventoryItems: DbInventoryItem[];
+  economyTransactions: DbEconomyTransaction[];
+}
+
+function generateId(prefix = "c"): string {
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 9)}`;
 }
 
 function getLocalStore(): LocalDataStore {
@@ -187,6 +248,24 @@ function getLocalStore(): LocalDataStore {
       fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
     }
     if (!fs.existsSync(LOCAL_DATA_FILE)) {
+      const seededItems: DbItem[] = STARTER_CATALOG.map((cat) => ({
+        id: `itm_${cat.key.toLowerCase()}`,
+        key: cat.key,
+        name: cat.name,
+        description: cat.description,
+        category: cat.category,
+        rarity: cat.rarity,
+        price: cat.price,
+        icon: cat.icon,
+        effectType: cat.effectType,
+        effectValue: cat.effectValue,
+        slot: cat.slot,
+        requiredCorruption: cat.requiredCorruption,
+        isActive: cat.isActive,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }));
+
       const initial: LocalDataStore = {
         users: [],
         characters: [],
@@ -195,6 +274,9 @@ function getLocalStore(): LocalDataStore {
         worldProgress: [],
         worldAreaProgress: [],
         bossProgress: [],
+        items: seededItems,
+        inventoryItems: [],
+        economyTransactions: [],
       };
       fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(initial, null, 2), "utf-8");
       return initial;
@@ -239,6 +321,50 @@ function getLocalStore(): LocalDataStore {
       createdAt: new Date(bp.createdAt),
       updatedAt: new Date(bp.updatedAt),
     }));
+
+    // Ensure catalog items exist
+    let items = (parsed.items || []).map((i: any) => ({
+      ...i,
+      createdAt: new Date(i.createdAt),
+      updatedAt: new Date(i.updatedAt),
+    }));
+
+    if (items.length < STARTER_CATALOG.length) {
+      for (const cat of STARTER_CATALOG) {
+        if (!items.some((i: any) => i.key === cat.key)) {
+          items.push({
+            id: `itm_${cat.key.toLowerCase()}`,
+            key: cat.key,
+            name: cat.name,
+            description: cat.description,
+            category: cat.category,
+            rarity: cat.rarity,
+            price: cat.price,
+            icon: cat.icon,
+            effectType: cat.effectType,
+            effectValue: cat.effectValue,
+            slot: cat.slot,
+            requiredCorruption: cat.requiredCorruption,
+            isActive: cat.isActive,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+        }
+      }
+    }
+    parsed.items = items;
+
+    parsed.inventoryItems = (parsed.inventoryItems || []).map((inv: any) => ({
+      ...inv,
+      acquiredAt: new Date(inv.acquiredAt),
+      updatedAt: new Date(inv.updatedAt),
+    }));
+
+    parsed.economyTransactions = (parsed.economyTransactions || []).map((tx: any) => ({
+      ...tx,
+      createdAt: new Date(tx.createdAt),
+    }));
+
     return parsed;
   } catch (err) {
     console.error("[DB Fallback Store Error]:", err);
@@ -250,6 +376,9 @@ function getLocalStore(): LocalDataStore {
       worldProgress: [],
       worldAreaProgress: [],
       bossProgress: [],
+      items: [],
+      inventoryItems: [],
+      economyTransactions: [],
     };
   }
 }
@@ -263,10 +392,6 @@ function saveLocalStore(store: LocalDataStore): void {
   } catch (err) {
     console.error("[DB Fallback Save Error]:", err);
   }
-}
-
-function generateId(prefix = "c"): string {
-  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 9)}`;
 }
 
 // Database Repository Operations
@@ -804,7 +929,7 @@ export const db = {
         }
       }
 
-      // Find active boss (first undefeated boss according to order)
+      // Find active boss
       const sortedBosses = [...userBosses].sort((a, b) => {
         const orderA = getBossDefinition(a.bossKey).order;
         const orderB = getBossDefinition(b.bossKey).order;
@@ -838,7 +963,6 @@ export const db = {
       store.worldProgress.push(wp);
     }
 
-    // Ensure all 6 areas exist in local store
     let userAreas = store.worldAreaProgress.filter((a) => a.userId === userId);
     for (const areaDef of WORLD_AREAS) {
       let area = userAreas.find((a) => a.areaKey === areaDef.key);
@@ -858,7 +982,6 @@ export const db = {
       }
     }
 
-    // Ensure all 4 bosses exist in local store
     let userBosses = store.bossProgress.filter((b) => b.userId === userId);
     for (const bossDef of BOSS_DEFINITIONS) {
       let boss = userBosses.find((b) => b.bossKey === bossDef.key);
@@ -896,6 +1019,35 @@ export const db = {
       allBosses: sortedBosses,
       activeBoss,
     };
+  },
+
+  /**
+   * Update World Progress directly
+   */
+  async updateWorldProgress(
+    userId: string,
+    data: Partial<DbWorldProgress>
+  ): Promise<DbWorldProgress | null> {
+    const pgWp = await executePrisma(() =>
+      prisma.worldProgress.update({
+        where: { userId },
+        data,
+      })
+    );
+    if (pgWp) return pgWp as unknown as DbWorldProgress;
+
+    const store = getLocalStore();
+    const idx = store.worldProgress.findIndex((w) => w.userId === userId);
+    if (idx === -1) return null;
+
+    const updated = {
+      ...store.worldProgress[idx],
+      ...data,
+      updatedAt: new Date(),
+    };
+    store.worldProgress[idx] = updated;
+    saveLocalStore(store);
+    return updated;
   },
 
   /**
@@ -986,15 +1138,506 @@ export const db = {
     return activeBoss;
   },
 
+  // ==========================================
+  // PHASE 6: ARCADE & INVENTORY SYSTEMS
+  // ==========================================
+
   /**
-   * ATOMIC TRANSACTION: Complete Mission & Award Full Phase 5 Progression
+   * Ensure catalog items are seeded in database
+   */
+  async findOrCreateItems(): Promise<DbItem[]> {
+    const pgItems = await executePrisma(async () => {
+      let items = await prisma.item.findMany();
+      if (items.length < STARTER_CATALOG.length) {
+        for (const cat of STARTER_CATALOG) {
+          const exists = items.some((i) => i.key === cat.key);
+          if (!exists) {
+            const newItem = await prisma.item.create({
+              data: {
+                key: cat.key,
+                name: cat.name,
+                description: cat.description,
+                category: cat.category,
+                rarity: cat.rarity,
+                price: cat.price,
+                icon: cat.icon,
+                effectType: cat.effectType,
+                effectValue: cat.effectValue,
+                slot: cat.slot,
+                requiredCorruption: cat.requiredCorruption,
+                isActive: cat.isActive,
+              },
+            });
+            items.push(newItem);
+          }
+        }
+      }
+      return items;
+    });
+
+    if (pgItems) return pgItems as unknown as DbItem[];
+
+    const store = getLocalStore();
+    return store.items;
+  },
+
+  /**
+   * Find all Arcade shop catalog items with user contextual metadata (unlocked, can afford, owned quantity)
+   */
+  async findShopItems(userId: string): Promise<{
+    items: ShopItemView[];
+    credits: number;
+    corruption: number;
+  }> {
+    const [character, worldState, allItems, inventory] = await Promise.all([
+      this.findCharacterByUserId(userId),
+      this.findWorldStateByUserId(userId),
+      this.findOrCreateItems(),
+      this.findInventoryByUserId(userId),
+    ]);
+
+    const credits = character?.credits || 0;
+    const corruption = worldState.corruption;
+
+    const items: ShopItemView[] = allItems
+      .filter((i) => i.isActive)
+      .map((item) => {
+        const owned = inventory.find((inv) => inv.itemId === item.id || inv.item?.key === item.key);
+        const isUnlocked = corruption <= item.requiredCorruption;
+        const canAfford = credits >= item.price;
+
+        return {
+          ...item,
+          isUnlocked,
+          canAfford,
+          ownedQuantity: owned?.quantity || 0,
+        };
+      })
+      .sort((a, b) => {
+        // Sort by rarity order then price
+        const rarityA = RARITY_CONFIG[a.rarity as ItemRarity]?.order || 1;
+        const rarityB = RARITY_CONFIG[b.rarity as ItemRarity]?.order || 1;
+        if (rarityA !== rarityB) return rarityA - rarityB;
+        return a.price - b.price;
+      });
+
+    return { items, credits, corruption };
+  },
+
+  /**
+   * ATOMIC TRANSACTION: Purchase Arcade Item
+   * 1. Validates user & character exist
+   * 2. Validates item exists, is active, is unlocked by corruption, and user has sufficient credits
+   * 3. Deducts item price from character credits
+   * 4. Upserts inventory item quantity (+1)
+   * 5. Logs economy transaction
+   * 6. Commits atomically
+   */
+  async purchaseItemTransaction(
+    userId: string,
+    itemId: string
+  ): Promise<{
+    success: boolean;
+    error?: string;
+    statusCode?: number;
+    newBalance?: number;
+    item?: DbItem;
+    inventoryItem?: DbInventoryItem;
+  }> {
+    // 1. Fetch character, world state, and item
+    const [character, worldState, allItems] = await Promise.all([
+      this.findCharacterByUserId(userId),
+      this.findWorldStateByUserId(userId),
+      this.findOrCreateItems(),
+    ]);
+
+    if (!character) {
+      return {
+        success: false,
+        error: "Survivor matrix not found.",
+        statusCode: 404,
+      };
+    }
+
+    const item = allItems.find((i) => i.id === itemId || i.key === itemId);
+    if (!item) {
+      return {
+        success: false,
+        error: "Target item not found in Arcade catalog.",
+        statusCode: 404,
+      };
+    }
+
+    // 2. Validate Authoritative Purchase Rules
+    const validation = validatePurchaseEligibility({
+      credits: character.credits,
+      itemPrice: item.price,
+      isActive: item.isActive,
+      requiredCorruption: item.requiredCorruption,
+      currentCorruption: worldState.corruption,
+    });
+
+    if (!validation.eligible) {
+      return {
+        success: false,
+        error: validation.reason,
+        statusCode: validation.statusCode || 400,
+      };
+    }
+
+    const newBalance = character.credits - item.price;
+    const now = new Date();
+
+    // 3. Prisma Atomic Transaction
+    const pgResult = await executePrisma(async () => {
+      return prisma.$transaction(async (tx) => {
+        // Deduct credits
+        const updatedChar = await tx.character.update({
+          where: { userId },
+          data: { credits: newBalance },
+        });
+
+        // Upsert inventory item
+        const existingInv = await tx.inventoryItem.findUnique({
+          where: { userId_itemId: { userId, itemId: item.id } },
+        });
+
+        let updatedInv;
+        if (existingInv) {
+          updatedInv = await tx.inventoryItem.update({
+            where: { id: existingInv.id },
+            data: { quantity: existingInv.quantity + 1 },
+            include: { item: true },
+          });
+        } else {
+          updatedInv = await tx.inventoryItem.create({
+            data: {
+              userId,
+              itemId: item.id,
+              quantity: 1,
+              isEquipped: false,
+            },
+            include: { item: true },
+          });
+        }
+
+        // Log transaction
+        await tx.economyTransaction.create({
+          data: {
+            userId,
+            type: "PURCHASE",
+            amount: -item.price,
+            itemId: item.id,
+            description: `Acquired ${item.name} from The Arcade`,
+          },
+        });
+
+        return {
+          char: updatedChar as unknown as DbCharacter,
+          inv: updatedInv as unknown as DbInventoryItem,
+        };
+      });
+    });
+
+    if (pgResult) {
+      return {
+        success: true,
+        newBalance: pgResult.char.credits,
+        item,
+        inventoryItem: pgResult.inv,
+      };
+    }
+
+    // 4. Local Fallback Atomic Store Commit
+    const store = getLocalStore();
+    const charIdx = store.characters.findIndex((c) => c.userId === userId);
+    if (charIdx === -1) {
+      return {
+        success: false,
+        error: "Survivor character not found in local store.",
+        statusCode: 500,
+      };
+    }
+
+    // Deduct credits
+    store.characters[charIdx].credits = newBalance;
+    store.characters[charIdx].updatedAt = now;
+
+    // Upsert inventory item
+    let invIdx = store.inventoryItems.findIndex(
+      (inv) => inv.userId === userId && (inv.itemId === item.id || inv.itemId === item.key)
+    );
+
+    let updatedInv: DbInventoryItem;
+    if (invIdx >= 0) {
+      store.inventoryItems[invIdx].quantity += 1;
+      store.inventoryItems[invIdx].updatedAt = now;
+      updatedInv = { ...store.inventoryItems[invIdx], item };
+    } else {
+      updatedInv = {
+        id: generateId("inv"),
+        userId,
+        itemId: item.id,
+        quantity: 1,
+        isEquipped: false,
+        acquiredAt: now,
+        updatedAt: now,
+        item,
+      };
+      store.inventoryItems.push(updatedInv);
+    }
+
+    // Log economy transaction
+    const txRecord: DbEconomyTransaction = {
+      id: generateId("etx"),
+      userId,
+      type: "PURCHASE",
+      amount: -item.price,
+      itemId: item.id,
+      description: `Acquired ${item.name} from The Arcade`,
+      createdAt: now,
+    };
+    store.economyTransactions.push(txRecord);
+
+    saveLocalStore(store);
+
+    return {
+      success: true,
+      newBalance,
+      item,
+      inventoryItem: updatedInv,
+    };
+  },
+
+  /**
+   * Find player inventory with linked Item details
+   */
+  async findInventoryByUserId(userId: string): Promise<DbInventoryItem[]> {
+    const pgInv = await executePrisma(() =>
+      prisma.inventoryItem.findMany({
+        where: { userId },
+        include: { item: true },
+        orderBy: [{ isEquipped: "desc" }, { acquiredAt: "desc" }],
+      })
+    );
+
+    if (pgInv) {
+      return pgInv.map((inv: any) => ({
+        ...inv,
+        item: inv.item as DbItem,
+      }));
+    }
+
+    const store = getLocalStore();
+    const allItems = store.items;
+
+    const userInv = store.inventoryItems
+      .filter((inv) => inv.userId === userId)
+      .map((inv) => {
+        const linkedItem = allItems.find(
+          (i) => i.id === inv.itemId || i.key === inv.itemId
+        );
+        return {
+          ...inv,
+          item: linkedItem,
+        };
+      });
+
+    return userInv.sort((a, b) => {
+      if (a.isEquipped !== b.isEquipped) return a.isEquipped ? -1 : 1;
+      const rarityA = RARITY_CONFIG[a.item?.rarity as ItemRarity]?.order || 1;
+      const rarityB = RARITY_CONFIG[b.item?.rarity as ItemRarity]?.order || 1;
+      if (rarityA !== rarityB) return rarityB - rarityA;
+      return b.acquiredAt.getTime() - a.acquiredAt.getTime();
+    });
+  },
+
+  /**
+   * ATOMIC TRANSACTION: Equip Item into Slot
+   * 1. Verifies item belongs to user
+   * 2. Checks isEquippable(item)
+   * 3. Unequips any existing item occupying the same equipment slot
+   * 4. Sets isEquipped = true for target item
+   */
+  async equipInventoryItem(
+    userId: string,
+    inventoryItemId: string
+  ): Promise<{
+    success: boolean;
+    error?: string;
+    statusCode?: number;
+    equippedItem?: DbInventoryItem;
+  }> {
+    // 1. Prisma Atomic Transaction
+    const pgResult = await executePrisma(async () => {
+      return prisma.$transaction(async (tx) => {
+        const target = await tx.inventoryItem.findFirst({
+          where: { id: inventoryItemId, userId },
+          include: { item: true },
+        });
+
+        if (!target) return { error: "Item not found in your inventory", code: 404 };
+        if (!isEquippable(target.item)) {
+          return { error: "This item cannot be equipped into a gear slot.", code: 400 };
+        }
+
+        const slot = target.item.slot;
+
+        // Unequip any item in the same slot for this user
+        if (slot) {
+          const slotConflicts = await tx.inventoryItem.findMany({
+            where: {
+              userId,
+              isEquipped: true,
+              item: { slot },
+            },
+          });
+
+          for (const conflict of slotConflicts) {
+            await tx.inventoryItem.update({
+              where: { id: conflict.id },
+              data: { isEquipped: false },
+            });
+          }
+        }
+
+        // Equip target item
+        const updated = await tx.inventoryItem.update({
+          where: { id: target.id },
+          data: { isEquipped: true },
+          include: { item: true },
+        });
+
+        return { equippedItem: updated as unknown as DbInventoryItem };
+      });
+    });
+
+    if (pgResult) {
+      if ("error" in pgResult) {
+        return {
+          success: false,
+          error: pgResult.error,
+          statusCode: pgResult.code,
+        };
+      }
+      return { success: true, equippedItem: pgResult.equippedItem };
+    }
+
+    // 2. Local Fallback Atomic Store
+    const store = getLocalStore();
+    const targetIdx = store.inventoryItems.findIndex(
+      (inv) => inv.id === inventoryItemId && inv.userId === userId
+    );
+
+    if (targetIdx === -1) {
+      return {
+        success: false,
+        error: "Item not found in your inventory.",
+        statusCode: 404,
+      };
+    }
+
+    const targetInv = store.inventoryItems[targetIdx];
+    const linkedItem = store.items.find(
+      (i) => i.id === targetInv.itemId || i.key === targetInv.itemId
+    );
+
+    if (!linkedItem || !isEquippable(linkedItem)) {
+      return {
+        success: false,
+        error: "This item cannot be equipped into a gear slot.",
+        statusCode: 400,
+      };
+    }
+
+    const slot = linkedItem.slot;
+
+    // Unequip conflicts in same slot
+    if (slot) {
+      store.inventoryItems.forEach((inv) => {
+        if (inv.userId === userId && inv.isEquipped) {
+          const i = store.items.find((it) => it.id === inv.itemId || it.key === inv.itemId);
+          if (i && i.slot === slot) {
+            inv.isEquipped = false;
+            inv.updatedAt = new Date();
+          }
+        }
+      });
+    }
+
+    // Equip target
+    store.inventoryItems[targetIdx].isEquipped = true;
+    store.inventoryItems[targetIdx].updatedAt = new Date();
+    saveLocalStore(store);
+
+    return {
+      success: true,
+      equippedItem: { ...store.inventoryItems[targetIdx], item: linkedItem },
+    };
+  },
+
+  /**
+   * Unequip an item
+   */
+  async unequipInventoryItem(
+    userId: string,
+    inventoryItemId: string
+  ): Promise<{
+    success: boolean;
+    error?: string;
+    statusCode?: number;
+    inventoryItem?: DbInventoryItem;
+  }> {
+    const pgResult = await executePrisma(async () => {
+      const target = await prisma.inventoryItem.findFirst({
+        where: { id: inventoryItemId, userId },
+      });
+      if (!target) return null;
+
+      const updated = await prisma.inventoryItem.update({
+        where: { id: target.id },
+        data: { isEquipped: false },
+        include: { item: true },
+      });
+      return updated as unknown as DbInventoryItem;
+    });
+
+    if (pgResult) {
+      return { success: true, inventoryItem: pgResult };
+    }
+
+    const store = getLocalStore();
+    const idx = store.inventoryItems.findIndex(
+      (inv) => inv.id === inventoryItemId && inv.userId === userId
+    );
+    if (idx === -1) {
+      return { success: false, error: "Item not found.", statusCode: 404 };
+    }
+
+    store.inventoryItems[idx].isEquipped = false;
+    store.inventoryItems[idx].updatedAt = new Date();
+    saveLocalStore(store);
+
+    const linkedItem = store.items.find(
+      (i) => i.id === store.inventoryItems[idx].itemId || i.key === store.inventoryItems[idx].itemId
+    );
+
+    return {
+      success: true,
+      inventoryItem: { ...store.inventoryItems[idx], item: linkedItem },
+    };
+  },
+
+  /**
+   * ATOMIC TRANSACTION: Complete Mission & Award Full Phase 5 & 6 Progression
    * 1. Validates ownership & existence
    * 2. Checks duplicate completion rules
    * 3. Calculates authoritative character XP, credits, attribute boost, and level advancement
    * 4. Calculates authoritative World Corruption reduction & Area Restoration
    * 5. Calculates authoritative Boss damage, defeat states, and next boss transitions
    * 6. Creates historical MissionCompletion record
-   * 7. Atomically updates Character, WorldProgress, WorldAreaProgress, BossProgress, and Mission
+   * 7. Creates EconomyTransaction record for earned credits
+   * 8. Atomically updates Character, WorldProgress, WorldAreaProgress, BossProgress, and Mission
    */
   async completeMissionTransaction(
     userId: string,
@@ -1157,6 +1800,16 @@ export const db = {
           },
         });
 
+        // Log Economy Transaction
+        await tx.economyTransaction.create({
+          data: {
+            userId,
+            type: "MISSION_REWARD",
+            amount: rewards.credits,
+            description: `Reward for clearing mission: ${mission.title}`,
+          },
+        });
+
         // Update Character
         const updatedChar = await tx.character.update({
           where: { userId },
@@ -1295,6 +1948,16 @@ export const db = {
       completedAt,
     };
 
+    const economyRecord: DbEconomyTransaction = {
+      id: generateId("etx"),
+      userId,
+      type: "MISSION_REWARD",
+      amount: rewards.credits,
+      itemId: null,
+      description: `Reward for clearing mission: ${mission.title}`,
+      createdAt: completedAt,
+    };
+
     const updatedChar: DbCharacter = {
       ...store.characters[localCharIdx],
       ...updatedStats,
@@ -1338,6 +2001,7 @@ export const db = {
     }
 
     store.missionCompletions.push(completionRecord);
+    store.economyTransactions.push(economyRecord);
     store.characters[localCharIdx] = updatedChar;
     store.missions[localMsnIdx] = updatedMission;
     saveLocalStore(store);

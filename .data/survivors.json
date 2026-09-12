@@ -87,6 +87,54 @@
       "username": "Malory",
       "createdAt": "2026-09-12T16:14:33.893Z",
       "updatedAt": "2026-09-12T16:14:33.893Z"
+    },
+    {
+      "id": "usr_mtylve1e_b7vyweo",
+      "email": "survivor_p6_1789230880212@theotherside.world",
+      "passwordHash": "mock_hash_p6",
+      "username": "Lyra",
+      "createdAt": "2026-09-12T16:34:44.306Z",
+      "updatedAt": "2026-09-12T16:34:44.306Z"
+    },
+    {
+      "id": "usr_mtylve22_bwe71c7",
+      "email": "intruder_p6_1789230884330@badactor.net",
+      "passwordHash": "hash_malory",
+      "username": "Malory",
+      "createdAt": "2026-09-12T16:34:44.330Z",
+      "updatedAt": "2026-09-12T16:34:44.330Z"
+    },
+    {
+      "id": "usr_mtylwf6j_scdilfh",
+      "email": "survivor_p6_1789230928324@theotherside.world",
+      "passwordHash": "mock_hash_p6",
+      "username": "Lyra",
+      "createdAt": "2026-09-12T16:35:32.443Z",
+      "updatedAt": "2026-09-12T16:35:32.443Z"
+    },
+    {
+      "id": "usr_mtylwf77_uwumw7w",
+      "email": "intruder_p6_1789230932467@badactor.net",
+      "passwordHash": "hash_malory",
+      "username": "Malory",
+      "createdAt": "2026-09-12T16:35:32.467Z",
+      "updatedAt": "2026-09-12T16:35:32.467Z"
+    },
+    {
+      "id": "usr_mtym272m_zbz10or",
+      "email": "survivor_p5_1789231197751@theotherside.world",
+      "passwordHash": "mock_hash_p5",
+      "username": "Kaelen",
+      "createdAt": "2026-09-12T16:40:01.870Z",
+      "updatedAt": "2026-09-12T16:40:01.870Z"
+    },
+    {
+      "id": "usr_mtym274q_6bg3ddg",
+      "email": "intruder_1789231201945@badactor.net",
+      "passwordHash": "intruder_hash",
+      "username": "Malory",
+      "createdAt": "2026-09-12T16:40:01.946Z",
+      "updatedAt": "2026-09-12T16:40:01.946Z"
     }
   ],
   "characters": [
@@ -97,14 +145,14 @@
       "archetype": "STRATEGIST",
       "level": 2,
       "xp": 180,
-      "credits": 90,
+      "credits": 15,
       "mind": 15,
       "body": 8,
       "focus": 21,
       "spirit": 8,
       "connection": 6,
       "createdAt": "2026-09-12T13:07:24.033Z",
-      "updatedAt": "2026-09-12T16:19:18.375Z"
+      "updatedAt": "2026-09-12T16:42:12.342Z"
     },
     {
       "id": "chr_mtyg6drr_kap2cdf",
@@ -265,6 +313,102 @@
       "connection": 6,
       "createdAt": "2026-09-12T16:14:33.895Z",
       "updatedAt": "2026-09-12T16:14:33.895Z"
+    },
+    {
+      "id": "chr_mtylve1h_f7c96xy",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "name": "Lyra",
+      "archetype": "STRATEGIST",
+      "level": 1,
+      "xp": 0,
+      "credits": 500,
+      "mind": 12,
+      "body": 8,
+      "focus": 16,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:34:44.309Z",
+      "updatedAt": "2026-09-12T16:34:44.339Z"
+    },
+    {
+      "id": "chr_mtylve23_bgdqfdr",
+      "userId": "usr_mtylve22_bwe71c7",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:34:44.332Z",
+      "updatedAt": "2026-09-12T16:34:44.332Z"
+    },
+    {
+      "id": "chr_mtylwf6l_ii47jql",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "name": "Lyra",
+      "archetype": "STRATEGIST",
+      "level": 1,
+      "xp": 0,
+      "credits": 250,
+      "mind": 12,
+      "body": 8,
+      "focus": 16,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:35:32.445Z",
+      "updatedAt": "2026-09-12T16:35:32.495Z"
+    },
+    {
+      "id": "chr_mtylwf79_inax829",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:35:32.469Z",
+      "updatedAt": "2026-09-12T16:35:32.469Z"
+    },
+    {
+      "id": "chr_mtym272q_qwtgfw1",
+      "userId": "usr_mtym272m_zbz10or",
+      "name": "Kaelen",
+      "archetype": "SCHOLAR",
+      "level": 3,
+      "xp": 980,
+      "credits": 390,
+      "mind": 22,
+      "body": 33,
+      "focus": 14,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:40:01.874Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "chr_mtym274s_f9odvwe",
+      "userId": "usr_mtym274q_6bg3ddg",
+      "name": "Malory",
+      "archetype": "WARRIOR",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 8,
+      "body": 16,
+      "focus": 10,
+      "spirit": 10,
+      "connection": 6,
+      "createdAt": "2026-09-12T16:40:01.948Z",
+      "updatedAt": "2026-09-12T16:40:01.948Z"
     }
   ],
   "missions": [
@@ -581,6 +725,134 @@
       "updatedAt": "2026-09-12T16:19:18.375Z",
       "lastCompletedAt": "2026-09-12T16:19:18.373Z",
       "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym272u_vts3nvb",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Read 10 pages of OS architecture",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EASY",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.878Z",
+      "updatedAt": "2026-09-12T16:40:01.884Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.883Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym2733_t11qjpz",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "30-minute deep focus sprint",
+      "description": null,
+      "category": "FOCUS",
+      "difficulty": "MEDIUM",
+      "frequency": "DAILY",
+      "dueDate": null,
+      "isActive": true,
+      "status": "ACTIVE",
+      "createdAt": "2026-09-12T16:40:01.887Z",
+      "updatedAt": "2026-09-12T16:40:01.891Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.890Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym273b_rwc7l13",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Ship production microservice",
+      "description": null,
+      "category": "MIND",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.895Z",
+      "updatedAt": "2026-09-12T16:40:01.900Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.899Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym273l_fw7upjv",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Final Strike Phase 1",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.905Z",
+      "updatedAt": "2026-09-12T16:40:01.912Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.912Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym273x_obrfsda",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Final Strike Phase 2",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.917Z",
+      "updatedAt": "2026-09-12T16:40:01.921Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.921Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym2743_1hkbm4z",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Final Strike Phase 3",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.923Z",
+      "updatedAt": "2026-09-12T16:40:01.927Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.927Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym2749_32gemh5",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Final Strike Phase 4",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.929Z",
+      "updatedAt": "2026-09-12T16:40:01.933Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.933Z",
+      "isCompletedToday": true
+    },
+    {
+      "id": "msn_mtym274f_8a9r7br",
+      "userId": "usr_mtym272m_zbz10or",
+      "title": "Final Strike Phase 5",
+      "description": null,
+      "category": "BODY",
+      "difficulty": "EPIC",
+      "frequency": "ONCE",
+      "dueDate": null,
+      "isActive": false,
+      "status": "COMPLETED",
+      "createdAt": "2026-09-12T16:40:01.935Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z",
+      "lastCompletedAt": "2026-09-12T16:40:01.939Z",
+      "isCompletedToday": true
     }
   ],
   "missionCompletions": [
@@ -719,6 +991,70 @@
       "xpEarned": 40,
       "creditsEarned": 20,
       "completedAt": "2026-09-12T16:19:18.373Z"
+    },
+    {
+      "id": "cmp_mtym2730_bzanzcr",
+      "missionId": "msn_mtym272u_vts3nvb",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 20,
+      "creditsEarned": 10,
+      "completedAt": "2026-09-12T16:40:01.883Z"
+    },
+    {
+      "id": "cmp_mtym2737_4hk69rp",
+      "missionId": "msn_mtym2733_t11qjpz",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 40,
+      "creditsEarned": 20,
+      "completedAt": "2026-09-12T16:40:01.890Z"
+    },
+    {
+      "id": "cmp_mtym273g_xouqqlb",
+      "missionId": "msn_mtym273b_rwc7l13",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:40:01.899Z"
+    },
+    {
+      "id": "cmp_mtym273s_95r5rmx",
+      "missionId": "msn_mtym273l_fw7upjv",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:40:01.912Z"
+    },
+    {
+      "id": "cmp_mtym2741_rf2as27",
+      "missionId": "msn_mtym273x_obrfsda",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:40:01.921Z"
+    },
+    {
+      "id": "cmp_mtym2747_z1m9h7u",
+      "missionId": "msn_mtym2743_1hkbm4z",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:40:01.927Z"
+    },
+    {
+      "id": "cmp_mtym274d_vt27q84",
+      "missionId": "msn_mtym2749_32gemh5",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:40:01.933Z"
+    },
+    {
+      "id": "cmp_mtym274j_vw971s3",
+      "missionId": "msn_mtym274f_8a9r7br",
+      "userId": "usr_mtym272m_zbz10or",
+      "xpEarned": 120,
+      "creditsEarned": 60,
+      "completedAt": "2026-09-12T16:40:01.939Z"
     }
   ],
   "worldProgress": [
@@ -735,6 +1071,41 @@
       "corruption": 96,
       "createdAt": "2026-09-12T16:16:23.529Z",
       "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wp_mtylve1m_ujujvj2",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "corruption": 100,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wp_mtylve26_od7xe0q",
+      "userId": "usr_mtylve22_bwe71c7",
+      "corruption": 100,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wp_mtylwf6q_pht0dri",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "corruption": 60,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.481Z"
+    },
+    {
+      "id": "wp_mtylwf7b_2jcvsts",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "corruption": 100,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wp_mtym272r_1s61upn",
+      "userId": "usr_mtym272m_zbz10or",
+      "corruption": 24,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
     }
   ],
   "worldAreaProgress": [
@@ -845,6 +1216,276 @@
       "restorationPercent": 0,
       "createdAt": "2026-09-12T16:16:23.529Z",
       "updatedAt": "2026-09-12T16:19:18.375Z"
+    },
+    {
+      "id": "wap_mtylve1m_q6vzgip",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wap_mtylve1m_9ps1b7t",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wap_mtylve1m_qqzuhlt",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wap_mtylve1m_vtpqjky",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wap_mtylve1m_xl5gzov",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wap_mtylve1m_nidhpck",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "wap_mtylve26_k9leycg",
+      "userId": "usr_mtylve22_bwe71c7",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wap_mtylve26_yalq7sh",
+      "userId": "usr_mtylve22_bwe71c7",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wap_mtylve26_cc78cba",
+      "userId": "usr_mtylve22_bwe71c7",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wap_mtylve26_jhi68v2",
+      "userId": "usr_mtylve22_bwe71c7",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wap_mtylve26_5w15ivr",
+      "userId": "usr_mtylve22_bwe71c7",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wap_mtylve26_2oufhz1",
+      "userId": "usr_mtylve22_bwe71c7",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "wap_mtylwf6q_ryxh1n2",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.450Z"
+    },
+    {
+      "id": "wap_mtylwf6q_6oh3dpn",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.450Z"
+    },
+    {
+      "id": "wap_mtylwf6q_pqrk5ip",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.450Z"
+    },
+    {
+      "id": "wap_mtylwf6q_wxty1xj",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.450Z"
+    },
+    {
+      "id": "wap_mtylwf6q_3kqs1ia",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.450Z"
+    },
+    {
+      "id": "wap_mtylwf6q_rsjerc7",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.450Z",
+      "updatedAt": "2026-09-12T16:35:32.450Z"
+    },
+    {
+      "id": "wap_mtylwf7b_bhoo1u4",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wap_mtylwf7b_9t1igf9",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wap_mtylwf7b_1ayz2yw",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wap_mtylwf7b_y3bzryi",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wap_mtylwf7b_qcvd8q4",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wap_mtylwf7b_txkm8pl",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "wap_mtym272r_s9jduzv",
+      "userId": "usr_mtym272m_zbz10or",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wap_mtym272r_vf1xwxr",
+      "userId": "usr_mtym272m_zbz10or",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": true,
+      "restorationPercent": 12,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wap_mtym272r_v5in41m",
+      "userId": "usr_mtym272m_zbz10or",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": true,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wap_mtym272r_97lfr6q",
+      "userId": "usr_mtym272m_zbz10or",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": true,
+      "restorationPercent": 50,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wap_mtym272r_s6b5b76",
+      "userId": "usr_mtym272m_zbz10or",
+      "areaKey": "STILLWATER",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "wap_mtym272r_207fuot",
+      "userId": "usr_mtym272m_zbz10or",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-12T16:40:01.875Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
     }
   ],
   "bossProgress": [
@@ -935,6 +1576,598 @@
       "defeatedAt": null,
       "createdAt": "2026-09-12T16:16:23.530Z",
       "updatedAt": "2026-09-12T16:16:23.530Z"
+    },
+    {
+      "id": "bp_mtylve1m_p7oadb5",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "bp_mtylve1m_cjg7cvr",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "bp_mtylve1m_6xre1xo",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "bp_mtylve1m_l9t100b",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.314Z",
+      "updatedAt": "2026-09-12T16:34:44.314Z"
+    },
+    {
+      "id": "bp_mtylve26_gol6cu3",
+      "userId": "usr_mtylve22_bwe71c7",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "bp_mtylve26_qujrlqc",
+      "userId": "usr_mtylve22_bwe71c7",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "bp_mtylve26_riktd5t",
+      "userId": "usr_mtylve22_bwe71c7",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "bp_mtylve26_3o7qccb",
+      "userId": "usr_mtylve22_bwe71c7",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:34:44.334Z",
+      "updatedAt": "2026-09-12T16:34:44.334Z"
+    },
+    {
+      "id": "bp_mtylwf6r_lub281s",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.451Z",
+      "updatedAt": "2026-09-12T16:35:32.451Z"
+    },
+    {
+      "id": "bp_mtylwf6r_flmdkq5",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.451Z",
+      "updatedAt": "2026-09-12T16:35:32.451Z"
+    },
+    {
+      "id": "bp_mtylwf6r_yypkaw0",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.451Z",
+      "updatedAt": "2026-09-12T16:35:32.451Z"
+    },
+    {
+      "id": "bp_mtylwf6r_7cbpwd4",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.451Z",
+      "updatedAt": "2026-09-12T16:35:32.451Z"
+    },
+    {
+      "id": "bp_mtylwf7b_py33qy1",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 500,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "bp_mtylwf7b_fdtm50g",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "bp_mtylwf7b_80ylkfs",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "bp_mtylwf7b_h87dt3a",
+      "userId": "usr_mtylwf77_uwumw7w",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:35:32.471Z",
+      "updatedAt": "2026-09-12T16:35:32.471Z"
+    },
+    {
+      "id": "bp_mtym272s_r6ao7j9",
+      "userId": "usr_mtym272m_zbz10or",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 0,
+      "maxHp": 500,
+      "isDefeated": true,
+      "defeatedAt": "2026-09-12T16:40:01.939Z",
+      "createdAt": "2026-09-12T16:40:01.876Z",
+      "updatedAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "bp_mtym272s_pqiq7qp",
+      "userId": "usr_mtym272m_zbz10or",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:40:01.876Z",
+      "updatedAt": "2026-09-12T16:40:01.876Z"
+    },
+    {
+      "id": "bp_mtym272s_upgnmcm",
+      "userId": "usr_mtym272m_zbz10or",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:40:01.876Z",
+      "updatedAt": "2026-09-12T16:40:01.876Z"
+    },
+    {
+      "id": "bp_mtym272s_23yahyh",
+      "userId": "usr_mtym272m_zbz10or",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-12T16:40:01.876Z",
+      "updatedAt": "2026-09-12T16:40:01.876Z"
+    }
+  ],
+  "items": [
+    {
+      "id": "itm_focus_tonic",
+      "key": "FOCUS_TONIC",
+      "name": "FOCUS TONIC",
+      "description": "A temporary energetic charge for intense focus sessions.",
+      "category": "CONSUMABLE",
+      "rarity": "COMMON",
+      "price": 50,
+      "icon": "Zap",
+      "effectType": "FOCUS_BOOST",
+      "effectValue": 2,
+      "slot": null,
+      "requiredCorruption": 100,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    },
+    {
+      "id": "itm_stable_circuit",
+      "key": "STABLE_CIRCUIT",
+      "name": "STABLE CIRCUIT",
+      "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+      "category": "EQUIPMENT",
+      "rarity": "COMMON",
+      "price": 75,
+      "icon": "Cpu",
+      "effectType": "STABILITY_BOOST",
+      "effectValue": 3,
+      "slot": "FOCUS",
+      "requiredCorruption": 100,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    },
+    {
+      "id": "itm_night_compass",
+      "key": "NIGHT_COMPASS",
+      "name": "NIGHT COMPASS",
+      "description": "Points directly toward the critical tasks you keep instinctively avoiding.",
+      "category": "RELIC",
+      "rarity": "RARE",
+      "price": 150,
+      "icon": "Compass",
+      "effectType": "FOCUS_BOOST",
+      "effectValue": 5,
+      "slot": "RELIC",
+      "requiredCorruption": 70,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    },
+    {
+      "id": "itm_memory_shard",
+      "key": "MEMORY_SHARD",
+      "name": "MEMORY SHARD",
+      "description": "A crystallized data fragment recovered from the restored Knowledge Forest.",
+      "category": "EQUIPMENT",
+      "rarity": "RARE",
+      "price": 200,
+      "icon": "Brain",
+      "effectType": "MIND_BOOST",
+      "effectValue": 5,
+      "slot": "MIND",
+      "requiredCorruption": 70,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    },
+    {
+      "id": "itm_iron_core",
+      "key": "IRON_CORE",
+      "name": "IRON CORE",
+      "description": "Forged from pure somatic resistance atop the Iron Peak.",
+      "category": "EQUIPMENT",
+      "rarity": "EPIC",
+      "price": 400,
+      "icon": "Shield",
+      "effectType": "BODY_BOOST",
+      "effectValue": 8,
+      "slot": "BODY",
+      "requiredCorruption": 40,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    },
+    {
+      "id": "itm_stillwater_relic",
+      "key": "STILLWATER_RELIC",
+      "name": "STILLWATER RELIC",
+      "description": "Recovered from the depths of Stillwater where internal mental chatter goes silent.",
+      "category": "RELIC",
+      "rarity": "EPIC",
+      "price": 500,
+      "icon": "Sparkles",
+      "effectType": "SPIRIT_BOOST",
+      "effectValue": 8,
+      "slot": "SPIRIT",
+      "requiredCorruption": 40,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    },
+    {
+      "id": "itm_gate_key",
+      "key": "GATE_KEY",
+      "name": "GATE KEY",
+      "description": "An ancient obsidian master key that radiates an ethereal aura across both dimensions.",
+      "category": "COSMETIC",
+      "rarity": "LEGENDARY",
+      "price": 1000,
+      "icon": "Key",
+      "effectType": "COSMETIC_AURA",
+      "effectValue": 10,
+      "slot": "RELIC",
+      "requiredCorruption": 15,
+      "isActive": true,
+      "createdAt": "2026-09-12T16:29:59.039Z",
+      "updatedAt": "2026-09-12T16:29:59.039Z"
+    }
+  ],
+  "inventoryItems": [
+    {
+      "id": "inv_mtylve1o_c36dp93",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "itemId": "itm_stable_circuit",
+      "quantity": 1,
+      "isEquipped": true,
+      "acquiredAt": "2026-09-12T16:34:44.316Z",
+      "updatedAt": "2026-09-12T16:34:44.336Z",
+      "item": {
+        "id": "itm_stable_circuit",
+        "key": "STABLE_CIRCUIT",
+        "name": "STABLE CIRCUIT",
+        "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+        "category": "EQUIPMENT",
+        "rarity": "COMMON",
+        "price": 75,
+        "icon": "Cpu",
+        "effectType": "STABILITY_BOOST",
+        "effectValue": 3,
+        "slot": "FOCUS",
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtylwf6t_9dm2eqq",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "itemId": "itm_stable_circuit",
+      "quantity": 1,
+      "isEquipped": true,
+      "acquiredAt": "2026-09-12T16:35:32.452Z",
+      "updatedAt": "2026-09-12T16:35:32.476Z",
+      "item": {
+        "id": "itm_stable_circuit",
+        "key": "STABLE_CIRCUIT",
+        "name": "STABLE CIRCUIT",
+        "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+        "category": "EQUIPMENT",
+        "rarity": "COMMON",
+        "price": 75,
+        "icon": "Cpu",
+        "effectType": "STABILITY_BOOST",
+        "effectValue": 3,
+        "slot": "FOCUS",
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtylwf7q_an4imqu",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "itemId": "itm_memory_shard",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T16:35:32.486Z",
+      "updatedAt": "2026-09-12T16:35:32.491Z",
+      "item": {
+        "id": "itm_memory_shard",
+        "key": "MEMORY_SHARD",
+        "name": "MEMORY SHARD",
+        "description": "A crystallized data fragment recovered from the restored Knowledge Forest.",
+        "category": "EQUIPMENT",
+        "rarity": "RARE",
+        "price": 200,
+        "icon": "Brain",
+        "effectType": "MIND_BOOST",
+        "effectValue": 5,
+        "slot": "MIND",
+        "requiredCorruption": 70,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtylwf80_pgvv7tl",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "itemId": "itm_focus_tonic",
+      "quantity": 1,
+      "isEquipped": false,
+      "acquiredAt": "2026-09-12T16:35:32.495Z",
+      "updatedAt": "2026-09-12T16:35:32.495Z",
+      "item": {
+        "id": "itm_focus_tonic",
+        "key": "FOCUS_TONIC",
+        "name": "FOCUS TONIC",
+        "description": "A temporary energetic charge for intense focus sessions.",
+        "category": "CONSUMABLE",
+        "rarity": "COMMON",
+        "price": 50,
+        "icon": "Zap",
+        "effectType": "FOCUS_BOOST",
+        "effectValue": 2,
+        "slot": null,
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    },
+    {
+      "id": "inv_mtym4zqv_024pel5",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "itemId": "itm_stable_circuit",
+      "quantity": 1,
+      "isEquipped": true,
+      "acquiredAt": "2026-09-12T16:42:12.342Z",
+      "updatedAt": "2026-09-12T16:43:17.554Z",
+      "item": {
+        "id": "itm_stable_circuit",
+        "key": "STABLE_CIRCUIT",
+        "name": "STABLE CIRCUIT",
+        "description": "Solid-state cybernetic stabilizer that protects mental focus from cognitive drift.",
+        "category": "EQUIPMENT",
+        "rarity": "COMMON",
+        "price": 75,
+        "icon": "Cpu",
+        "effectType": "STABILITY_BOOST",
+        "effectValue": 3,
+        "slot": "FOCUS",
+        "requiredCorruption": 100,
+        "isActive": true,
+        "createdAt": "2026-09-12T16:29:59.039Z",
+        "updatedAt": "2026-09-12T16:29:59.039Z"
+      }
+    }
+  ],
+  "economyTransactions": [
+    {
+      "id": "etx_mtylve1o_7kvoo46",
+      "userId": "usr_mtylve1e_b7vyweo",
+      "type": "PURCHASE",
+      "amount": -75,
+      "itemId": "itm_stable_circuit",
+      "description": "Acquired STABLE CIRCUIT from The Arcade",
+      "createdAt": "2026-09-12T16:34:44.316Z"
+    },
+    {
+      "id": "etx_mtylwf6t_ko5biqh",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "type": "PURCHASE",
+      "amount": -75,
+      "itemId": "itm_stable_circuit",
+      "description": "Acquired STABLE CIRCUIT from The Arcade",
+      "createdAt": "2026-09-12T16:35:32.452Z"
+    },
+    {
+      "id": "etx_mtylwf7q_3e8vx97",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "type": "PURCHASE",
+      "amount": -200,
+      "itemId": "itm_memory_shard",
+      "description": "Acquired MEMORY SHARD from The Arcade",
+      "createdAt": "2026-09-12T16:35:32.486Z"
+    },
+    {
+      "id": "etx_mtylwf80_tuilqvk",
+      "userId": "usr_mtylwf6j_scdilfh",
+      "type": "PURCHASE",
+      "amount": -50,
+      "itemId": "itm_focus_tonic",
+      "description": "Acquired FOCUS TONIC from The Arcade",
+      "createdAt": "2026-09-12T16:35:32.495Z"
+    },
+    {
+      "id": "etx_mtym2730_91t68ma",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 10,
+      "itemId": null,
+      "description": "Reward for clearing mission: Read 10 pages of OS architecture",
+      "createdAt": "2026-09-12T16:40:01.883Z"
+    },
+    {
+      "id": "etx_mtym2737_aaih3x7",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 20,
+      "itemId": null,
+      "description": "Reward for clearing mission: 30-minute deep focus sprint",
+      "createdAt": "2026-09-12T16:40:01.890Z"
+    },
+    {
+      "id": "etx_mtym273g_yuqm9f9",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Ship production microservice",
+      "createdAt": "2026-09-12T16:40:01.899Z"
+    },
+    {
+      "id": "etx_mtym273s_mxfmviy",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 1",
+      "createdAt": "2026-09-12T16:40:01.912Z"
+    },
+    {
+      "id": "etx_mtym2741_ddqwf6y",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 2",
+      "createdAt": "2026-09-12T16:40:01.921Z"
+    },
+    {
+      "id": "etx_mtym2747_8ehniju",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 3",
+      "createdAt": "2026-09-12T16:40:01.927Z"
+    },
+    {
+      "id": "etx_mtym274d_u8lsgyg",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 4",
+      "createdAt": "2026-09-12T16:40:01.933Z"
+    },
+    {
+      "id": "etx_mtym274j_abwrqtz",
+      "userId": "usr_mtym272m_zbz10or",
+      "type": "MISSION_REWARD",
+      "amount": 60,
+      "itemId": null,
+      "description": "Reward for clearing mission: Final Strike Phase 5",
+      "createdAt": "2026-09-12T16:40:01.939Z"
+    },
+    {
+      "id": "etx_mtym4zqv_ikj2hfb",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "type": "PURCHASE",
+      "amount": -75,
+      "itemId": "itm_stable_circuit",
+      "description": "Acquired STABLE CIRCUIT from The Arcade",
+      "createdAt": "2026-09-12T16:42:12.342Z"
     }
   ]
 }

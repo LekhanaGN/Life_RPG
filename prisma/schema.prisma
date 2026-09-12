@@ -10,18 +10,20 @@ generator client {
 }
 
 model User {
-  id              String              @id @default(cuid())
-  email           String              @unique
+  id              String               @id @default(cuid())
+  email           String               @unique
   passwordHash    String
   username        String
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
   character       Character?
   missions        Mission[]
   completions     MissionCompletion[]
   worldProgress   WorldProgress?
   worldAreas      WorldAreaProgress[]
   bossProgresses  BossProgress[]
+  inventory       InventoryItem[]
+  transactions    EconomyTransaction[]
 
   @@map("users")
 }
@@ -123,4 +125,55 @@ model BossProgress {
   @@unique([userId, bossKey])
   @@index([userId])
   @@map("boss_progress")
+}
+
+model Item {
+  id                 String          @id @default(cuid())
+  key                String          @unique
+  name               String
+  description        String
+  category           String // CONSUMABLE, EQUIPMENT, RELIC, COSMETIC
+  rarity             String // COMMON, RARE, EPIC, LEGENDARY
+  price              Int
+  icon               String
+  effectType         String // NONE, FOCUS_BOOST, MIND_BOOST, BODY_BOOST, SPIRIT_BOOST, STABILITY_BOOST, COSMETIC_AURA
+  effectValue        Int             @default(0)
+  slot               String? // MIND, BODY, FOCUS, SPIRIT, CONNECTION, RELIC
+  requiredCorruption Int             @default(100) // Unlock threshold
+  isActive           Boolean         @default(true)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  inventoryItems     InventoryItem[]
+
+  @@map("items")
+}
+
+model InventoryItem {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  quantity   Int      @default(1)
+  isEquipped Boolean  @default(false)
+  acquiredAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, itemId])
+  @@index([userId])
+  @@map("inventory_items")
+}
+
+model EconomyTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String // MISSION_REWARD, PURCHASE, REFUND
+  amount      Int // e.g. -75, +35
+  itemId      String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@map("economy_transactions")
 }
