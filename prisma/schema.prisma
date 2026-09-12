@@ -1,0 +1,42 @@
+// THE OTHER SIDE - Prisma Schema (PostgreSQL)
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  username     String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  character    Character?
+
+  @@map("users")
+}
+
+model Character {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  archetype  String
+  level      Int      @default(1)
+  xp         Int      @default(0)
+  credits    Int      @default(0)
+  mind       Int
+  body       Int
+  focus      Int
+  spirit     Int
+  connection Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("characters")
+}

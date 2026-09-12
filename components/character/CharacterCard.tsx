@@ -4,9 +4,21 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { XPBar } from "@/components/character/XPBar";
+import { DbCharacter } from "@/lib/db/client";
 import { Flame, Coins, ShieldCheck, User } from "lucide-react";
 
-export function CharacterCard() {
+export interface CharacterCardProps {
+  character?: DbCharacter | null;
+}
+
+export function CharacterCard({ character }: CharacterCardProps) {
+  const characterName = character?.name || "ARIA";
+  const archetype = character?.archetype || "EXPLORER";
+  const level = character?.level ?? 1;
+  const xp = character?.xp ?? 0;
+  const maxXp = 100;
+  const credits = character?.credits ?? 0;
+
   return (
     <Card variant="cyan" glow className="w-full">
       <CardHeader>
@@ -18,13 +30,15 @@ export function CharacterCard() {
             <div>
               <div className="flex items-center gap-2">
                 <CardTitle className="text-white text-lg tracking-widest font-cinzel">
-                  SURVIVOR
+                  &ldquo;{characterName}&rdquo;
                 </CardTitle>
                 <Badge variant="cyan" pulse>
                   ACTIVE
                 </Badge>
               </div>
-              <CardDescription>DIMENSION RESIDENT #001</CardDescription>
+              <CardDescription className="font-mono text-cyan-300/80 text-xs tracking-wider">
+                ARCHETYPE: {archetype}
+              </CardDescription>
             </div>
           </div>
 
@@ -34,7 +48,7 @@ export function CharacterCard() {
                 RANK
               </div>
               <div className="text-sm font-orbitron font-extrabold text-cyan-200">
-                LEVEL 01
+                LEVEL {level < 10 ? `0${level}` : level}
               </div>
             </div>
           </div>
@@ -43,7 +57,7 @@ export function CharacterCard() {
 
       <CardContent className="space-y-5">
         {/* XP Progression Bar */}
-        <XPBar currentXp={0} maxXp={100} level={1} />
+        <XPBar currentXp={xp} maxXp={maxXp} level={level} />
 
         {/* Survival Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -70,7 +84,7 @@ export function CharacterCard() {
                 CREDITS
               </div>
               <div className="font-orbitron text-base font-bold text-cyan-300">
-                0
+                {credits}
               </div>
             </div>
           </div>

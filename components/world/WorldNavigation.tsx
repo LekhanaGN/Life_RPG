@@ -2,18 +2,39 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { soundscape } from "@/lib/audio/soundscape";
+import { logoutAction } from "@/lib/auth/actions";
+import { DbCharacter, DbUser } from "@/lib/db/client";
 import { Badge } from "@/components/ui/Badge";
-import { Volume2, VolumeX, Tv, Radio, Compass, Skull } from "lucide-react";
+import {
+  Volume2,
+  VolumeX,
+  Tv,
+  Radio,
+  Compass,
+  Skull,
+  LogOut,
+  User,
+  Shield,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface WorldNavigationProps {
   currentRealm: "landing" | "right-side" | "other-side";
+  user?: DbUser | null;
+  character?: DbCharacter | null;
 }
 
-export function WorldNavigation({ currentRealm }: WorldNavigationProps) {
+export function WorldNavigation({
+  currentRealm,
+  user,
+  character,
+}: WorldNavigationProps) {
+  const router = useRouter();
   const [isMuted, setIsMuted] = useState(false);
   const [crtEnabled, setCrtEnabled] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     setIsMuted(soundscape.getMuted());
@@ -29,6 +50,18 @@ export function WorldNavigation({ currentRealm }: WorldNavigationProps) {
     const crtOverlay = document.getElementById("crt-global-overlay");
     if (crtOverlay) {
       crtOverlay.style.display = crtEnabled ? "none" : "block";
+    }
+  };
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    soundscape.playGlitch();
+    try {
+      const res = await logoutAction();
+      router.push(res.redirectUrl || "/auth/login");
+      router.refresh();
+    } catch {
+      router.push("/auth/login");
     }
   };
 
@@ -56,7 +89,7 @@ export function WorldNavigation({ currentRealm }: WorldNavigationProps) {
   const current = realmConfig[currentRealm];
 
   return (
-    <header className="relative z-40 w-full border-b border-white/10 bg-black/60 backdrop-blur-md px-4 sm:px-8 py-3">
+    <header className="relative z-40 w-full border-b border-white/10 bg-black/70 backdrop-blur-md px-4 sm:px-8 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Left: Brand Monogram & Realm Status */}
         <div className="flex items-center gap-3">
@@ -110,8 +143,55 @@ export function WorldNavigation({ currentRealm }: WorldNavigationProps) {
           )}
         </div>
 
-        {/* Right: Controls & Toggles */}
+        {/* Right: User Profile & Controls */}
         <div className="flex items-center gap-2">
+          {/* Authenticated Survivor Badge */}
+          {character ? (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-xs bg-slate-900/90 border border-slate-700 text-xs font-mono">
+                <User className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-white font-bold tracking-wider hidden sm:inline">
+                  {character.name}
+                </span>
+                <span className="px-1.5 py-0.2 rounded-xs bg-cyan-950 text-cyan-300 border border-cyan-700/60 text-[10px] uppercase font-bold">
+                  {character.archetype}
+                </span>
+              </div>
+
+              {/* Logout Button */}
+              <button
+                id="logout-btn"
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="p-1.5 sm:px-2.5 sm:py-1 rounded-xs border border-red-900/60 bg-red-950/30 hover:bg-red-900/60 text-red-400 hover:text-red-200 transition-colors text-xs font-mono flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                title="Log out and destroy session"
+                aria-label="Log out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">
+                  {loggingOut ? "EXITING..." : "LOG OUT"}
+                </span>
+              </button>
+            </div>
+          ) : (
+            currentRealm === "landing" && (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/auth/login"
+                  className="px-2.5 py-1 rounded-xs border border-cyan-500/50 bg-cyan-950/40 hover:bg-cyan-500/20 text-cyan-300 text-xs font-mono tracking-wider transition-colors"
+                >
+                  LOGIN
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="px-2.5 py-1 rounded-xs border border-red-500/50 bg-red-950/40 hover:bg-red-500/20 text-red-300 text-xs font-mono tracking-wider transition-colors hidden xs:inline-block"
+                >
+                  ENLIST
+                </Link>
+              </div>
+            )
+          )}
+
           {/* CRT Filter Toggle */}
           <button
             onClick={handleToggleCrt}
@@ -125,7 +205,7 @@ export function WorldNavigation({ currentRealm }: WorldNavigationProps) {
             aria-label="Toggle CRT filter"
           >
             <Tv className="w-3.5 h-3.5" />
-            <span className="hidden lg:inline">CRT {crtEnabled ? "ON" : "OFF"}</span>
+            <span className="hidden xl:inline">CRT {crtEnabled ? "ON" : "OFF"}</span>
           </button>
 
           {/* Audio Synthesizer FX Toggle */}
@@ -143,25 +223,15 @@ export function WorldNavigation({ currentRealm }: WorldNavigationProps) {
             {isMuted ? (
               <>
                 <VolumeX className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline">AUDIO MUTED</span>
+                <span className="hidden xl:inline">MUTED</span>
               </>
             ) : (
               <>
                 <Volume2 className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline">SYNTH FX</span>
+                <span className="hidden xl:inline">SYNTH FX</span>
               </>
             )}
           </button>
-
-          {/* Quick realm shortcut pill */}
-          {currentRealm !== "landing" && (
-            <Link
-              href="/"
-              className="px-2.5 py-1.5 rounded-xs border border-slate-800 bg-slate-950/70 text-slate-400 hover:text-slate-200 hover:border-slate-600 text-[11px] font-mono tracking-wider transition-colors"
-            >
-              GATEWAY
-            </Link>
-          )}
         </div>
       </div>
     </header>

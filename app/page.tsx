@@ -12,7 +12,7 @@ export default function LandingPage() {
   const { triggerTransition, isTransitioning } = useWorldTransition();
 
   const handleInvertClick = () => {
-    triggerTransition("/right-side", "landing-to-right");
+    triggerTransition("/auth/login", "landing-to-right");
   };
 
   return (

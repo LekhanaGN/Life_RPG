@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": "usr_mtyedpi6_2w9jn70",
+      "email": "aria@theotherside.world",
+      "passwordHash": "$2b$10$pDKRP9u.K.9pz/KdxL6QheDPu3vJeHOmHDfaXshcMHIweUyNqvAiO",
+      "username": "Aria",
+      "createdAt": "2026-09-12T13:05:02.046Z",
+      "updatedAt": "2026-09-12T13:05:02.046Z"
+    }
+  ],
+  "characters": [
+    {
+      "id": "chr_mtyegr29_6hcyk8g",
+      "userId": "usr_mtyedpi6_2w9jn70",
+      "name": "Aria",
+      "archetype": "STRATEGIST",
+      "level": 1,
+      "xp": 0,
+      "credits": 0,
+      "mind": 12,
+      "body": 8,
+      "focus": 16,
+      "spirit": 8,
+      "connection": 6,
+      "createdAt": "2026-09-12T13:07:24.033Z",
+      "updatedAt": "2026-09-12T13:07:24.033Z"
+    }
+  ]
+}

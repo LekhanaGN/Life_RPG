@@ -2,77 +2,100 @@
 
 import React from "react";
 import { Brain, Dumbbell, Target, Sparkles, HeartHandshake } from "lucide-react";
+import { DbCharacter } from "@/lib/db/client";
 import { cn } from "@/lib/utils";
 
-interface AttributeItem {
-  id: string;
-  name: string;
-  description: string;
-  value: number; // 0 to 10
-  maxValue: number;
-  icon: React.ElementType;
-  color: string;
-  glow: string;
+export interface AttributeStats {
+  mind: number;
+  body: number;
+  focus: number;
+  spirit: number;
+  connection: number;
 }
 
-const ATTRIBUTES: AttributeItem[] = [
-  {
-    id: "mind",
-    name: "MIND",
-    description: "Knowledge, clarity & study",
-    value: 2,
-    maxValue: 10,
-    icon: Brain,
-    color: "text-blue-400 border-blue-500/50 bg-blue-500",
-    glow: "shadow-[0_0_8px_rgba(59,130,246,0.6)]",
-  },
-  {
-    id: "body",
-    name: "BODY",
-    description: "Physical stamina & vitality",
-    value: 3,
-    maxValue: 10,
-    icon: Dumbbell,
-    color: "text-emerald-400 border-emerald-500/50 bg-emerald-500",
-    glow: "shadow-[0_0_8px_rgba(16,185,129,0.6)]",
-  },
-  {
-    id: "focus",
-    name: "FOCUS",
-    description: "Deep work & cognitive flow",
-    value: 1,
-    maxValue: 10,
-    icon: Target,
-    color: "text-cyan-400 border-cyan-500/50 bg-cyan-500",
-    glow: "shadow-[0_0_8px_rgba(6,182,212,0.6)]",
-  },
-  {
-    id: "spirit",
-    name: "SPIRIT",
-    description: "Inner resilience & purpose",
-    value: 2,
-    maxValue: 10,
-    icon: Sparkles,
-    color: "text-amber-400 border-amber-500/50 bg-amber-500",
-    glow: "shadow-[0_0_8px_rgba(245,158,11,0.6)]",
-  },
-  {
-    id: "connection",
-    name: "CONNECTION",
-    description: "Relationships & bonds",
-    value: 2,
-    maxValue: 10,
-    icon: HeartHandshake,
-    color: "text-purple-400 border-purple-500/50 bg-purple-500",
-    glow: "shadow-[0_0_8px_rgba(168,85,247,0.6)]",
-  },
-];
+export interface AttributeBarProps {
+  corrupted?: boolean;
+  stats?: AttributeStats;
+  character?: DbCharacter | null;
+}
 
-export function AttributeBar({ corrupted = false }: { corrupted?: boolean }) {
+export function AttributeBar({
+  corrupted = false,
+  stats,
+  character,
+}: AttributeBarProps) {
+  const resolvedStats: AttributeStats = {
+    mind: character?.mind ?? stats?.mind ?? 10,
+    body: character?.body ?? stats?.body ?? 10,
+    focus: character?.focus ?? stats?.focus ?? 10,
+    spirit: character?.spirit ?? stats?.spirit ?? 10,
+    connection: character?.connection ?? stats?.connection ?? 10,
+  };
+
+  const attributesList = [
+    {
+      id: "mind",
+      name: "MIND",
+      description: "Knowledge, clarity & study",
+      value: resolvedStats.mind,
+      maxValue: 20,
+      icon: Brain,
+      color: "text-blue-400 border-blue-500/50 bg-blue-500",
+      glow: "shadow-[0_0_8px_rgba(59,130,246,0.6)]",
+    },
+    {
+      id: "body",
+      name: "BODY",
+      description: "Physical stamina & vitality",
+      value: resolvedStats.body,
+      maxValue: 20,
+      icon: Dumbbell,
+      color: "text-emerald-400 border-emerald-500/50 bg-emerald-500",
+      glow: "shadow-[0_0_8px_rgba(16,185,129,0.6)]",
+    },
+    {
+      id: "focus",
+      name: "FOCUS",
+      description: "Deep work & cognitive flow",
+      value: resolvedStats.focus,
+      maxValue: 20,
+      icon: Target,
+      color: "text-cyan-400 border-cyan-500/50 bg-cyan-500",
+      glow: "shadow-[0_0_8px_rgba(6,182,212,0.6)]",
+    },
+    {
+      id: "spirit",
+      name: "SPIRIT",
+      description: "Inner resilience & purpose",
+      value: resolvedStats.spirit,
+      maxValue: 20,
+      icon: Sparkles,
+      color: "text-amber-400 border-amber-500/50 bg-amber-500",
+      glow: "shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+    },
+    {
+      id: "connection",
+      name: "CONNECTION",
+      description: "Relationships & bonds",
+      value: resolvedStats.connection,
+      maxValue: 20,
+      icon: HeartHandshake,
+      color: "text-purple-400 border-purple-500/50 bg-purple-500",
+      glow: "shadow-[0_0_8px_rgba(168,85,247,0.6)]",
+    },
+  ];
+
   return (
     <div className="space-y-3">
-      {ATTRIBUTES.map((attr) => {
+      {attributesList.map((attr) => {
         const Icon = attr.icon;
+        // Segment scale (visual representation across 10 segment blocks)
+        const segmentCount = 10;
+        const activeSegments = Math.min(
+          segmentCount,
+          Math.max(1, Math.round((attr.value / attr.maxValue) * segmentCount))
+        );
+
         return (
           <div
             key={attr.id}
@@ -113,8 +136,8 @@ export function AttributeBar({ corrupted = false }: { corrupted?: boolean }) {
 
             {/* Segmented LED stat meters */}
             <div className="flex items-center gap-1.5 self-end sm:self-center">
-              {Array.from({ length: attr.maxValue }).map((_, idx) => {
-                const filled = idx < attr.value;
+              {Array.from({ length: segmentCount }).map((_, idx) => {
+                const filled = idx < activeSegments;
                 return (
                   <div
                     key={idx}
@@ -129,8 +152,8 @@ export function AttributeBar({ corrupted = false }: { corrupted?: boolean }) {
                   />
                 );
               })}
-              <span className="ml-2 font-mono text-xs font-bold text-slate-400 min-w-[28px] text-right">
-                {attr.value}/{attr.maxValue}
+              <span className="ml-2 font-mono text-xs font-bold text-slate-200 min-w-[32px] text-right">
+                {attr.value}
               </span>
             </div>
           </div>
