@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -9,12 +9,12 @@ import {
   Crosshair,
   Sparkles,
   Users,
-  Calendar,
-  Clock,
-  Repeat,
-  Shield,
   Edit3,
   Trash2,
+  Calendar,
+  Clock,
+  Zap,
+  Repeat,
   FileText,
 } from "lucide-react";
 import {
@@ -41,6 +41,8 @@ export function MissionDetailsModal({
   onEdit,
   onAbandon,
 }: MissionDetailsModalProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -50,6 +52,20 @@ export function MissionDetailsModal({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
+
+  // Lock body scroll and reset scroll container on open
+  useEffect(() => {
+    if (isOpen) {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
 
   if (!mission) return null;
 
@@ -91,14 +107,14 @@ export function MissionDetailsModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/85 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/85 backdrop-blur-md"
           />
 
           {/* Modal Container */}
@@ -106,23 +122,23 @@ export function MissionDetailsModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="mission-details-title"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
-            className="relative w-full max-w-2xl bg-slate-950/95 border border-cyan-500/40 rounded-xs shadow-[0_0_50px_rgba(6,182,212,0.25)] p-6 sm:p-8 z-10 my-8 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-2xl bg-slate-950/98 border-2 border-cyan-500/60 rounded-xs shadow-[0_0_50px_rgba(6,182,212,0.25)] flex flex-col max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] overflow-hidden z-10 my-auto"
           >
             {/* Corner cyber notches */}
-            <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-400" />
-            <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-cyan-400" />
-            <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-cyan-400" />
-            <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-400" />
+            <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-400 z-30 pointer-events-none" />
+            <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-cyan-400 z-30 pointer-events-none" />
+            <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-cyan-400 z-30 pointer-events-none" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-400 z-30 pointer-events-none" />
 
-            {/* Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-cyan-500/20 mb-6">
+            {/* FIXED HEADER: Never scrolls away */}
+            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-cyan-500/25 bg-slate-950/95 shrink-0 z-20">
               <div className="flex items-center gap-3">
                 <div
-                  className={`p-3 rounded-xs border ${categoryMeta.bgColor} ${categoryMeta.borderColor} ${categoryMeta.textColor}`}
+                  className={`p-2.5 rounded-xs border ${categoryMeta.bgColor} ${categoryMeta.borderColor} ${categoryMeta.textColor}`}
                 >
                   {getCategoryIcon(mission.category)}
                 </div>
@@ -143,7 +159,7 @@ export function MissionDetailsModal({
                   </div>
                   <h3
                     id="mission-details-title"
-                    className="font-cinzel text-xl sm:text-2xl font-bold text-white tracking-wider mt-0.5"
+                    className="font-cinzel text-xl sm:text-2xl font-black text-white tracking-wider mt-0.5"
                   >
                     {mission.title}
                   </h3>
@@ -153,27 +169,32 @@ export function MissionDetailsModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-xs text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent hover:border-slate-700 transition-colors cursor-pointer"
+                className="p-1.5 sm:p-2 rounded-xs text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800 hover:border-slate-600 transition-colors cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Directive Description */}
-            <div className="space-y-2 mb-6">
-              <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-cyan-400" />
-                MISSION DESCRIPTION
-              </span>
-              <div className="p-4 rounded-xs bg-slate-900/70 border border-slate-800 text-sm font-sans text-slate-200 leading-relaxed">
-                {mission.description || (
-                  <span className="italic text-slate-500">
-                    No additional details provided.
-                  </span>
-                )}
+            {/* SCROLLABLE BODY */}
+            <div
+              ref={scrollContainerRef}
+              className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 overscroll-contain"
+            >
+              {/* Directive Description */}
+              <div className="space-y-2">
+                <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                  MISSION DESCRIPTION
+                </span>
+                <div className="p-4 rounded-xs bg-slate-900/70 border border-slate-800 text-sm font-sans text-slate-200 leading-relaxed">
+                  {mission.description || (
+                    <span className="italic text-slate-500">
+                      No additional details provided.
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
 
             {/* Attributes Matrix */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -295,9 +316,10 @@ export function MissionDetailsModal({
                 </button>
               </div>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
   );
 }

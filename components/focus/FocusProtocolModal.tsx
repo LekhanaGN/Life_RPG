@@ -303,7 +303,7 @@ export function FocusProtocolModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
         {/* Screen Reader ARIA Live Region */}
         <div className="sr-only" aria-live="polite" aria-atomic="true">
           {accessibleAnnouncement}

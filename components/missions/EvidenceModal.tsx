@@ -40,7 +40,7 @@ export function EvidenceModal({
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Reset when opened/closed
+  // Reset when opened/closed and lock body scroll
   useEffect(() => {
     if (isOpen) {
       setFile(null);
@@ -48,6 +48,12 @@ export function EvidenceModal({
       setDescription("");
       setError(null);
       setSubmissionSuccess(false);
+
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
     }
   }, [isOpen]);
 
@@ -73,28 +79,32 @@ export function EvidenceModal({
     }
 
     // Client-side file checks
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(selectedFile.type)) {
-      setError("Invalid file format. Please choose a JPEG, PNG, or WEBP photo.");
+    if (!selectedFile.type.startsWith("image/")) {
+      setError("Only image files (JPEG, PNG, WEBP) are supported.");
       return;
     }
+
     if (selectedFile.size > 5 * 1024 * 1024) {
-      setError("File exceeds 5MB limit. Please choose a smaller photo.");
+      setError("File size exceeds the 5MB signal limit.");
       return;
     }
 
     setFile(selectedFile);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPreviewUrl(reader.result as string);
-    };
-    reader.readAsDataURL(selectedFile);
+    const url = URL.createObjectURL(selectedFile);
+    setPreviewUrl(url);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileChange(e.dataTransfer.files[0]);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file && !description.trim()) {
-      setError("Please either attach an image or enter a short observation note.");
+      setError("Please attach an image or enter a descriptive note.");
       return;
     }
 
@@ -137,14 +147,14 @@ export function EvidenceModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={!isSubmitting ? onClose : undefined}
-          className="fixed inset-0 bg-black/85 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/85 backdrop-blur-md"
         />
 
         {/* Modal Window */}
@@ -153,7 +163,7 @@ export function EvidenceModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-lg bg-slate-950 border border-emerald-500/50 rounded-xs shadow-[0_0_30px_rgba(16,185,129,0.2)] p-6 z-10 space-y-5"
+          className="relative w-full max-w-lg bg-slate-950 border-2 border-emerald-500/60 rounded-xs shadow-[0_0_40px_rgba(16,185,129,0.25)] p-5 sm:p-6 z-10 space-y-5 max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] overflow-y-auto"
           role="dialog"
           aria-modal="true"
           aria-labelledby="evidence-modal-title"

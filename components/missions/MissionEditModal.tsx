@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -54,7 +54,10 @@ export function MissionEditModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
 
-  // Synchronize form values when mission prop changes
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  // Synchronize form values when mission prop changes and lock body scroll
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (mission && isOpen) {
@@ -83,6 +86,28 @@ export function MissionEditModal({
 
       setErrors({});
       setGeneralError(null);
+
+      // Reset scroll position immediately
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+
+      // Lock body scroll
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      // Focus title safely
+      const timer = setTimeout(() => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTop = 0;
+        }
+        titleInputRef.current?.focus({ preventScroll: true });
+      }, 50);
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        clearTimeout(timer);
+      };
     }
   }, [mission, isOpen]);
 
@@ -103,16 +128,17 @@ export function MissionEditModal({
     e.preventDefault();
     setGeneralError(null);
 
+    // Client-side validation check
     const validation = validateUpdateMission({
       title,
-      description: description || null,
+      description,
       category,
       difficulty,
       frequency,
       dueDate: dueDate ? new Date(dueDate).toISOString() : null,
       status,
       verificationType,
-      focusDurationMinutes: verificationType === "FOCUS_SESSION" ? focusDurationMinutes : null,
+      focusDurationMinutes: verificationType === "FOCUS_SESSION" ? focusDurationMinutes : undefined,
     });
 
     if (!validation.isValid) {
@@ -133,7 +159,7 @@ export function MissionEditModal({
           category: validation.data.category,
           difficulty: validation.data.difficulty,
           frequency: validation.data.frequency,
-          dueDate: validation.data.dueDate ? validation.data.dueDate.toISOString() : null,
+          dueDate: validation.data.dueDate === null ? null : validation.data.dueDate?.toISOString(),
           status: validation.data.status,
           verificationType: validation.data.verificationType,
           focusDurationMinutes: validation.data.focusDurationMinutes,
@@ -146,7 +172,7 @@ export function MissionEditModal({
         if (data.details) {
           setErrors(data.details);
         } else {
-          setGeneralError(data.error || "The Other Side rejected the update.");
+          setGeneralError(data.error || "The Other Side rejected the modification.");
         }
         setIsSubmitting(false);
         return;
@@ -179,14 +205,14 @@ export function MissionEditModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
           {/* Backdrop overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => !isSubmitting && onClose()}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/85 backdrop-blur-md"
           />
 
           {/* Modal Dialog Card */}
@@ -194,32 +220,32 @@ export function MissionEditModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="edit-mission-title"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
-            className="relative w-full max-w-2xl bg-slate-950/95 border border-amber-500/50 rounded-xs shadow-[0_0_40px_rgba(245,158,11,0.2)] p-6 sm:p-8 z-10 my-8 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-2xl bg-slate-950/98 border-2 border-amber-500/60 rounded-xs shadow-[0_0_50px_rgba(245,158,11,0.25)] flex flex-col max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] overflow-hidden z-10 my-auto"
           >
             {/* Corner cyber notches */}
-            <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-amber-400" />
-            <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-amber-400" />
-            <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-amber-400" />
-            <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-amber-400" />
+            <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-amber-400 z-30 pointer-events-none" />
+            <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-amber-400 z-30 pointer-events-none" />
+            <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-amber-400 z-30 pointer-events-none" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-amber-400 z-30 pointer-events-none" />
 
-            {/* Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-amber-500/20 mb-6">
+            {/* FIXED HEADER: Never scrolls away, always visible at top */}
+            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-amber-500/25 bg-slate-950/95 shrink-0 z-20">
               <div>
                 <span className="text-[10px] font-mono text-amber-400 tracking-widest uppercase">
-                  EDIT MISSION
+                  MISSION PROTOCOL // EDIT TASK
                 </span>
                 <h3
                   id="edit-mission-title"
-                  className="font-cinzel text-xl sm:text-2xl font-bold text-white tracking-wider flex items-center gap-2 mt-0.5"
+                  className="font-cinzel text-xl sm:text-2xl font-black text-white tracking-wider flex items-center gap-2 mt-0.5"
                 >
                   <Save className="w-5 h-5 text-amber-400" />
                   EDIT MISSION
                 </h3>
-                <p className="text-xs font-mono text-slate-400 mt-1">
+                <p className="text-xs font-mono text-slate-300 mt-1">
                   Update your mission details and settings.
                 </p>
               </div>
@@ -228,23 +254,28 @@ export function MissionEditModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="p-1.5 rounded-xs text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent hover:border-slate-700 transition-colors"
+                className="p-1.5 sm:p-2 rounded-xs text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800 hover:border-slate-600 transition-colors cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                 aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* General Error Alert */}
-            {generalError && (
-              <div className="mb-6 p-3 bg-red-950/60 border border-red-500/80 rounded-xs text-xs font-mono text-red-200 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                <span>{generalError}</span>
-              </div>
-            )}
+            {/* SCROLLABLE FORM BODY: Independent internal scrolling */}
+            <div
+              ref={scrollContainerRef}
+              className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 overscroll-contain"
+            >
+              {/* General Error Alert */}
+              {generalError && (
+                <div className="p-3 bg-red-950/60 border border-red-500/80 rounded-xs text-xs font-mono text-red-200 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>{generalError}</span>
+                </div>
+              )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Form */}
+              <form id="edit-mission-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Mission Name */}
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
@@ -596,9 +627,10 @@ export function MissionEditModal({
                 </button>
               </div>
             </form>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
   );
 }
