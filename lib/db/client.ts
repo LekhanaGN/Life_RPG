@@ -79,11 +79,9 @@ import {
   FOCUS_CONSTANTS,
 } from "@/lib/game/focusSessions";
 
-// Global Prisma instance to avoid multiple connections in Next.js hot reload
+// Global Prisma instance to avoid multiple connections in Next.js hot reload / serverless
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
-  isPostgresAvailable?: boolean;
-  lastDbErrorTime?: number;
 };
 
 export const prisma =
@@ -92,23 +90,11 @@ export const prisma =
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
-
-let isPostgresAvailable: boolean = globalForPrisma.isPostgresAvailable ?? true;
-const RECONNECT_COOLDOWN_MS = 5000;
+// Always attach to globalThis across all environments to reuse connection pools
+globalForPrisma.prisma = prisma;
 
 async function executePrisma<T>(fn: () => Promise<T>): Promise<T | null> {
   if (!process.env.DATABASE_URL) return null;
-
-  // If Postgres was previously flagged unavailable due to connection failure, retry after cooldown
-  if (isPostgresAvailable === false) {
-    const timeSinceError = Date.now() - (globalForPrisma.lastDbErrorTime || 0);
-    if (timeSinceError < RECONNECT_COOLDOWN_MS) {
-      return null;
-    }
-    isPostgresAvailable = true;
-    globalForPrisma.isPostgresAvailable = true;
-  }
 
   try {
     return await fn();
@@ -127,9 +113,6 @@ async function executePrisma<T>(fn: () => Promise<T>): Promise<T | null> {
       errorMessage.includes("ECONNREFUSED");
 
     if (isConnError) {
-      isPostgresAvailable = false;
-      globalForPrisma.isPostgresAvailable = false;
-      globalForPrisma.lastDbErrorTime = Date.now();
       console.warn("[Prisma DB Connection Warning - Falling back to local storage]:", errorMessage);
     } else {
       console.error("[Prisma Query Error]:", errorMessage, `(code: ${errorCode || "N/A"})`);
@@ -819,23 +802,74 @@ function saveLocalStore(store: LocalDataStore): void {
 // Database Repository Operations
 export const db = {
   /**
-   * Find a user by email, including character relation
+   * Find a user by email or username (case-insensitive), including character relation
    */
-  async findUserByEmail(email: string): Promise<DbUser | null> {
-    const normalizedEmail = email.trim().toLowerCase();
-    const pgUser = await executePrisma(() =>
-      prisma.user.findUnique({
-        where: { email: normalizedEmail },
-        include: { character: true },
-      })
-    );
-    if (pgUser) return pgUser as unknown as DbUser;
+  async findUserByIdentifier(identifier: string): Promise<DbUser | null> {
+    const raw = (identifier || "").trim();
+    if (!raw) return null;
+    const normalized = raw.toLowerCase();
 
+    // 1. If PostgreSQL is available, query Prisma
+    const pgUser = await executePrisma(async () => {
+      // If it looks like an email, search email first
+      if (raw.includes("@")) {
+        return prisma.user.findUnique({
+          where: { email: normalized },
+          include: { character: true },
+        });
+      }
+      // Otherwise search both email and username (case-insensitive)
+      return prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: normalized },
+            { username: { equals: raw, mode: "insensitive" } },
+          ],
+        },
+        include: { character: true },
+      });
+    });
+
+    if (pgUser) {
+      // Synchronize to local cache store
+      const store = getLocalStore();
+      const userObj: DbUser = {
+        id: pgUser.id,
+        email: pgUser.email,
+        passwordHash: pgUser.passwordHash,
+        username: pgUser.username,
+        timezone: pgUser.timezone || "UTC",
+        createdAt: new Date(pgUser.createdAt),
+        updatedAt: new Date(pgUser.updatedAt),
+        character: pgUser.character as unknown as DbCharacter || null,
+      };
+      const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
+      if (existingIdx >= 0) {
+        store.users[existingIdx] = userObj;
+      } else {
+        store.users.push(userObj);
+      }
+      saveLocalStore(store);
+      return pgUser as unknown as DbUser;
+    }
+
+    // 2. Check local fallback store
     const store = getLocalStore();
-    const user = store.users.find((u) => u.email.toLowerCase() === normalizedEmail);
+    const user = store.users.find(
+      (u) =>
+        u.email.toLowerCase() === normalized ||
+        u.username.toLowerCase() === normalized
+    );
     if (!user) return null;
     const character = store.characters.find((c) => c.userId === user.id) || null;
     return { ...user, character };
+  },
+
+  /**
+   * Find a user by email, including character relation
+   */
+  async findUserByEmail(email: string): Promise<DbUser | null> {
+    return this.findUserByIdentifier(email);
   },
 
   /**
@@ -848,7 +882,28 @@ export const db = {
         include: { character: true },
       })
     );
-    if (pgUser) return pgUser as unknown as DbUser;
+    if (pgUser) {
+      // Synchronize to local cache store
+      const store = getLocalStore();
+      const userObj: DbUser = {
+        id: pgUser.id,
+        email: pgUser.email,
+        passwordHash: pgUser.passwordHash,
+        username: pgUser.username,
+        timezone: pgUser.timezone || "UTC",
+        createdAt: new Date(pgUser.createdAt),
+        updatedAt: new Date(pgUser.updatedAt),
+        character: pgUser.character as unknown as DbCharacter || null,
+      };
+      const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
+      if (existingIdx >= 0) {
+        store.users[existingIdx] = userObj;
+      } else {
+        store.users.push(userObj);
+      }
+      saveLocalStore(store);
+      return pgUser as unknown as DbUser;
+    }
 
     const store = getLocalStore();
     const user = store.users.find((u) => u.id === id);
@@ -878,21 +933,31 @@ export const db = {
           username: cleanUsername,
           timezone: userTimezone,
         },
+        include: {
+          character: true,
+        },
       })
     );
-    if (pgUser) return pgUser as unknown as DbUser;
 
     const store = getLocalStore();
-    const newUser: DbUser = {
-      id: generateId("usr"),
-      email: normalizedEmail,
-      passwordHash: data.passwordHash,
-      username: cleanUsername,
-      timezone: userTimezone,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    store.users.push(newUser);
+    const newUser: DbUser = pgUser
+      ? (pgUser as unknown as DbUser)
+      : {
+          id: generateId("usr"),
+          email: normalizedEmail,
+          passwordHash: data.passwordHash,
+          username: cleanUsername,
+          timezone: userTimezone,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+    const existingIdx = store.users.findIndex((u) => u.email.toLowerCase() === normalizedEmail);
+    if (existingIdx >= 0) {
+      store.users[existingIdx] = newUser;
+    } else {
+      store.users.push(newUser);
+    }
     saveLocalStore(store);
     return newUser;
   },

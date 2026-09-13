@@ -9,10 +9,13 @@ const COOKIE_NAME = "the_other_side_session";
 const SESSION_EXPIRATION = "7d";
 const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
-// Encode secret key for jose
+// Encode secret key for jose (checks SESSION_SECRET, JWT_SECRET, AUTH_SECRET, NEXTAUTH_SECRET)
 function getSecretKey(): Uint8Array {
   const secret =
     process.env.SESSION_SECRET ||
+    process.env.JWT_SECRET ||
+    process.env.AUTH_SECRET ||
+    process.env.NEXTAUTH_SECRET ||
     "the_other_side_temporal_rift_secret_key_dimension_2026_supernatural";
   return new TextEncoder().encode(secret);
 }
@@ -23,6 +26,8 @@ export interface SessionPayload {
 
 /**
  * Creates and sets an HTTP-only secure session cookie for the authenticated user
+ * @flows Server -> #user-session via Cookie -- "Session creation"
+ * @mitigates Server against #unauthorized-access using #session-auth -- "Signed JWT token in HTTP-only cookie"
  */
 export async function createSession(userId: string): Promise<void> {
   const secretKey = getSecretKey();
@@ -44,6 +49,8 @@ export async function createSession(userId: string): Promise<void> {
 
 /**
  * Reads and verifies the server session from incoming request cookies
+ * @flows Client -> #user-session via Cookie -- "Session retrieval"
+ * @mitigates Client against #unauthorized-access using #session-auth -- "Verifies JWT signature and expiry"
  */
 export async function getSession(): Promise<SessionPayload | null> {
   try {
@@ -78,6 +85,7 @@ export interface AuthenticatedData {
 
 /**
  * Convenience helper to get the currently authenticated user and character from the session
+ * @mitigates Server against #idor using #user-scoping -- "Scoping query to authenticated session userId"
  */
 export async function getCurrentUser(): Promise<AuthenticatedData | null> {
   const session = await getSession();

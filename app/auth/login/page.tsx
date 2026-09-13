@@ -22,11 +22,11 @@ export default function LoginPage() {
     setError(null);
 
     if (!email.trim()) {
-      setError("Please enter your registered email address.");
+      setError("Please enter your registered email address or callsign/username.");
       return;
     }
     if (!password) {
-      setError("Please enter your clearance passcode.");
+      setError("Please enter your password.");
       return;
     }
 
@@ -35,13 +35,13 @@ export default function LoginPage() {
 
     try {
       const res = await loginAction({
-        email,
+        email: email.trim(),
         password,
       });
 
       if (!res.success) {
         soundscape.playGlitch();
-        setError(res.error || "Authentication failed. Clearance rejected.");
+        setError(res.error || "Invalid credentials.");
         setLoading(false);
       } else {
         soundscape.playRestoration();
@@ -82,7 +82,7 @@ export default function LoginPage() {
             {/* Status Broadcast */}
             <div className="flex items-center gap-2 px-3 py-2 bg-cyan-950/40 border border-cyan-900/50 rounded-xs text-[11px] font-mono text-cyan-300">
               <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse shrink-0" />
-              <span>Enter your email and password to continue.</span>
+              <span>Enter your email or callsign and password to continue.</span>
             </div>
 
             {/* Error Banner */}
@@ -97,13 +97,13 @@ export default function LoginPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email / Frequency */}
+              {/* Email / Username */}
               <div className="space-y-1">
                 <label
                   htmlFor="login-email"
                   className="block text-[11px] font-mono uppercase tracking-wider text-slate-300"
                 >
-                  EMAIL ADDRESS
+                  EMAIL ADDRESS OR USERNAME
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
@@ -111,11 +111,11 @@ export default function LoginPage() {
                   </div>
                   <input
                     id="login-email"
-                    name="email"
-                    type="email"
+                    name="identifier"
+                    type="text"
                     required
-                    autoComplete="email"
-                    placeholder="you@example.com"
+                    autoComplete="username"
+                    placeholder="you@example.com or callsign"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}

@@ -21,6 +21,10 @@ const CHARACTER_NAME_REGEX = /^[a-zA-Z0-9_\- ]{2,24}$/;
 
 /**
  * Server Action: Register a new Survivor account
+ * @flows Survivor -> API.Auth.Signup via HTTPS -- "Survivor registration request"
+ * @handles pii on API.Auth.Signup -- "Processes callsign and email"
+ * @mitigates API.Auth.Signup against #unauthorized-access using #input-validation -- "Validates email and username formats"
+ * @mitigates API.Auth.Signup against #data-tampering using #prepared-queries -- "Creates user record via Prisma prepared queries"
  */
 export async function signupAction(formData: {
   username?: string;
@@ -66,12 +70,20 @@ export async function signupAction(formData: {
       return { success: false, error: "Passcode confirmation does not match." };
     }
 
-    // 2. Prevent duplicate email
+    // 2. Prevent duplicate email or callsign
     const existingUser = await db.findUserByEmail(email);
     if (existingUser) {
       return {
         success: false,
         error: "A survivor with this email transmission already exists.",
+      };
+    }
+
+    const existingUsername = await db.findUserByIdentifier(username);
+    if (existingUsername && existingUsername.username.toLowerCase() === username.toLowerCase()) {
+      return {
+        success: false,
+        error: "A survivor with this callsign / username already exists.",
       };
     }
 
@@ -103,27 +115,33 @@ export async function signupAction(formData: {
 }
 
 /**
- * Server Action: Authenticate an existing Survivor
+ * Server Action: Authenticate an existing Survivor by email or callsign
+ * @flows Survivor -> API.Auth.Login via HTTPS -- "Survivor login request"
+ * @handles pii on API.Auth.Login -- "Processes transmission credentials"
+ * @mitigates API.Auth.Login against #unauthorized-access using #session-auth -- "Verifies password hash and creates signed session"
+ * @mitigates API.Auth.Login against #idor using #user-scoping -- "Resolves user by unique identifier and sets authenticated session"
  */
 export async function loginAction(formData: {
   email?: string;
+  username?: string;
+  identifier?: string;
   password?: string;
 }): Promise<ActionResult> {
   try {
-    const email = (formData.email || "").trim().toLowerCase();
+    const rawIdentifier = (formData.email || formData.username || formData.identifier || "").trim();
     const password = formData.password || "";
 
-    if (!email || !password) {
-      return { success: false, error: "Email and clearance passcode are required." };
+    if (!rawIdentifier || !password) {
+      return { success: false, error: "Email or callsign and clearance passcode are required." };
     }
 
-    // 1. Find user by email
-    const user = await db.findUserByEmail(email);
+    // 1. Find user by email or username
+    const user = await db.findUserByIdentifier(rawIdentifier);
     if (!user) {
       return { success: false, error: "Invalid transmission credentials." };
     }
 
-    // 2. Verify password hash
+    // 2. Verify password hash using bcryptjs
     const isValid = await bcrypt.compare(password, user.passwordHash);
     if (!isValid) {
       return { success: false, error: "Invalid transmission credentials." };
