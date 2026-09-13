@@ -83,26 +83,57 @@ import {
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
   isPostgresAvailable?: boolean;
+  lastDbErrorTime?: number;
 };
 
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["error"] : ["error"],
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 let isPostgresAvailable: boolean = globalForPrisma.isPostgresAvailable ?? true;
+const RECONNECT_COOLDOWN_MS = 5000;
 
 async function executePrisma<T>(fn: () => Promise<T>): Promise<T | null> {
-  if (!process.env.DATABASE_URL || isPostgresAvailable === false) return null;
+  if (!process.env.DATABASE_URL) return null;
+
+  // If Postgres was previously flagged unavailable due to connection failure, retry after cooldown
+  if (isPostgresAvailable === false) {
+    const timeSinceError = Date.now() - (globalForPrisma.lastDbErrorTime || 0);
+    if (timeSinceError < RECONNECT_COOLDOWN_MS) {
+      return null;
+    }
+    isPostgresAvailable = true;
+    globalForPrisma.isPostgresAvailable = true;
+  }
+
   try {
     return await fn();
   } catch (err: any) {
-    // If database server is unreachable, disable future calls to avoid timeout delays
-    isPostgresAvailable = false;
-    globalForPrisma.isPostgresAvailable = false;
+    const errorMessage = err?.message || String(err);
+    const errorCode = err?.code;
+    const isConnError =
+      err?.name === "PrismaClientInitializationError" ||
+      errorCode === "P1000" ||
+      errorCode === "P1001" ||
+      errorCode === "P1002" ||
+      errorCode === "P1003" ||
+      errorCode === "P1017" ||
+      errorMessage.includes("Can't reach database server") ||
+      errorMessage.includes("connection closed") ||
+      errorMessage.includes("ECONNREFUSED");
+
+    if (isConnError) {
+      isPostgresAvailable = false;
+      globalForPrisma.isPostgresAvailable = false;
+      globalForPrisma.lastDbErrorTime = Date.now();
+      console.error("[Prisma DB Connection Error]:", errorMessage);
+    } else {
+      console.error("[Prisma Query Error]:", errorMessage, `(code: ${errorCode || "N/A"})`);
+    }
     return null;
   }
 }
@@ -1076,9 +1107,13 @@ export const db = {
    * Retrieve single mission record with scoped ownership check
    */
   async findMissionById(id: string, userId: string): Promise<DbMission | null> {
+    const cleanId = (id || "").trim();
+    const cleanUserId = (userId || "").trim();
+    if (!cleanId || !cleanUserId) return null;
+
     const pgMission = await executePrisma(() =>
       prisma.mission.findFirst({
-        where: { id, userId },
+        where: { id: cleanId, userId: cleanUserId },
         include: {
           completions: {
             orderBy: { completedAt: "desc" },
@@ -1104,11 +1139,66 @@ export const db = {
     }
 
     const store = getLocalStore();
-    const mission = store.missions.find((m) => m.id === id && m.userId === userId);
+    const mission = store.missions.find((m) => m.id === cleanId && m.userId === cleanUserId);
     if (!mission) return null;
 
     const lastCompletion = store.missionCompletions
-      .filter((mc) => mc.missionId === id && mc.userId === userId)
+      .filter((mc) => mc.missionId === cleanId && mc.userId === cleanUserId)
+      .sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime())[0];
+
+    return {
+      ...mission,
+      verificationType: (mission.verificationType as VerificationType) || "SELF_REPORT",
+      focusDurationMinutes:
+        mission.focusDurationMinutes !== undefined
+          ? mission.focusDurationMinutes
+          : mission.verificationType === "FOCUS_SESSION"
+          ? 25
+          : null,
+      lastCompletedAt: lastCompletion ? lastCompletion.completedAt : null,
+    };
+  },
+
+  /**
+   * Retrieve single mission record without scoping (used to diagnose ownership vs missing)
+   */
+  async findMissionByIdUnscoped(id: string): Promise<DbMission | null> {
+    const cleanId = (id || "").trim();
+    if (!cleanId) return null;
+
+    const pgMission = await executePrisma(() =>
+      prisma.mission.findUnique({
+        where: { id: cleanId },
+        include: {
+          completions: {
+            orderBy: { completedAt: "desc" },
+            take: 1,
+          },
+        },
+      })
+    );
+
+    if (pgMission) {
+      const lastCompletion = (pgMission as any).completions?.[0];
+      return {
+        ...pgMission,
+        verificationType: ((pgMission as any).verificationType as VerificationType) || "SELF_REPORT",
+        focusDurationMinutes:
+          (pgMission as any).focusDurationMinutes !== undefined
+            ? (pgMission as any).focusDurationMinutes
+            : (pgMission as any).verificationType === "FOCUS_SESSION"
+            ? 25
+            : null,
+        lastCompletedAt: lastCompletion ? new Date(lastCompletion.completedAt) : null,
+      } as unknown as DbMission;
+    }
+
+    const store = getLocalStore();
+    const mission = store.missions.find((m) => m.id === cleanId);
+    if (!mission) return null;
+
+    const lastCompletion = store.missionCompletions
+      .filter((mc) => mc.missionId === cleanId)
       .sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime())[0];
 
     return {
@@ -2811,8 +2901,19 @@ export const db = {
     } | null;
   }> {
     // 1. Fetch Mission, Character & User
-    const mission = await this.findMissionById(missionId, userId);
+    const cleanUserId = (userId || "").trim();
+    const cleanMissionId = (missionId || "").trim();
+
+    const mission = await this.findMissionById(cleanMissionId, cleanUserId);
     if (!mission) {
+      const existingUnscoped = await this.findMissionByIdUnscoped(cleanMissionId);
+      if (existingUnscoped) {
+        return {
+          success: false,
+          error: "Transmission denied. You cannot complete a mission you do not own.",
+          statusCode: 403,
+        };
+      }
       return {
         success: false,
         error: "Mission anomaly: Target mission not found in your dossier.",
@@ -2820,7 +2921,7 @@ export const db = {
       };
     }
 
-    const character = await this.findCharacterByUserId(userId);
+    const character = await this.findCharacterByUserId(cleanUserId);
     if (!character) {
       return {
         success: false,
@@ -4149,12 +4250,14 @@ export const db = {
     fileUrl?: string | null;
     description?: string | null;
   }): Promise<DbMissionEvidence> {
+    const cleanUserId = (data.userId || "").trim();
+    const cleanMissionId = (data.missionId || "").trim();
     const now = new Date();
     const pgEvidence = await executePrisma(() =>
       prisma.missionEvidence.create({
         data: {
-          userId: data.userId,
-          missionId: data.missionId,
+          userId: cleanUserId,
+          missionId: cleanMissionId,
           type: data.type,
           fileUrl: data.fileUrl || null,
           description: data.description || null,
@@ -4167,8 +4270,8 @@ export const db = {
     const store = getLocalStore();
     const newEvidence: DbMissionEvidence = {
       id: generateId("mve"),
-      userId: data.userId,
-      missionId: data.missionId,
+      userId: cleanUserId,
+      missionId: cleanMissionId,
       type: data.type,
       fileUrl: data.fileUrl || null,
       description: data.description || null,
@@ -4183,9 +4286,11 @@ export const db = {
    * Find evidence submitted for mission by user
    */
   async findMissionEvidence(userId: string, missionId: string): Promise<DbMissionEvidence[]> {
+    const cleanUserId = (userId || "").trim();
+    const cleanMissionId = (missionId || "").trim();
     const pgEvidences = await executePrisma(() =>
       prisma.missionEvidence.findMany({
-        where: { userId, missionId },
+        where: { userId: cleanUserId, missionId: cleanMissionId },
         orderBy: { createdAt: "desc" },
       })
     );
@@ -4193,7 +4298,7 @@ export const db = {
 
     const store = getLocalStore();
     return store.missionEvidences
-      .filter((me) => me.userId === userId && me.missionId === missionId)
+      .filter((me) => me.userId === cleanUserId && me.missionId === cleanMissionId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   },
 

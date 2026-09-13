@@ -31,7 +31,8 @@ export async function GET(
       );
     }
 
-    const { id } = await context.params;
+    const resolvedParams = await context.params;
+    const id = (resolvedParams?.id || "").trim();
     if (!id) {
       return NextResponse.json(
         { error: "Mission identifier required." },
@@ -39,8 +40,16 @@ export async function GET(
       );
     }
 
-    const mission = await db.findMissionById(id, session.userId);
+    const userId = session.userId.trim();
+    const mission = await db.findMissionById(id, userId);
     if (!mission) {
+      const existingUnscoped = await db.findMissionByIdUnscoped(id);
+      if (existingUnscoped) {
+        return NextResponse.json(
+          { error: "Access denied. You do not own this mission." },
+          { status: 403 }
+        );
+      }
       return NextResponse.json(
         { error: "Mission not found in your current timeline." },
         { status: 404 }
@@ -77,7 +86,8 @@ export async function PATCH(
       );
     }
 
-    const { id } = await context.params;
+    const resolvedParams = await context.params;
+    const id = (resolvedParams?.id || "").trim();
     if (!id) {
       return NextResponse.json(
         { error: "Mission identifier required." },
@@ -104,8 +114,16 @@ export async function PATCH(
       );
     }
 
-    const updated = await db.updateMission(id, session.userId, validation.data);
+    const userId = session.userId.trim();
+    const updated = await db.updateMission(id, userId, validation.data);
     if (!updated) {
+      const existingUnscoped = await db.findMissionByIdUnscoped(id);
+      if (existingUnscoped) {
+        return NextResponse.json(
+          { error: "Access denied. You do not own this mission." },
+          { status: 403 }
+        );
+      }
       return NextResponse.json(
         { error: "Mission not found or not owned by your survivor profile." },
         { status: 404 }
@@ -141,7 +159,8 @@ export async function DELETE(
       );
     }
 
-    const { id } = await context.params;
+    const resolvedParams = await context.params;
+    const id = (resolvedParams?.id || "").trim();
     if (!id) {
       return NextResponse.json(
         { error: "Mission identifier required." },
@@ -149,8 +168,16 @@ export async function DELETE(
       );
     }
 
-    const deleted = await db.deleteMission(id, session.userId);
+    const userId = session.userId.trim();
+    const deleted = await db.deleteMission(id, userId);
     if (!deleted) {
+      const existingUnscoped = await db.findMissionByIdUnscoped(id);
+      if (existingUnscoped) {
+        return NextResponse.json(
+          { error: "Access denied. You do not own this mission." },
+          { status: 403 }
+        );
+      }
       return NextResponse.json(
         { error: "Mission not found or not owned by your survivor profile." },
         { status: 404 }

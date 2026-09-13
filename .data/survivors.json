@@ -453,6 +453,13 @@
       "corruption": 100,
       "createdAt": "2026-09-12T23:10:11.318Z",
       "updatedAt": "2026-09-12T23:10:11.320Z"
+    },
+    {
+      "id": "wp_mtzbdrou_jjkwdhk",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "corruption": 96,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.226Z"
     }
   ],
   "worldAreaProgress": [
@@ -671,6 +678,60 @@
       "restorationPercent": 0,
       "createdAt": "2026-09-12T23:10:11.335Z",
       "updatedAt": "2026-09-12T23:10:11.335Z"
+    },
+    {
+      "id": "wap_mtzbdrou_8vb57r4",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "areaKey": "THE_GATE",
+      "isUnlocked": true,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.226Z"
+    },
+    {
+      "id": "wap_mtzbdrou_0tq16ni",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "areaKey": "KNOWLEDGE_FOREST",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.227Z"
+    },
+    {
+      "id": "wap_mtzbdrou_nksftn3",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "areaKey": "FOCUS_LAB",
+      "isUnlocked": false,
+      "restorationPercent": 4,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.227Z"
+    },
+    {
+      "id": "wap_mtzbdrou_ir3sng7",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "areaKey": "IRON_PEAK",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.227Z"
+    },
+    {
+      "id": "wap_mtzbdrou_d2thicd",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "areaKey": "STILLWATER",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.227Z"
+    },
+    {
+      "id": "wap_mtzbdrou_b13vkwv",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "areaKey": "THE_CITADEL",
+      "isUnlocked": false,
+      "restorationPercent": 0,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.227Z"
     }
   ],
   "bossProgress": [
@@ -849,6 +910,50 @@
       "defeatedAt": null,
       "createdAt": "2026-09-12T23:10:11.345Z",
       "updatedAt": "2026-09-12T23:10:11.345Z"
+    },
+    {
+      "id": "bp_mtzbdrou_wvgs3o2",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "bossKey": "THE_PROCRASTINATOR",
+      "currentHp": 475,
+      "maxHp": 500,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.226Z"
+    },
+    {
+      "id": "bp_mtzbdrou_9sgve1m",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "bossKey": "THE_DISTRACTION",
+      "currentHp": 800,
+      "maxHp": 800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.206Z"
+    },
+    {
+      "id": "bp_mtzbdrou_6nmnkpn",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "bossKey": "THE_DOUBT",
+      "currentHp": 1200,
+      "maxHp": 1200,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.206Z"
+    },
+    {
+      "id": "bp_mtzbdrou_0wmjdii",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "bossKey": "THE_SLEEPLESS",
+      "currentHp": 1800,
+      "maxHp": 1800,
+      "isDefeated": false,
+      "defeatedAt": null,
+      "createdAt": "2026-09-13T04:28:52.206Z",
+      "updatedAt": "2026-09-13T04:28:52.206Z"
     }
   ],
   "items": [
@@ -1310,6 +1415,12 @@
       "userId": "usr_mtyedpi6_2w9jn70",
       "milestoneId": "mls_first_signal",
       "unlockedAt": "2026-09-12T21:12:34.555Z"
+    },
+    {
+      "id": "uml_mtzbdrpf_6ozm0xe",
+      "userId": "usr_mtzbdktq_nwnqwr8",
+      "milestoneId": "mls_first_signal",
+      "unlockedAt": "2026-09-13T04:28:52.211Z"
     }
   ],
   "comebackChallenges": [],

@@ -31,7 +31,8 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { id: missionId } = await params;
+    const resolvedParams = await params;
+    const missionId = (resolvedParams?.id || "").trim();
     if (!missionId) {
       return NextResponse.json(
         { success: false, error: "Mission identifier required." },
@@ -39,9 +40,20 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       );
     }
 
+    const userId = session.userId.trim();
+
     // 1. Verify mission exists and is owned by authenticated survivor
-    const mission = await db.findMissionById(missionId, session.userId);
+    const mission = await db.findMissionById(missionId, userId);
     if (!mission) {
+      // Diagnostic check: check if the mission exists under another user
+      const existingUnscoped = await db.findMissionByIdUnscoped(missionId);
+      if (existingUnscoped) {
+        return NextResponse.json(
+          { success: false, error: "Transmission denied. You do not own this mission." },
+          { status: 403 }
+        );
+      }
+
       return NextResponse.json(
         { success: false, error: "Mission not found in your survivor dossier." },
         { status: 404 }
@@ -210,7 +222,8 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { id: missionId } = await params;
+    const resolvedParams = await params;
+    const missionId = (resolvedParams?.id || "").trim();
     if (!missionId) {
       return NextResponse.json(
         { success: false, error: "Mission identifier required." },
@@ -218,7 +231,8 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const evidences = await db.findMissionEvidence(session.userId, missionId);
+    const userId = session.userId.trim();
+    const evidences = await db.findMissionEvidence(userId, missionId);
 
     return NextResponse.json(
       {

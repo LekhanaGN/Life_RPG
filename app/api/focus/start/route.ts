@@ -30,11 +30,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const missionId = String(body.missionId);
+    const missionId = String(body.missionId || "").trim();
+    const userId = session.userId.trim();
 
     // 1. Verify mission exists and belongs to authenticated survivor
-    const mission = await db.findMissionById(missionId, session.userId);
+    const mission = await db.findMissionById(missionId, userId);
     if (!mission) {
+      const existingUnscoped = await db.findMissionByIdUnscoped(missionId);
+      if (existingUnscoped) {
+        return NextResponse.json(
+          { success: false, error: "Transmission denied. You do not own this mission." },
+          { status: 403 }
+        );
+      }
       return NextResponse.json(
         { success: false, error: "Target mission not found in your survivor dossier." },
         { status: 404 }
