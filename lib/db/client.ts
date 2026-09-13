@@ -923,10 +923,12 @@ export const db = {
    * Find a user by ID, including character relation
    */
   async findUserById(id: string): Promise<DbUser | null> {
+    if (!id || typeof id !== "string" || !id.trim()) return null;
+
     if (process.env.DATABASE_URL) {
       try {
         const pgUser = await prisma.user.findUnique({
-          where: { id },
+          where: { id: id.trim() },
           include: { character: true },
         });
 
@@ -965,7 +967,7 @@ export const db = {
     }
 
     const store = getLocalStore();
-    const user = store.users.find((u) => u.id === id);
+    const user = store.users.find((u) => u.id === id.trim());
     if (!user) return null;
     const character = store.characters.find((c) => c.userId === user.id) || null;
     return { ...user, character };
@@ -1057,15 +1059,18 @@ export const db = {
    * Find a character by User ID
    */
   async findCharacterByUserId(userId: string): Promise<DbCharacter | null> {
+    if (!userId || typeof userId !== "string" || !userId.trim()) return null;
+    const cleanUserId = userId.trim();
+
     const pgChar = await executePrisma(() =>
       prisma.character.findUnique({
-        where: { userId },
+        where: { userId: cleanUserId },
       })
     );
     if (pgChar) return pgChar as unknown as DbCharacter;
 
     const store = getLocalStore();
-    const character = store.characters.find((c) => c.userId === userId);
+    const character = store.characters.find((c) => c.userId === cleanUserId);
     return character || null;
   },
 
