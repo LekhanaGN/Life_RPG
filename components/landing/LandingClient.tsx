@@ -168,20 +168,12 @@ export function LandingClient({
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.9 }}
-          className="max-w-2xl mx-auto space-y-4 font-body text-base sm:text-lg md:text-xl text-slate-300 font-medium tracking-wide mb-10"
+          className="max-w-2xl mx-auto space-y-3 font-body text-base sm:text-lg md:text-xl text-slate-300 font-medium tracking-wide mb-10"
         >
           <p className="text-white font-semibold leading-relaxed">
             Turn your real-life goals into missions.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300">
-            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Study</span>
-            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Work Out</span>
-            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Read</span>
-            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Build</span>
-            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Practice</span>
-            <span className="px-2.5 py-1 rounded-xs bg-slate-900 border border-slate-700">Focus</span>
-          </div>
-          <p className="text-sm sm:text-base text-slate-300 font-mono pt-1">
+          <p className="text-sm sm:text-base text-slate-300 font-mono">
             Complete missions → earn XP → level up → unlock rewards.
           </p>
         </motion.div>
