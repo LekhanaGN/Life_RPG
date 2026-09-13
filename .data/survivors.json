@@ -41,6 +41,24 @@
       "timezone": "UTC",
       "createdAt": "2026-09-12T23:12:15.143Z",
       "updatedAt": "2026-09-12T23:12:15.143Z"
+    },
+    {
+      "id": "usr_mtzluip9_eel4l0k",
+      "email": "aria1@theotherside.world",
+      "passwordHash": "$2b$10$54AUrvyrJGROXwcCmvsd1eBnCqJJkC2ykKGj7ta8mLMK1vG70UqGC",
+      "username": "AriaTest",
+      "timezone": "UTC",
+      "createdAt": "2026-09-13T09:21:49.870Z",
+      "updatedAt": "2026-09-13T09:21:49.870Z"
+    },
+    {
+      "id": "usr_mtzm6qr1_wn1wq54",
+      "email": "demo90@gmail.com",
+      "passwordHash": "$2b$10$LX0dyUX6rX/mTjX8HwCXVeh2kdaBOrR.3ZxIksCr14zkUsUjMPdhG",
+      "username": "survu",
+      "timezone": "UTC",
+      "createdAt": "2026-09-13T09:31:20.173Z",
+      "updatedAt": "2026-09-13T09:31:20.173Z"
     }
   ],
   "characters": [

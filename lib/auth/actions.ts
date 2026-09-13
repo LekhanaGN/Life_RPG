@@ -4,7 +4,7 @@
 // Secure server-side gatekeeping: all identity and progression values are server-owned.
 
 import bcrypt from "bcryptjs";
-import { db } from "@/lib/db/client";
+import { db, getSafeDbIdentity } from "@/lib/db/client";
 import { createSession, destroySession, getSession } from "@/lib/auth/session";
 import { ARCHETYPES, isValidArchetype, ArchetypeId } from "@/lib/game/archetypes";
 
@@ -37,6 +37,8 @@ export async function signupAction(formData: {
     const email = (formData.email || "").trim().toLowerCase();
     const password = formData.password || "";
     const confirmPassword = formData.confirmPassword || "";
+
+    console.log(`[AUTH DEBUG - SIGNUP ATTEMPT] env: ${process.env.NODE_ENV}, target: ${getSafeDbIdentity()}, email: ${email}, username: ${username}`);
 
     // 1. Validation
     if (!username) {
@@ -73,6 +75,7 @@ export async function signupAction(formData: {
     // 2. Prevent duplicate email or callsign
     const existingUser = await db.findUserByEmail(email);
     if (existingUser) {
+      console.log(`[AUTH DEBUG - SIGNUP REJECTED] Duplicate email detected: ${email}`);
       return {
         success: false,
         error: "A survivor with this email transmission already exists.",
@@ -81,6 +84,7 @@ export async function signupAction(formData: {
 
     const existingUsername = await db.findUserByIdentifier(username);
     if (existingUsername && existingUsername.username.toLowerCase() === username.toLowerCase()) {
+      console.log(`[AUTH DEBUG - SIGNUP REJECTED] Duplicate username detected: ${username}`);
       return {
         success: false,
         error: "A survivor with this callsign / username already exists.",
@@ -91,22 +95,42 @@ export async function signupAction(formData: {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // 4. Create User
+    // 4. Create User in PostgreSQL (Authoritative)
     const user = await db.createUser({
       email,
       passwordHash,
       username,
     });
 
+    console.log(`[AUTH DEBUG - USER CREATED] userId: ${user.id}, target: ${getSafeDbIdentity()}`);
+
     // 5. Establish secure server session
     await createSession(user.id);
+    console.log(`[AUTH DEBUG - SIGNUP SESSION ESTABLISHED] userId: ${user.id}`);
 
     return {
       success: true,
       redirectUrl: "/onboarding",
     };
-  } catch (error) {
-    console.error("[Signup Action Error]:", error);
+  } catch (error: any) {
+    console.error("[AUTH DEBUG - SIGNUP ERROR]:", error);
+    const errMessage = error?.message || String(error);
+    const errCode = error?.code;
+
+    if (errCode === "P2002" || errMessage.includes("unique constraint") || errMessage.includes("already exists")) {
+      return {
+        success: false,
+        error: "A survivor with this email transmission or callsign already exists.",
+      };
+    }
+
+    if (errMessage.includes("database") || errMessage.includes("Can't reach database") || errMessage.includes("ECONNREFUSED")) {
+      return {
+        success: false,
+        error: "Database connectivity error during registration. Please verify connection and retry.",
+      };
+    }
+
     return {
       success: false,
       error: "An unexpected dimensional anomaly occurred. Please try again.",
@@ -131,24 +155,41 @@ export async function loginAction(formData: {
     const rawIdentifier = (formData.email || formData.username || formData.identifier || "").trim();
     const password = formData.password || "";
 
+    console.log(`[AUTH DEBUG - LOGIN ATTEMPT] env: ${process.env.NODE_ENV}, target: ${getSafeDbIdentity()}, identifier: ${rawIdentifier}`);
+
     if (!rawIdentifier || !password) {
       return { success: false, error: "Email or callsign and clearance passcode are required." };
     }
 
-    // 1. Find user by email or username
+    // 1. Find user in PostgreSQL by email or username
     const user = await db.findUserByIdentifier(rawIdentifier);
+    console.log(`[AUTH DEBUG - USER LOOKUP] found: ${!!user}, userId: ${user?.id || "NONE"}, target: ${getSafeDbIdentity()}`);
+
     if (!user) {
+      console.log(`[AUTH DEBUG - LOGIN REJECTED] User not found for identifier: ${rawIdentifier}`);
       return { success: false, error: "Invalid transmission credentials." };
     }
 
     // 2. Verify password hash using bcryptjs
     const isValid = await bcrypt.compare(password, user.passwordHash);
+    console.log(`[AUTH DEBUG - PASSWORD CHECK] result: ${isValid ? "SUCCESS" : "FAILURE"}, userId: ${user.id}`);
+
     if (!isValid) {
+      console.log(`[AUTH DEBUG - LOGIN REJECTED] Password hash mismatch for userId: ${user.id}`);
       return { success: false, error: "Invalid transmission credentials." };
     }
 
     // 3. Establish session
-    await createSession(user.id);
+    try {
+      await createSession(user.id);
+      console.log(`[AUTH DEBUG - LOGIN SESSION ESTABLISHED] userId: ${user.id}`);
+    } catch (sessionErr) {
+      console.error(`[AUTH DEBUG - SESSION CREATION FAILURE] userId: ${user.id}:`, sessionErr);
+      return {
+        success: false,
+        error: "Session handshake failure. Please try again.",
+      };
+    }
 
     // 4. Determine destination based on character existence
     if (user.character) {
@@ -162,8 +203,17 @@ export async function loginAction(formData: {
         redirectUrl: "/onboarding",
       };
     }
-  } catch (error) {
-    console.error("[Login Action Error]:", error);
+  } catch (error: any) {
+    console.error("[AUTH DEBUG - LOGIN ERROR]:", error);
+    const errMessage = error?.message || String(error);
+
+    if (errMessage.includes("database") || errMessage.includes("Can't reach database") || errMessage.includes("ECONNREFUSED") || error?.code === "P1001") {
+      return {
+        success: false,
+        error: "Database connectivity error during authentication. Please retry shortly.",
+      };
+    }
+
     return {
       success: false,
       error: "An unexpected dimensional anomaly occurred. Please try again.",

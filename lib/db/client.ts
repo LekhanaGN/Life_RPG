@@ -93,6 +93,24 @@ export const prisma =
 // Always attach to globalThis across all environments to reuse connection pools
 globalForPrisma.prisma = prisma;
 
+/**
+ * Returns safe non-sensitive identity metadata for the active database connection target
+ */
+export function getSafeDbIdentity(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) return "local-fallback (no DATABASE_URL configured)";
+  try {
+    const sanitized = url.replace("postgresql://", "http://").replace("postgres://", "http://");
+    const parsed = new URL(sanitized);
+    const host = parsed.hostname || "unknown-host";
+    const port = parsed.port || "5432";
+    const dbName = parsed.pathname.replace(/^\//, "") || "unknown-db";
+    return `postgres://${host}:${port}/${dbName}`;
+  } catch {
+    return "postgres://[configured-connection-target]";
+  }
+}
+
 async function executePrisma<T>(fn: () => Promise<T>): Promise<T | null> {
   if (!process.env.DATABASE_URL) return null;
 
@@ -799,6 +817,23 @@ function saveLocalStore(store: LocalDataStore): void {
   }
 }
 
+function isConnectionError(err: any): boolean {
+  if (!err) return false;
+  const errorMessage = err?.message || String(err);
+  const errorCode = err?.code;
+  return (
+    err?.name === "PrismaClientInitializationError" ||
+    errorCode === "P1000" ||
+    errorCode === "P1001" ||
+    errorCode === "P1002" ||
+    errorCode === "P1003" ||
+    errorCode === "P1017" ||
+    errorMessage.includes("Can't reach database server") ||
+    errorMessage.includes("connection closed") ||
+    errorMessage.includes("ECONNREFUSED")
+  );
+}
+
 // Database Repository Operations
 export const db = {
   /**
@@ -809,51 +844,63 @@ export const db = {
     if (!raw) return null;
     const normalized = raw.toLowerCase();
 
-    // 1. If PostgreSQL is available, query Prisma
-    const pgUser = await executePrisma(async () => {
-      // If it looks like an email, search email first
-      if (raw.includes("@")) {
-        return prisma.user.findUnique({
-          where: { email: normalized },
-          include: { character: true },
-        });
-      }
-      // Otherwise search both email and username (case-insensitive)
-      return prisma.user.findFirst({
-        where: {
-          OR: [
-            { email: normalized },
-            { username: { equals: raw, mode: "insensitive" } },
-          ],
-        },
-        include: { character: true },
-      });
-    });
+    // 1. If DATABASE_URL is configured, query PostgreSQL
+    if (process.env.DATABASE_URL) {
+      try {
+        let pgUser;
+        if (raw.includes("@")) {
+          pgUser = await prisma.user.findUnique({
+            where: { email: normalized },
+            include: { character: true },
+          });
+        } else {
+          pgUser = await prisma.user.findFirst({
+            where: {
+              OR: [
+                { email: normalized },
+                { username: { equals: raw, mode: "insensitive" } },
+              ],
+            },
+            include: { character: true },
+          });
+        }
 
-    if (pgUser) {
-      // Synchronize to local cache store
-      const store = getLocalStore();
-      const userObj: DbUser = {
-        id: pgUser.id,
-        email: pgUser.email,
-        passwordHash: pgUser.passwordHash,
-        username: pgUser.username,
-        timezone: pgUser.timezone || "UTC",
-        createdAt: new Date(pgUser.createdAt),
-        updatedAt: new Date(pgUser.updatedAt),
-        character: pgUser.character as unknown as DbCharacter || null,
-      };
-      const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
-      if (existingIdx >= 0) {
-        store.users[existingIdx] = userObj;
-      } else {
-        store.users.push(userObj);
+        if (pgUser) {
+          // Synchronize to local cache store
+          const store = getLocalStore();
+          const userObj: DbUser = {
+            id: pgUser.id,
+            email: pgUser.email,
+            passwordHash: pgUser.passwordHash,
+            username: pgUser.username,
+            timezone: pgUser.timezone || "UTC",
+            createdAt: new Date(pgUser.createdAt),
+            updatedAt: new Date(pgUser.updatedAt),
+            character: (pgUser.character as unknown as DbCharacter) || null,
+          };
+          const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
+          if (existingIdx >= 0) {
+            store.users[existingIdx] = userObj;
+          } else {
+            store.users.push(userObj);
+          }
+          saveLocalStore(store);
+          return pgUser as unknown as DbUser;
+        }
+        return null;
+      } catch (err: any) {
+        if (!isConnectionError(err)) {
+          console.error(`[AUTH DB ERROR - findUserByIdentifier query failure (${getSafeDbIdentity()})]:`, err?.code || "", err?.message || err);
+          throw err;
+        }
+        // Connection error: seamlessly fallback to local file persistence
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[Prisma Notice - DB unavailable, using local store]: ${err?.message || "Connection refused"}`);
+        }
       }
-      saveLocalStore(store);
-      return pgUser as unknown as DbUser;
     }
 
-    // 2. Check local fallback store
+    // 2. Local fallback store
     const store = getLocalStore();
     const user = store.users.find(
       (u) =>
@@ -876,33 +923,45 @@ export const db = {
    * Find a user by ID, including character relation
    */
   async findUserById(id: string): Promise<DbUser | null> {
-    const pgUser = await executePrisma(() =>
-      prisma.user.findUnique({
-        where: { id },
-        include: { character: true },
-      })
-    );
-    if (pgUser) {
-      // Synchronize to local cache store
-      const store = getLocalStore();
-      const userObj: DbUser = {
-        id: pgUser.id,
-        email: pgUser.email,
-        passwordHash: pgUser.passwordHash,
-        username: pgUser.username,
-        timezone: pgUser.timezone || "UTC",
-        createdAt: new Date(pgUser.createdAt),
-        updatedAt: new Date(pgUser.updatedAt),
-        character: pgUser.character as unknown as DbCharacter || null,
-      };
-      const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
-      if (existingIdx >= 0) {
-        store.users[existingIdx] = userObj;
-      } else {
-        store.users.push(userObj);
+    if (process.env.DATABASE_URL) {
+      try {
+        const pgUser = await prisma.user.findUnique({
+          where: { id },
+          include: { character: true },
+        });
+
+        if (pgUser) {
+          // Synchronize to local cache store
+          const store = getLocalStore();
+          const userObj: DbUser = {
+            id: pgUser.id,
+            email: pgUser.email,
+            passwordHash: pgUser.passwordHash,
+            username: pgUser.username,
+            timezone: pgUser.timezone || "UTC",
+            createdAt: new Date(pgUser.createdAt),
+            updatedAt: new Date(pgUser.updatedAt),
+            character: (pgUser.character as unknown as DbCharacter) || null,
+          };
+          const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
+          if (existingIdx >= 0) {
+            store.users[existingIdx] = userObj;
+          } else {
+            store.users.push(userObj);
+          }
+          saveLocalStore(store);
+          return pgUser as unknown as DbUser;
+        }
+        return null;
+      } catch (err: any) {
+        if (!isConnectionError(err)) {
+          console.error(`[AUTH DB ERROR - findUserById query failure (${getSafeDbIdentity()})]:`, err?.code || "", err?.message || err);
+          throw err;
+        }
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[Prisma Notice - DB unavailable, using local store]: ${err?.message || "Connection refused"}`);
+        }
       }
-      saveLocalStore(store);
-      return pgUser as unknown as DbUser;
     }
 
     const store = getLocalStore();
@@ -925,32 +984,64 @@ export const db = {
     const cleanUsername = data.username.trim();
     const userTimezone = data.timezone || "UTC";
 
-    const pgUser = await executePrisma(() =>
-      prisma.user.create({
-        data: {
-          email: normalizedEmail,
-          passwordHash: data.passwordHash,
-          username: cleanUsername,
-          timezone: userTimezone,
-        },
-        include: {
-          character: true,
-        },
-      })
-    );
+    // 1. If DATABASE_URL is configured, create in PostgreSQL
+    if (process.env.DATABASE_URL) {
+      try {
+        const pgUser = await prisma.user.create({
+          data: {
+            email: normalizedEmail,
+            passwordHash: data.passwordHash,
+            username: cleanUsername,
+            timezone: userTimezone,
+          },
+          include: {
+            character: true,
+          },
+        });
 
-    const store = getLocalStore();
-    const newUser: DbUser = pgUser
-      ? (pgUser as unknown as DbUser)
-      : {
-          id: generateId("usr"),
-          email: normalizedEmail,
-          passwordHash: data.passwordHash,
-          username: cleanUsername,
-          timezone: userTimezone,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+        // Mirror write to local store for resilience
+        const store = getLocalStore();
+        const userObj: DbUser = {
+          id: pgUser.id,
+          email: pgUser.email,
+          passwordHash: pgUser.passwordHash,
+          username: pgUser.username,
+          timezone: pgUser.timezone || "UTC",
+          createdAt: new Date(pgUser.createdAt),
+          updatedAt: new Date(pgUser.updatedAt),
+          character: (pgUser.character as unknown as DbCharacter) || null,
         };
+        const existingIdx = store.users.findIndex((u) => u.email.toLowerCase() === normalizedEmail);
+        if (existingIdx >= 0) {
+          store.users[existingIdx] = userObj;
+        } else {
+          store.users.push(userObj);
+        }
+        saveLocalStore(store);
+
+        return pgUser as unknown as DbUser;
+      } catch (err: any) {
+        if (!isConnectionError(err)) {
+          console.error(`[AUTH DB ERROR - createUser failed in PostgreSQL (${getSafeDbIdentity()})]:`, err?.code || "", err?.message || err);
+          throw err;
+        }
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[Prisma Notice - DB unavailable, persisting user to local store]: ${err?.message || "Connection refused"}`);
+        }
+      }
+    }
+
+    // 2. Local fallback if DB is unreachable or not configured
+    const store = getLocalStore();
+    const newUser: DbUser = {
+      id: generateId("usr"),
+      email: normalizedEmail,
+      passwordHash: data.passwordHash,
+      username: cleanUsername,
+      timezone: userTimezone,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
     const existingIdx = store.users.findIndex((u) => u.email.toLowerCase() === normalizedEmail);
     if (existingIdx >= 0) {
