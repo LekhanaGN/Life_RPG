@@ -137,7 +137,10 @@ export function LeaderboardClient({
         >
           <div className="flex items-center gap-2.5">
             <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-            <span>SIGNAL LOST // {error}</span>
+            <div>
+              <strong className="text-white block">LEADERBOARD UNAVAILABLE</strong>
+              <span>{error}</span>
+            </div>
           </div>
           <button
             onClick={handleRefresh}
@@ -293,7 +296,30 @@ export function LeaderboardClient({
 
             {/* Entries List */}
             <div className="divide-y divide-slate-800/80">
-              {filteredEntries.length === 0 ? (
+              {data.entries.length === 0 ? (
+                <div className="p-12 text-center text-xs font-mono text-slate-400 space-y-3">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-500">
+                    <Trophy className="w-6 h-6" />
+                  </div>
+                  <div className="font-cinzel text-base font-bold text-slate-200">
+                    NO PLAYERS YET
+                  </div>
+                  <p className="text-slate-500 max-w-sm mx-auto">
+                    Complete your first mission to get on the leaderboard.
+                  </p>
+                  {currentUser && (
+                    <div className="pt-2">
+                      <Link
+                        href="/right-side"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-cyan-950 border border-cyan-500/60 text-cyan-300 text-xs font-bold hover:bg-cyan-900 transition-colors"
+                      >
+                        <span>VIEW MISSIONS</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              ) : filteredEntries.length === 0 ? (
                 <div className="p-8 text-center text-xs font-mono text-slate-500 space-y-1">
                   <div>NO SURVIVORS FOUND MATCHING FILTER.</div>
                   <div className="text-[11px] text-slate-600">Try changing your search query or class filter.</div>
