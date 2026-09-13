@@ -488,332 +488,272 @@ function generateId(prefix = "c"): string {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 9)}`;
 }
 
-function getLocalStore(): LocalDataStore {
-  try {
-    if (!fs.existsSync(LOCAL_DATA_DIR)) {
-      fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(LOCAL_DATA_FILE)) {
-      const seededItems: DbItem[] = STARTER_CATALOG.map((cat) => ({
-        id: `itm_${cat.key.toLowerCase()}`,
-        key: cat.key,
-        name: cat.name,
-        description: cat.description,
-        category: cat.category,
-        rarity: cat.rarity,
-        price: cat.price,
-        icon: cat.icon,
-        effectType: cat.effectType,
-        effectValue: cat.effectValue,
-        slot: cat.slot,
-        requiredCorruption: cat.requiredCorruption,
-        isActive: cat.isActive,
+let memoryStoreCache: LocalDataStore | null = null;
+
+function getInitialStore(): LocalDataStore {
+  const seededItems: DbItem[] = STARTER_CATALOG.map((cat) => ({
+    id: `itm_${cat.key.toLowerCase()}`,
+    key: cat.key,
+    name: cat.name,
+    description: cat.description,
+    category: cat.category,
+    rarity: cat.rarity,
+    price: cat.price,
+    icon: cat.icon,
+    effectType: cat.effectType,
+    effectValue: cat.effectValue,
+    slot: cat.slot,
+    requiredCorruption: cat.requiredCorruption,
+    isActive: cat.isActive,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }));
+
+  const seededMilestones: DbMilestone[] = SURVIVAL_MILESTONES.map((m) => ({
+    id: `mls_${m.key.toLowerCase()}`,
+    key: m.key,
+    name: m.name,
+    description: m.description,
+    loreQuote: m.loreQuote,
+    requirementType: m.requirementType,
+    requirementValue: m.requirementValue,
+    rewardCredits: m.rewardCredits,
+    rewardXP: m.rewardXP,
+    icon: m.icon,
+    createdAt: new Date(),
+  }));
+
+  const seededWorldEvents: DbWorldEvent[] = (Object.keys(CANONICAL_WORLD_EVENTS) as WorldEventKey[]).map(
+    (k) => {
+      const t = CANONICAL_WORLD_EVENTS[k];
+      return {
+        id: `we_${t.key.toLowerCase()}`,
+        key: t.key,
+        title: t.title,
+        description: t.description,
+        loreSnippet: t.loreSnippet,
+        targetAttribute: t.targetAttribute,
+        targetArea: t.targetArea || null,
+        requiredCompletions: t.requiredCompletions,
+        rewardCredits: t.rewardCredits,
+        rewardXp: t.rewardXp,
+        corruptionChange: t.corruptionChange,
+        bossDamageBonus: t.bossDamageBonus,
+        rarity: t.rarity,
+        loreId: t.loreId || null,
         createdAt: new Date(),
         updatedAt: new Date(),
-      }));
-
-      const seededMilestones: DbMilestone[] = SURVIVAL_MILESTONES.map((m) => ({
-        id: `mls_${m.key.toLowerCase()}`,
-        key: m.key,
-        name: m.name,
-        description: m.description,
-        loreQuote: m.loreQuote,
-        requirementType: m.requirementType,
-        requirementValue: m.requirementValue,
-        rewardCredits: m.rewardCredits,
-        rewardXP: m.rewardXP,
-        icon: m.icon,
-        createdAt: new Date(),
-      }));
-
-      const seededWorldEvents: DbWorldEvent[] = (Object.keys(CANONICAL_WORLD_EVENTS) as WorldEventKey[]).map(
-        (k) => {
-          const t = CANONICAL_WORLD_EVENTS[k];
-          return {
-            id: `we_${t.key.toLowerCase()}`,
-            key: t.key,
-            title: t.title,
-            description: t.description,
-            loreSnippet: t.loreSnippet,
-            targetAttribute: t.targetAttribute,
-            targetArea: t.targetArea || null,
-            requiredCompletions: t.requiredCompletions,
-            rewardCredits: t.rewardCredits,
-            rewardXp: t.rewardXp,
-            corruptionChange: t.corruptionChange,
-            bossDamageBonus: t.bossDamageBonus,
-            rarity: t.rarity,
-            loreId: t.loreId || null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-        }
-      );
-
-      const initial: LocalDataStore = {
-        users: [],
-        characters: [],
-        missions: [],
-        missionCompletions: [],
-        worldProgress: [],
-        worldAreaProgress: [],
-        bossProgress: [],
-        items: seededItems,
-        inventoryItems: [],
-        economyTransactions: [],
-        userStreaks: [],
-        dailyActivities: [],
-        milestones: seededMilestones,
-        userMilestones: [],
-        comebackChallenges: [],
-        worldEvents: seededWorldEvents,
-        userWorldEvents: [],
-        userLoreUnlocks: [],
-        missionEvidences: [],
-        focusSessions: [],
       };
-      fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(initial, null, 2), "utf-8");
-      return initial;
     }
-    const raw = fs.readFileSync(LOCAL_DATA_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
-    parsed.users = (parsed.users || []).map((u: any) => ({
-      ...u,
-      createdAt: new Date(u.createdAt),
-      updatedAt: new Date(u.updatedAt),
-    }));
-    parsed.characters = (parsed.characters || []).map((c: any) => ({
-      ...c,
-      createdAt: new Date(c.createdAt),
-      updatedAt: new Date(c.updatedAt),
-    }));
-    parsed.missions = (parsed.missions || []).map((m: any) => ({
-      ...m,
-      dueDate: m.dueDate ? new Date(m.dueDate) : null,
-      isActive: m.isActive !== undefined ? m.isActive : m.status !== "ARCHIVED",
-      status: (m.status as MissionStatus) || (m.isActive === false ? "ARCHIVED" : "ACTIVE"),
-      verificationType: (m.verificationType as VerificationType) || "SELF_REPORT",
-      focusDurationMinutes:
-        m.focusDurationMinutes !== undefined
-          ? m.focusDurationMinutes
-          : m.verificationType === "FOCUS_SESSION"
-          ? 25
-          : null,
-      createdAt: new Date(m.createdAt),
-      updatedAt: new Date(m.updatedAt),
-    }));
-    parsed.missionCompletions = (parsed.missionCompletions || []).map((mc: any) => ({
-      ...mc,
-      completedAt: new Date(mc.completedAt),
-    }));
-    parsed.worldProgress = (parsed.worldProgress || []).map((wp: any) => ({
-      ...wp,
-      updatedAt: new Date(wp.updatedAt),
-    }));
-    parsed.worldAreaProgress = (parsed.worldAreaProgress || []).map((wap: any) => ({
-      ...wap,
-      createdAt: new Date(wap.createdAt),
-      updatedAt: new Date(wap.updatedAt),
-    }));
-    parsed.bossProgress = (parsed.bossProgress || []).map((bp: any) => ({
-      ...bp,
-      defeatedAt: bp.defeatedAt ? new Date(bp.defeatedAt) : null,
-      createdAt: new Date(bp.createdAt),
-      updatedAt: new Date(bp.updatedAt),
-    }));
+  );
 
-    // Ensure catalog items exist
-    const items = (parsed.items || []).map((i: any) => ({
-      ...i,
-      createdAt: new Date(i.createdAt),
-      updatedAt: new Date(i.updatedAt),
-    }));
+  return {
+    users: [],
+    characters: [],
+    missions: [],
+    missionCompletions: [],
+    worldProgress: [],
+    worldAreaProgress: [],
+    bossProgress: [],
+    items: seededItems,
+    inventoryItems: [],
+    economyTransactions: [],
+    userStreaks: [],
+    dailyActivities: [],
+    milestones: seededMilestones,
+    userMilestones: [],
+    comebackChallenges: [],
+    worldEvents: seededWorldEvents,
+    userWorldEvents: [],
+    userLoreUnlocks: [],
+    missionEvidences: [],
+    focusSessions: [],
+  };
+}
 
-    if (items.length < STARTER_CATALOG.length) {
-      for (const cat of STARTER_CATALOG) {
-        if (!items.some((i: any) => i.key === cat.key)) {
-          items.push({
-            id: `itm_${cat.key.toLowerCase()}`,
-            key: cat.key,
-            name: cat.name,
-            description: cat.description,
-            category: cat.category,
-            rarity: cat.rarity,
-            price: cat.price,
-            icon: cat.icon,
-            effectType: cat.effectType,
-            effectValue: cat.effectValue,
-            slot: cat.slot,
-            requiredCorruption: cat.requiredCorruption,
-            isActive: cat.isActive,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
+function getLocalStore(): LocalDataStore {
+  if (memoryStoreCache) return memoryStoreCache;
+
+  try {
+    if (typeof fs !== "undefined" && fs.existsSync && fs.readFileSync) {
+      if (fs.existsSync(LOCAL_DATA_FILE)) {
+        const raw = fs.readFileSync(LOCAL_DATA_FILE, "utf-8");
+        const parsed = JSON.parse(raw);
+        parsed.users = (parsed.users || []).map((u: any) => ({
+          ...u,
+          createdAt: new Date(u.createdAt),
+          updatedAt: new Date(u.updatedAt),
+        }));
+        parsed.characters = (parsed.characters || []).map((c: any) => ({
+          ...c,
+          createdAt: new Date(c.createdAt),
+          updatedAt: new Date(c.updatedAt),
+        }));
+        parsed.missions = (parsed.missions || []).map((m: any) => ({
+          ...m,
+          dueDate: m.dueDate ? new Date(m.dueDate) : null,
+          isActive: m.isActive !== undefined ? m.isActive : m.status !== "ARCHIVED",
+          status: (m.status as MissionStatus) || (m.isActive === false ? "ARCHIVED" : "ACTIVE"),
+          verificationType: (m.verificationType as VerificationType) || "SELF_REPORT",
+          focusDurationMinutes:
+            m.focusDurationMinutes !== undefined
+              ? m.focusDurationMinutes
+              : m.verificationType === "FOCUS_SESSION"
+              ? 25
+              : null,
+          createdAt: new Date(m.createdAt),
+          updatedAt: new Date(m.updatedAt),
+        }));
+        parsed.missionCompletions = (parsed.missionCompletions || []).map((mc: any) => ({
+          ...mc,
+          completedAt: new Date(mc.completedAt),
+        }));
+        parsed.worldProgress = (parsed.worldProgress || []).map((wp: any) => ({
+          ...wp,
+          updatedAt: new Date(wp.updatedAt),
+        }));
+        parsed.worldAreaProgress = (parsed.worldAreaProgress || []).map((wap: any) => ({
+          ...wap,
+          createdAt: new Date(wap.createdAt),
+          updatedAt: new Date(wap.updatedAt),
+        }));
+        parsed.bossProgress = (parsed.bossProgress || []).map((bp: any) => ({
+          ...bp,
+          defeatedAt: bp.defeatedAt ? new Date(bp.defeatedAt) : null,
+          createdAt: new Date(bp.createdAt),
+          updatedAt: new Date(bp.updatedAt),
+        }));
+
+        // Ensure catalog items exist
+        const items = (parsed.items || []).map((i: any) => ({
+          ...i,
+          createdAt: new Date(i.createdAt),
+          updatedAt: new Date(i.updatedAt),
+        }));
+
+        if (items.length < STARTER_CATALOG.length) {
+          for (const cat of STARTER_CATALOG) {
+            if (!items.some((i: any) => i.key === cat.key)) {
+              items.push({
+                id: `itm_${cat.key.toLowerCase()}`,
+                key: cat.key,
+                name: cat.name,
+                description: cat.description,
+                category: cat.category,
+                rarity: cat.rarity,
+                price: cat.price,
+                icon: cat.icon,
+                effectType: cat.effectType,
+                effectValue: cat.effectValue,
+                slot: cat.slot,
+                requiredCorruption: cat.requiredCorruption,
+                isActive: cat.isActive,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              });
+            }
+          }
         }
+        parsed.items = items;
+
+        parsed.inventoryItems = (parsed.inventoryItems || []).map((inv: any) => ({
+          ...inv,
+          acquiredAt: new Date(inv.acquiredAt),
+          updatedAt: new Date(inv.updatedAt),
+        }));
+
+        parsed.economyTransactions = (parsed.economyTransactions || []).map((tx: any) => ({
+          ...tx,
+          createdAt: new Date(tx.createdAt),
+        }));
+
+        parsed.userStreaks = (parsed.userStreaks || []).map((s: any) => ({
+          ...s,
+          lastActiveDate: s.lastActiveDate ? new Date(s.lastActiveDate) : null,
+          createdAt: new Date(s.createdAt),
+          updatedAt: new Date(s.updatedAt),
+        }));
+
+        parsed.dailyActivities = (parsed.dailyActivities || []).map((da: any) => ({
+          ...da,
+          createdAt: new Date(da.createdAt),
+        }));
+
+        parsed.milestones = (parsed.milestones || []).map((m: any) => ({
+          ...m,
+          createdAt: new Date(m.createdAt),
+        }));
+
+        parsed.userMilestones = (parsed.userMilestones || []).map((um: any) => ({
+          ...um,
+          unlockedAt: new Date(um.unlockedAt),
+        }));
+
+        parsed.comebackChallenges = (parsed.comebackChallenges || []).map((c: any) => ({
+          ...c,
+          startedAt: new Date(c.startedAt),
+          expiresAt: new Date(c.expiresAt),
+          createdAt: new Date(c.createdAt),
+          updatedAt: new Date(c.updatedAt),
+        }));
+
+        parsed.worldEvents = (parsed.worldEvents || []).map((we: any) => ({
+          ...we,
+          createdAt: new Date(we.createdAt),
+          updatedAt: new Date(we.updatedAt),
+        }));
+
+        parsed.userWorldEvents = (parsed.userWorldEvents || []).map((uwe: any) => ({
+          ...uwe,
+          startsAt: new Date(uwe.startsAt),
+          expiresAt: new Date(uwe.expiresAt),
+          completedAt: uwe.completedAt ? new Date(uwe.completedAt) : null,
+          createdAt: new Date(uwe.createdAt),
+          updatedAt: new Date(uwe.updatedAt),
+        }));
+
+        parsed.userLoreUnlocks = (parsed.userLoreUnlocks || []).map((ulu: any) => ({
+          ...ulu,
+          unlockedAt: new Date(ulu.unlockedAt),
+        }));
+
+        parsed.missionEvidences = (parsed.missionEvidences || []).map((me: any) => ({
+          ...me,
+          createdAt: new Date(me.createdAt),
+        }));
+
+        parsed.focusSessions = (parsed.focusSessions || []).map((fs: any) => ({
+          ...fs,
+          startedAt: new Date(fs.startedAt),
+          lastHeartbeatAt: new Date(fs.lastHeartbeatAt),
+          completedAt: fs.completedAt ? new Date(fs.completedAt) : null,
+          createdAt: new Date(fs.createdAt),
+          updatedAt: new Date(fs.updatedAt),
+        }));
+
+        memoryStoreCache = parsed;
+        return memoryStoreCache!;
       }
     }
-    parsed.items = items;
-
-    parsed.inventoryItems = (parsed.inventoryItems || []).map((inv: any) => ({
-      ...inv,
-      acquiredAt: new Date(inv.acquiredAt),
-      updatedAt: new Date(inv.updatedAt),
-    }));
-
-    parsed.economyTransactions = (parsed.economyTransactions || []).map((tx: any) => ({
-      ...tx,
-      createdAt: new Date(tx.createdAt),
-    }));
-
-    // Ensure milestones exist
-    const milestones = (parsed.milestones || []).map((m: any) => ({
-      ...m,
-      createdAt: new Date(m.createdAt),
-    }));
-
-    if (milestones.length < SURVIVAL_MILESTONES.length) {
-      for (const mDef of SURVIVAL_MILESTONES) {
-        if (!milestones.some((m: any) => m.key === mDef.key)) {
-          milestones.push({
-            id: `mls_${mDef.key.toLowerCase()}`,
-            key: mDef.key,
-            name: mDef.name,
-            description: mDef.description,
-            loreQuote: mDef.loreQuote,
-            requirementType: mDef.requirementType,
-            requirementValue: mDef.requirementValue,
-            rewardCredits: mDef.rewardCredits,
-            rewardXP: mDef.rewardXP,
-            icon: mDef.icon,
-            createdAt: new Date(),
-          });
-        }
-      }
-    }
-    parsed.milestones = milestones;
-
-    parsed.userStreaks = (parsed.userStreaks || []).map((s: any) => ({
-      ...s,
-      lastActiveDate: s.lastActiveDate ? new Date(s.lastActiveDate) : null,
-      createdAt: new Date(s.createdAt),
-      updatedAt: new Date(s.updatedAt),
-    }));
-
-    parsed.dailyActivities = (parsed.dailyActivities || []).map((da: any) => ({
-      ...da,
-      createdAt: new Date(da.createdAt),
-    }));
-
-    parsed.userMilestones = (parsed.userMilestones || []).map((um: any) => ({
-      ...um,
-      unlockedAt: new Date(um.unlockedAt),
-    }));
-
-    parsed.comebackChallenges = (parsed.comebackChallenges || []).map((cc: any) => ({
-      ...cc,
-      startedAt: new Date(cc.startedAt),
-      expiresAt: new Date(cc.expiresAt),
-      createdAt: new Date(cc.createdAt),
-      updatedAt: new Date(cc.updatedAt),
-    }));
-
-    // Ensure canonical world events exist
-    const worldEvents = (parsed.worldEvents || []).map((we: any) => ({
-      ...we,
-      createdAt: new Date(we.createdAt),
-      updatedAt: new Date(we.updatedAt),
-    }));
-
-    const canonicalKeys = Object.keys(CANONICAL_WORLD_EVENTS) as WorldEventKey[];
-    for (const key of canonicalKeys) {
-      if (!worldEvents.some((we: any) => we.key === key)) {
-        const t = CANONICAL_WORLD_EVENTS[key];
-        worldEvents.push({
-          id: `we_${t.key.toLowerCase()}`,
-          key: t.key,
-          title: t.title,
-          description: t.description,
-          loreSnippet: t.loreSnippet,
-          targetAttribute: t.targetAttribute,
-          targetArea: t.targetArea || null,
-          requiredCompletions: t.requiredCompletions,
-          rewardCredits: t.rewardCredits,
-          rewardXp: t.rewardXp,
-          corruptionChange: t.corruptionChange,
-          bossDamageBonus: t.bossDamageBonus,
-          rarity: t.rarity,
-          loreId: t.loreId || null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      }
-    }
-    parsed.worldEvents = worldEvents;
-
-    parsed.userWorldEvents = (parsed.userWorldEvents || []).map((uwe: any) => ({
-      ...uwe,
-      startsAt: new Date(uwe.startsAt),
-      expiresAt: new Date(uwe.expiresAt),
-      completedAt: uwe.completedAt ? new Date(uwe.completedAt) : null,
-      createdAt: new Date(uwe.createdAt),
-      updatedAt: new Date(uwe.updatedAt),
-    }));
-
-    parsed.userLoreUnlocks = (parsed.userLoreUnlocks || []).map((ulu: any) => ({
-      ...ulu,
-      unlockedAt: new Date(ulu.unlockedAt),
-    }));
-
-    parsed.missionEvidences = (parsed.missionEvidences || []).map((me: any) => ({
-      ...me,
-      createdAt: new Date(me.createdAt),
-    }));
-
-    parsed.focusSessions = (parsed.focusSessions || []).map((fs: any) => ({
-      ...fs,
-      startedAt: new Date(fs.startedAt),
-      lastHeartbeatAt: new Date(fs.lastHeartbeatAt),
-      completedAt: fs.completedAt ? new Date(fs.completedAt) : null,
-      createdAt: new Date(fs.createdAt),
-      updatedAt: new Date(fs.updatedAt),
-    }));
-
-    return parsed;
   } catch (err) {
-    console.error("[DB Fallback Store Error]:", err);
-    return {
-      users: [],
-      characters: [],
-      missions: [],
-      missionCompletions: [],
-      worldProgress: [],
-      worldAreaProgress: [],
-      bossProgress: [],
-      items: [],
-      inventoryItems: [],
-      economyTransactions: [],
-      userStreaks: [],
-      dailyActivities: [],
-      milestones: [],
-      userMilestones: [],
-      comebackChallenges: [],
-      worldEvents: [],
-      userWorldEvents: [],
-      userLoreUnlocks: [],
-      missionEvidences: [],
-      focusSessions: [],
-    };
+    // Safe swallow on serverless read-only filesystems
   }
+
+  memoryStoreCache = getInitialStore();
+  return memoryStoreCache;
 }
 
 function saveLocalStore(store: LocalDataStore): void {
+  memoryStoreCache = store;
   try {
-    if (!fs.existsSync(LOCAL_DATA_DIR)) {
-      fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+    if (typeof fs !== "undefined" && fs.existsSync && fs.mkdirSync && fs.writeFileSync) {
+      if (!fs.existsSync(LOCAL_DATA_DIR)) {
+        fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+      }
+      fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(store, null, 2), "utf-8");
     }
-    fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(store, null, 2), "utf-8");
   } catch (err) {
-    console.error("[DB Fallback Save Error]:", err);
+    // Safe swallow on serverless read-only filesystems
   }
 }
 
@@ -866,25 +806,6 @@ export const db = {
         }
 
         if (pgUser) {
-          // Synchronize to local cache store
-          const store = getLocalStore();
-          const userObj: DbUser = {
-            id: pgUser.id,
-            email: pgUser.email,
-            passwordHash: pgUser.passwordHash,
-            username: pgUser.username,
-            timezone: pgUser.timezone || "UTC",
-            createdAt: new Date(pgUser.createdAt),
-            updatedAt: new Date(pgUser.updatedAt),
-            character: (pgUser.character as unknown as DbCharacter) || null,
-          };
-          const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
-          if (existingIdx >= 0) {
-            store.users[existingIdx] = userObj;
-          } else {
-            store.users.push(userObj);
-          }
-          saveLocalStore(store);
           return pgUser as unknown as DbUser;
         }
         return null;
@@ -933,25 +854,6 @@ export const db = {
         });
 
         if (pgUser) {
-          // Synchronize to local cache store
-          const store = getLocalStore();
-          const userObj: DbUser = {
-            id: pgUser.id,
-            email: pgUser.email,
-            passwordHash: pgUser.passwordHash,
-            username: pgUser.username,
-            timezone: pgUser.timezone || "UTC",
-            createdAt: new Date(pgUser.createdAt),
-            updatedAt: new Date(pgUser.updatedAt),
-            character: (pgUser.character as unknown as DbCharacter) || null,
-          };
-          const existingIdx = store.users.findIndex((u) => u.id === pgUser.id);
-          if (existingIdx >= 0) {
-            store.users[existingIdx] = userObj;
-          } else {
-            store.users.push(userObj);
-          }
-          saveLocalStore(store);
           return pgUser as unknown as DbUser;
         }
         return null;
@@ -1000,26 +902,6 @@ export const db = {
             character: true,
           },
         });
-
-        // Mirror write to local store for resilience
-        const store = getLocalStore();
-        const userObj: DbUser = {
-          id: pgUser.id,
-          email: pgUser.email,
-          passwordHash: pgUser.passwordHash,
-          username: pgUser.username,
-          timezone: pgUser.timezone || "UTC",
-          createdAt: new Date(pgUser.createdAt),
-          updatedAt: new Date(pgUser.updatedAt),
-          character: (pgUser.character as unknown as DbCharacter) || null,
-        };
-        const existingIdx = store.users.findIndex((u) => u.email.toLowerCase() === normalizedEmail);
-        if (existingIdx >= 0) {
-          store.users[existingIdx] = userObj;
-        } else {
-          store.users.push(userObj);
-        }
-        saveLocalStore(store);
 
         return pgUser as unknown as DbUser;
       } catch (err: any) {
