@@ -107,7 +107,7 @@ export function MissionDetailsModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -126,7 +126,7 @@ export function MissionDetailsModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
-            className="relative w-full max-w-2xl bg-slate-950/98 border-2 border-cyan-500/60 rounded-xs shadow-[0_0_50px_rgba(6,182,212,0.25)] flex flex-col max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] overflow-hidden z-10 my-auto"
+            className="relative w-full max-w-2xl bg-slate-950/98 border-2 border-cyan-500/60 rounded-xs shadow-[0_0_50px_rgba(6,182,212,0.25)] flex flex-col max-h-[88vh] sm:max-h-[85vh] min-h-0 overflow-hidden z-10 my-auto"
           >
             {/* Corner cyber notches */}
             <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-400 z-30 pointer-events-none" />
@@ -135,7 +135,7 @@ export function MissionDetailsModal({
             <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-400 z-30 pointer-events-none" />
 
             {/* FIXED HEADER: Never scrolls away */}
-            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-cyan-500/25 bg-slate-950/95 shrink-0 z-20">
+            <div className="flex items-start justify-between p-4 sm:p-5 pb-3 sm:pb-4 border-b border-cyan-500/25 bg-slate-950/95 shrink-0 z-20">
               <div className="flex items-center gap-3">
                 <div
                   className={`p-2.5 rounded-xs border ${categoryMeta.bgColor} ${categoryMeta.borderColor} ${categoryMeta.textColor}`}
@@ -179,7 +179,10 @@ export function MissionDetailsModal({
             {/* SCROLLABLE BODY */}
             <div
               ref={scrollContainerRef}
-              className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 overscroll-contain"
+              className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-6 overscroll-contain cyber-scrollbar"
+              style={{
+                WebkitOverflowScrolling: "touch",
+              }}
             >
               {/* Directive Description */}
               <div className="space-y-2">
@@ -196,130 +199,130 @@ export function MissionDetailsModal({
                 </div>
               </div>
 
-            {/* Attributes Matrix */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {/* Category */}
-              <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                  STAT CATEGORY
-                </div>
-                <div className="text-sm font-orbitron font-bold text-white flex items-center gap-1.5">
-                  <span className={categoryMeta.textColor}>{categoryMeta.label}</span>
-                  <span className="text-slate-500 text-xs font-normal">
-                    • {categoryMeta.attribute}
-                  </span>
-                </div>
-                <div className="text-[11px] font-mono text-slate-400">
-                  {categoryMeta.examples}
-                </div>
-              </div>
-
-              {/* Difficulty */}
-              <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                  DIFFICULTY
-                </div>
-                <div className="text-sm font-orbitron font-bold text-white">
-                  {difficultyMeta.label}
-                </div>
-                <div className="text-[11px] font-mono text-slate-400">
-                  {difficultyMeta.threatLevel}
-                </div>
-              </div>
-
-              {/* Frequency */}
-              <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Repeat className="w-3 h-3 text-cyan-400" />
-                  FREQUENCY
-                </div>
-                <div className="text-sm font-orbitron font-bold text-white">
-                  {frequencyMeta.label}
-                </div>
-                <div className="text-[11px] font-mono text-slate-400">
-                  {frequencyMeta.description}
-                </div>
-              </div>
-
-              {/* Due Date */}
-              <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-cyan-400" />
-                  DUE DATE
-                </div>
-                <div className="text-sm font-orbitron font-bold text-cyan-300">
-                  {dueFormatted}
-                </div>
-                <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  Created: {createdFormatted}
-                </div>
-              </div>
-
-              {/* Verification Protocol */}
-              <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1.5 sm:col-span-2">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                  VERIFICATION METHOD
-                </div>
-                <div className="flex items-center gap-3">
-                  <VerificationBadge type={mission.verificationType || "SELF_REPORT"} size="md" />
-                  {mission.verificationType === "FOCUS_SESSION" && (
-                    <span className="text-xs font-mono text-amber-300">
-                      Duration: {mission.focusDurationMinutes || 25} Minutes
+              {/* Attributes Matrix */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Category */}
+                <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    STAT CATEGORY
+                  </div>
+                  <div className="text-sm font-orbitron font-bold text-white flex items-center gap-1.5">
+                    <span className={categoryMeta.textColor}>{categoryMeta.label}</span>
+                    <span className="text-slate-500 text-xs font-normal">
+                      • {categoryMeta.attribute}
                     </span>
-                  )}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    {categoryMeta.examples}
+                  </div>
                 </div>
-                <div className="text-[11px] font-mono text-slate-400">
-                  {mission.verificationType === "FOCUS_SESSION"
-                    ? "Requires completing a timed focus session to verify."
-                    : mission.verificationType === "EVIDENCE"
-                    ? "Requires attaching a photo or written note to verify."
-                    : "Self-confirmed completion."}
+
+                {/* Difficulty */}
+                <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    DIFFICULTY
+                  </div>
+                  <div className="text-sm font-orbitron font-bold text-white">
+                    {difficultyMeta.label}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    {difficultyMeta.threatLevel}
+                  </div>
+                </div>
+
+                {/* Frequency */}
+                <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                    <Repeat className="w-3 h-3 text-cyan-400" />
+                    FREQUENCY
+                  </div>
+                  <div className="text-sm font-orbitron font-bold text-white">
+                    {frequencyMeta.label}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    {frequencyMeta.description}
+                  </div>
+                </div>
+
+                {/* Due Date */}
+                <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-cyan-400" />
+                    DUE DATE
+                  </div>
+                  <div className="text-sm font-orbitron font-bold text-cyan-300">
+                    {dueFormatted}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Created: {createdFormatted}
+                  </div>
+                </div>
+
+                {/* Verification Protocol */}
+                <div className="p-3.5 rounded-xs bg-slate-900/60 border border-slate-800 space-y-1.5 sm:col-span-2">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    VERIFICATION METHOD
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <VerificationBadge type={mission.verificationType || "SELF_REPORT"} size="md" />
+                    {mission.verificationType === "FOCUS_SESSION" && (
+                      <span className="text-xs font-mono text-amber-300">
+                        Duration: {mission.focusDurationMinutes || 25} Minutes
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    {mission.verificationType === "FOCUS_SESSION"
+                      ? "Requires completing a timed focus session to verify."
+                      : mission.verificationType === "EVIDENCE"
+                      ? "Requires attaching a photo or written note to verify."
+                      : "Self-confirmed completion."}
+                  </div>
+                </div>
+              </div>
+
+              {/* Thematic Lore Quote */}
+              <div className="p-3 rounded-xs bg-cyan-950/20 border border-cyan-800/30 text-center">
+                <p className="text-xs font-cinzel italic text-cyan-200/80">
+                  &ldquo;Every discipline upheld in reality strengthens the barrier against the Other Side.&rdquo;
+                </p>
+              </div>
+
+              {/* Action Buttons: Positioned cleanly at the bottom */}
+              <div className="pt-6 border-t border-cyan-500/20 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pb-6 sm:pb-8">
+                <button
+                  type="button"
+                  onClick={() => onAbandon(mission)}
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xs bg-red-950/30 hover:bg-red-950/80 border border-red-800/50 hover:border-red-600 text-xs font-mono uppercase tracking-wider text-red-300 hover:text-red-100 transition-colors cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>DELETE MISSION</span>
+                </button>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full sm:w-auto px-5 py-2 rounded-xs border border-slate-700 hover:border-slate-500 bg-transparent text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    CLOSE
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => onEdit(mission)}
+                    className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-6 py-2 rounded-xs bg-amber-950/60 hover:bg-amber-500 border-2 border-amber-500 hover:border-amber-300 text-amber-200 hover:text-black font-orbitron font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)] cursor-pointer"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>EDIT MISSION</span>
+                  </button>
                 </div>
               </div>
             </div>
-
-            {/* Thematic Lore Quote */}
-            <div className="p-3 rounded-xs bg-cyan-950/20 border border-cyan-800/30 text-center mb-6">
-              <p className="text-xs font-cinzel italic text-cyan-200/80">
-                &ldquo;Every discipline upheld in reality strengthens the barrier against the Other Side.&rdquo;
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-4 border-t border-cyan-500/20">
-              <button
-                type="button"
-                onClick={() => onAbandon(mission)}
-                className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xs bg-red-950/30 hover:bg-red-950/80 border border-red-800/50 hover:border-red-600 text-xs font-mono uppercase tracking-wider text-red-300 hover:text-red-100 transition-colors cursor-pointer"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>DELETE MISSION</span>
-              </button>
-
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="w-full sm:w-auto px-5 py-2 rounded-xs border border-slate-700 hover:border-slate-500 bg-transparent text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
-                >
-                  CLOSE
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onEdit(mission)}
-                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-6 py-2 rounded-xs bg-amber-950/60 hover:bg-amber-500 border-2 border-amber-500 hover:border-amber-300 text-amber-200 hover:text-black font-orbitron font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)] cursor-pointer"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  <span>EDIT MISSION</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    )}
-  </AnimatePresence>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

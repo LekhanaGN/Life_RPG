@@ -130,7 +130,7 @@ async function executePrisma<T>(fn: () => Promise<T>): Promise<T | null> {
       isPostgresAvailable = false;
       globalForPrisma.isPostgresAvailable = false;
       globalForPrisma.lastDbErrorTime = Date.now();
-      console.error("[Prisma DB Connection Error]:", errorMessage);
+      console.warn("[Prisma DB Connection Warning - Falling back to local storage]:", errorMessage);
     } else {
       console.error("[Prisma Query Error]:", errorMessage, `(code: ${errorCode || "N/A"})`);
     }

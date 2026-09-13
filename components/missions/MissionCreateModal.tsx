@@ -49,7 +49,7 @@ export function MissionCreateModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLFormElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   // Reset form, lock body scroll, and reset scroll position when modal opens
@@ -180,7 +180,7 @@ export function MissionCreateModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto">
           {/* Backdrop overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -199,7 +199,7 @@ export function MissionCreateModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
-            className="relative w-full max-w-2xl bg-slate-950/98 border-2 border-cyan-500/60 rounded-xs shadow-[0_0_50px_rgba(6,182,212,0.25)] flex flex-col max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] overflow-hidden z-10 my-auto"
+            className="relative w-full max-w-2xl bg-slate-950/98 border-2 border-cyan-500/60 rounded-xs shadow-[0_0_50px_rgba(6,182,212,0.25)] flex flex-col max-h-[88vh] sm:max-h-[85vh] min-h-0 overflow-hidden z-10 my-auto"
           >
             {/* Corner cyber notches */}
             <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-400 z-30 pointer-events-none" />
@@ -208,7 +208,7 @@ export function MissionCreateModal({
             <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-400 z-30 pointer-events-none" />
 
             {/* FIXED HEADER: Never scrolls away, always visible at top */}
-            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-cyan-500/25 bg-slate-950/95 shrink-0 z-20">
+            <div className="flex items-start justify-between p-4 sm:p-5 pb-3 sm:pb-4 border-b border-cyan-500/25 bg-slate-950/95 shrink-0 z-20">
               <div>
                 <span className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase">
                   MISSION PROTOCOL // NEW TASK
@@ -236,10 +236,15 @@ export function MissionCreateModal({
               </button>
             </div>
 
-            {/* SCROLLABLE FORM BODY: Independent internal scrolling */}
-            <div
+            {/* SCROLLABLE FORM CONTAINER: Entire form scrolls smoothly past Due Date to the Create button */}
+            <form
+              id="create-mission-form"
+              onSubmit={handleSubmit}
               ref={scrollContainerRef}
-              className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 overscroll-contain"
+              className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-6 overscroll-contain cyber-scrollbar"
+              style={{
+                WebkitOverflowScrolling: "touch",
+              }}
             >
               {/* General Error Alert */}
               {generalError && (
@@ -249,8 +254,6 @@ export function MissionCreateModal({
                 </div>
               )}
 
-              {/* Form */}
-              <form id="create-mission-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Mission Name */}
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
@@ -537,8 +540,8 @@ export function MissionCreateModal({
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-cyan-500/20">
+              {/* ACTION BUTTONS: POSITIONED AT THE BOTTOM AFTER DUE DATE */}
+              <div className="pt-6 border-t border-cyan-500/25 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pb-6 sm:pb-8">
                 <button
                   type="button"
                   onClick={onClose}
@@ -567,10 +570,9 @@ export function MissionCreateModal({
                 </button>
               </div>
             </form>
-          </div>
-        </motion.div>
-      </div>
-    )}
-  </AnimatePresence>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
